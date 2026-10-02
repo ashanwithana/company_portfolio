@@ -1,0 +1,153 @@
+import { PageHeader, PageSection } from '@/components/layout/page'
+import { InitialsAvatar } from '@/components/ui/block-art'
+import { Reveal } from '@/components/ui/reveal'
+import { CtaBand } from '@/components/ui/cta-band'
+import { ClientLogos } from '@/components/sections/work-preview'
+import { milestones, process, team, values } from '@/content/company'
+import { studioStats } from '@/content/services'
+
+export const metadata = {
+  title: 'About',
+  description:
+    'Northlight is a fourteen-person product studio in London. We design and build software, and we are deliberately small enough to know every project by name.',
+}
+
+export default function AboutPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="About"
+        title="Fourteen people who would rather be right than fast."
+        lede="Northlight is an independent product studio in London. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
+      />
+
+      {/* Studio stats */}
+      <PageSection>
+        <dl className="grid gap-10 border-y border-border py-12 sm:grid-cols-2 lg:grid-cols-4">
+          {studioStats.map((stat) => (
+            <div key={stat.label}>
+              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+                {stat.label}
+              </dt>
+              <dd className="mt-2 font-display text-4xl font-semibold tabular-nums sm:text-5xl">
+                {stat.value}
+                <span className="text-coral">{stat.suffix}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </PageSection>
+
+      {/* Process */}
+      <PageSection tone="muted">
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          How an engagement runs
+        </h2>
+
+        <ol className="mt-10 space-y-8">
+          {process.map((step, index) => (
+            <Reveal key={step.title} as="li" delay={index * 60} y={16}>
+              <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
+                <p className="font-mono text-xs tracking-[0.25em] text-mint tabular-nums">
+                  {(index + 1).toString().padStart(2, '0')}
+                </p>
+                <div>
+                  <h3 className="text-2xl">{step.title}</h3>
+                  <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+                    {step.body}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </ol>
+      </PageSection>
+
+      {/* Values */}
+      <PageSection>
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          What we believe
+        </h2>
+
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {values.map((value, index) => (
+            <Reveal key={value.title} delay={index * 60}>
+              <div className="h-full rounded-2xl border border-border bg-card/40 p-7">
+                <h3 className="text-xl leading-snug">{value.title}</h3>
+                <p className="mt-3 leading-relaxed text-muted-foreground">{value.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </PageSection>
+
+      {/* Team */}
+      <PageSection tone="muted">
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          The studio
+        </h2>
+
+        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {team.map((member, index) => (
+            <Reveal key={member.name} as="li" delay={index * 50}>
+              <div className="flex h-full gap-4 rounded-2xl border border-border bg-background p-6">
+                <InitialsAvatar initials={member.initials} className="size-12 shrink-0" />
+
+                <div>
+                  <h3 className="text-lg leading-tight">{member.name}</h3>
+                  <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-mint uppercase">
+                    {member.role}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {member.bio}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </ul>
+      </PageSection>
+
+      {/* History */}
+      <PageSection>
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          How we got here
+        </h2>
+
+        <ol className="mt-10 space-y-8">
+          {milestones.map((milestone, index) => (
+            <Reveal key={milestone.year} as="li" delay={index * 60} y={16}>
+              <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
+                <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground tabular-nums">
+                  {milestone.year}
+                </p>
+                <div>
+                  <h3 className="text-xl">{milestone.title}</h3>
+                  <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
+                    {milestone.body}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </ol>
+      </PageSection>
+
+      <PageSection>
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          Clients
+        </h2>
+        <div className="mt-10">
+          <ClientLogos />
+        </div>
+      </PageSection>
+
+      <CtaBand
+        eyebrow="Work with us"
+        title="We are hiring, and we take on projects."
+        body="If you are looking for a studio that will tell you when something will not work, get in touch. We are also always happy to meet people who want to join."
+        secondary={{ href: '/careers', label: 'See open roles' }}
+      />
+    </>
+  )
+}
