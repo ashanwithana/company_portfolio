@@ -763,8 +763,8 @@ export function HeroVisual({ className }: { className?: string }) {
           WebkitMaskImage: 'radial-gradient(circle, black 46%, transparent 68%)',
         }}
       />
-      <div className="absolute inset-[3%] rounded-full border border-border" />
-      <div className="absolute inset-[3%] rotate-[24deg] rounded-[50%] border border-border/60" />
+      <div className="absolute inset-[8%] rounded-full border border-border" />
+      <div className="absolute inset-[8%] rotate-[24deg] rounded-[50%] border border-border/60" />
 
       {mounted && !reducedMotion && !glFailed ? (
         <canvas
