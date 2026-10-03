@@ -82,7 +82,10 @@ export function Header() {
           className={cn(
             // Full-width floating island: 32px inset, 32px radius, near-black at
             // 70% over a 24px blur so the page reads through it.
-            'flex h-16 items-center justify-between gap-4 rounded-full border border-border bg-[#080808]/70 px-5 backdrop-blur-[24px] transition-shadow duration-500',
+            // The pill floats over both grounds, so its fill comes from the token rather
+            // than a fixed near-black: a hardcoded dark fill left the logo
+            // unreadable in the light theme.
+            'flex h-16 items-center justify-between gap-4 rounded-full border border-border bg-background/80 px-5 backdrop-blur-[24px] transition-shadow duration-500',
             scrolled && 'border-border-strong shadow-[0_18px_50px_-28px_rgba(0,0,0,0.95)]',
           )}
         >

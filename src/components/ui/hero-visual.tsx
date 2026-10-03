@@ -36,6 +36,7 @@ attribute float aAccent;
 
 uniform mat4 uMVP;
 uniform float uPointScale;
+uniform float uTheme;
 
 varying float vMask;
 varying float vDepth;
@@ -68,10 +69,9 @@ void main() {
 const FRAG = /* glsl */ `
 precision mediump float;
 
-uniform vec3 uColorLand;
-uniform vec3 uColorSea;
 uniform vec3 uColorAccent;
 uniform float uTime;
+uniform float uTheme;
 
 varying float vMask;
 varying float vDepth;
@@ -96,7 +96,16 @@ void main() {
   // Depth: near points brighter, far points dimmed toward the background.
   float depthGain = 0.34 + 0.66 * vDepth;
 
-  vec3 col = mix(uColorSea, uColorLand, vMask) * depthGain;
+  /*
+   * Theme-aware ink. On the near-black ground the landmass is white and the sea
+   * a cool grey; on the cream ground those same values wash out completely, so
+   * light mode inverts them to a dark ink. Without this the globe effectively
+   * disappears when the light theme is active.
+   */
+  vec3 land = mix(vec3(1.0, 0.99, 1.0), vec3(0.10, 0.09, 0.11), uTheme);
+  vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.42, 0.40, 0.46), uTheme);
+
+  vec3 col = mix(sea, land, vMask) * depthGain;
   float alpha = vMask * limb * (0.55 + 0.45 * vDepth)
               + (1.0 - vMask) * limb * 0.17 * vDepth;
 
@@ -108,7 +117,7 @@ void main() {
     // Halo: a wider, soft falloff behind a solid core, so the node reads as a
     // glowing point rather than a coloured dot.
     float halo = 1.0 - smoothstep(0.0, 1.0, r);
-    col = uColorAccent * (1.5 + pulse * 0.7);
+    col = uColorAccent * mix(1.5 + pulse * 0.7, 0.75 + pulse * 0.35, uTheme);
     alpha = limb * mix(0.35, 1.0, halo) * (0.75 + 0.25 * pulse);
   }
 
@@ -135,6 +144,7 @@ const LINE_FRAG = /* glsl */ `
 precision mediump float;
 uniform vec3 uColorLine;
 uniform vec3 uColorAccent;
+uniform float uTheme;
 varying float vKind;
 varying float vDepth;
 void main() {
@@ -144,7 +154,7 @@ void main() {
   // Orbits fade toward their far arc so they read as passing behind the globe.
   float depth = mix(0.25, 1.0, vDepth);
   vec3 col = mix(uColorLine, uColorAccent, vKind * 0.45);
-  gl_FragColor = vec4(col, a * depth);
+  gl_FragColor = vec4(col, a * depth * mix(1.0, 0.55, uTheme));
 }
 `
 
@@ -243,6 +253,12 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
   gl.shaderSource(s, src)
   gl.compileShader(s)
   if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    // Surface the log: a silent failure here just falls back to the CSS orb,
+    // which looks like "the WebGL is broken" rather than "the shader is wrong".
+    console.warn(
+      `[hero-visual] ${type === gl.VERTEX_SHADER ? 'vertex' : 'fragment'} shader failed:`,
+      gl.getShaderInfoLog(s),
+    )
     gl.deleteShader(s)
     return null
   }
@@ -259,6 +275,7 @@ function link(gl: WebGLRenderingContext, vsSrc: string, fsSrc: string) {
   gl.attachShader(prog, fs)
   gl.linkProgram(prog)
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.warn('[hero-visual] program link failed:', gl.getProgramInfoLog(prog))
     gl.deleteProgram(prog)
     return null
   }
@@ -489,14 +506,14 @@ export function HeroVisual({ className }: { className?: string }) {
     const pMvp = gl.getUniformLocation(points.prog, 'uMVP')!
     const pScale = gl.getUniformLocation(points.prog, 'uPointScale')!
     const pTime = gl.getUniformLocation(points.prog, 'uTime')!
-    const pLand = gl.getUniformLocation(points.prog, 'uColorLand')!
-    const pSea = gl.getUniformLocation(points.prog, 'uColorSea')!
+    const pTheme = gl.getUniformLocation(points.prog, 'uTheme')!
     const pAccent = gl.getUniformLocation(points.prog, 'uColorAccent')!
 
     gl.useProgram(lines.prog)
     const lMvp = gl.getUniformLocation(lines.prog, 'uMVP')!
     const lLine = gl.getUniformLocation(lines.prog, 'uColorLine')!
     const lAccent = gl.getUniformLocation(lines.prog, 'uColorAccent')!
+    const lTheme = gl.getUniformLocation(lines.prog, 'uTheme')!
 
     const pPos = gl.getAttribLocation(points.prog, 'aPos')
     const pMask = gl.getAttribLocation(points.prog, 'aMask')
@@ -515,7 +532,15 @@ export function HeroVisual({ className }: { className?: string }) {
     let pointerY = 0
     let easedX = 0
     let easedY = 0
+    // 0 = dark ground, 1 = light ground. Drives the point and ring inks, which
+    // must invert or the globe vanishes against the cream background.
+    let theme = document.documentElement.classList.contains('light') ? 1 : 0
     const t0 = performance.now()
+
+    const mo = new MutationObserver(() => {
+      theme = document.documentElement.classList.contains('light') ? 1 : 0
+    })
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     const applySize = () => {
       const rect = wrap.getBoundingClientRect()
@@ -588,7 +613,8 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.vertexAttribPointer(lKind, 1, gl.FLOAT, false, 0, 0)
       gl.uniformMatrix4fv(lMvp, false, mvp)
       gl.uniform3f(lLine, 0.9, 0.9, 0.95)
-      gl.uniform3f(lAccent, 0.89, 0, 0.49)
+      gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
+      gl.uniform1f(lTheme, theme)
 
       // Limb ring, then each orbit from its own recorded offset. Offsets are
       // tracked explicitly rather than recomputed from `orbits[i]` because the
@@ -615,9 +641,8 @@ export function HeroVisual({ className }: { className?: string }) {
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
       gl.uniform1f(pScale, canvas.height * 0.0038)
-      gl.uniform3f(pLand, 1.0, 0.99, 1.0)
-      gl.uniform3f(pSea, 0.6, 0.65, 0.8)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
+      gl.uniform1f(pTheme, theme)
       gl.drawArrays(gl.POINTS, 0, placed)
 
       // Depth is only meaningful for the points; points are drawn unsorted, so
@@ -632,6 +657,7 @@ export function HeroVisual({ className }: { className?: string }) {
       cancelAnimationFrame(raf)
       ro.disconnect()
       io.disconnect()
+      mo.disconnect()
       window.removeEventListener('pointermove', onMove)
       gl.deleteProgram(points.prog)
       gl.deleteProgram(lines.prog)
