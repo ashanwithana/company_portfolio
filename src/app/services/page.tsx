@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 export const metadata = {
   title: 'Services',
   description:
-    'Product design, web engineering, backend systems, AI integration, design systems and performance audits — the six things Northlight does well.',
+    'Web engineering, backend systems, product design, AI engineering and ERP implementation — plus design systems and performance audits. The seven things Northlight does well.',
 }
 
 export default function ServicesPage() {
@@ -25,6 +25,17 @@ export default function ServicesPage() {
 
       {/* Service list — the index for the /services/[slug] pages. */}
       <PageSection>
+        <div className="mb-10 flex flex-wrap items-baseline justify-between gap-4">
+          <h2 className="label text-muted-foreground">Index</h2>
+          <p
+            className="label text-[0.6rem] text-muted-foreground tabular-nums"
+            role="status"
+            aria-live="polite"
+          >
+            {String(services.length).padStart(2, '0')} services
+          </p>
+        </div>
+
         <ol className="divide-y divide-border border-y border-border">
           {services.map((service, index) => (
             <Reveal key={service.slug} as="li" delay={index * 50} y={16}>
