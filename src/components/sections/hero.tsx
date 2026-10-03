@@ -17,7 +17,7 @@ const headline = ['Software that', 'earns its', 'place.']
  */
 export function Hero() {
   return (
-    <section id="top" aria-label="Introduction" className="relative overflow-hidden pt-32 pb-20">
+    <section id="top" aria-label="Introduction" className="relative overflow-hidden pt-32 pb-28">
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
         aria-hidden="true"

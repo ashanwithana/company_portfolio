@@ -113,7 +113,7 @@ export function Header() {
           </Link>
 
           <nav aria-label="Primary" className="hidden xl:block">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center gap-2">
               {primaryNav.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -121,7 +121,7 @@ export function Header() {
                     aria-current={isActive(item.href) ? 'page' : undefined}
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
-                      'flex min-h-9 items-center rounded-full px-3.5 label transition-colors',
+                      'flex min-h-9 items-center rounded-full px-3 label transition-colors',
                       isActive(item.href)
                         ? 'text-coral'
                         : 'text-muted-foreground hover:text-foreground',

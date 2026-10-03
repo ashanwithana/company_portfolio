@@ -3,13 +3,19 @@ import type { ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
 
+/*
+ * Buttons speak quietly: sentence case, 500 weight, no letter-spacing. The
+ * reference reserves wide-tracked caps for eyebrows and labels; its buttons
+ * ("message us") are small, tight pills. Shouty uppercase CTAs belonged to the
+ * old design.
+ */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full label transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
+  'inline-flex items-center justify-center gap-2.5 rounded-full font-mono text-[12px] leading-[1.5] font-medium tracking-[-0.01em] transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
   {
     variants: {
       variant: {
         primary:
-          'bg-coral text-coral-foreground shadow-[0_10px_30px_-12px_var(--coral)] hover:shadow-[0_16px_44px_-12px_var(--coral)]',
+          'bg-coral text-coral-foreground shadow-[0_10px_30px_-12px_var(--coral)] hover:shadow-[0_16px_44px_-12px_var(--coral)] hover:brightness-110',
         secondary: 'bg-primary text-primary-foreground hover:brightness-110',
         outline:
           'border border-border-strong bg-transparent text-foreground hover:border-coral hover:text-coral',
@@ -18,7 +24,7 @@ const buttonVariants = cva(
       size: {
         sm: 'h-9 px-4',
         md: 'h-11 px-6',
-        lg: 'h-14 px-8 text-xs',
+        lg: 'h-[52px] px-7',
         icon: 'size-10',
       },
     },

@@ -154,13 +154,14 @@
   --color-paper-foreground: var(--paper-foreground);
 
   /*
-   * Monospace throughout. There is deliberately no separate display family:
-   * the previous design aliased one for the old Syne headings, and keeping the
-   * alias meant two names for the same typeface. Headings set their weight and
-   * tracking instead of their family.
+   * Two mono voices. JetBrains Mono carries everything functional — body copy,
+   * navigation, labels, buttons — at weight 400 with tight tracking. Geist Mono
+   * is display-only: the oversized headings at weight 800. Body must not be
+   * Geist; the reference sets its entire interface in JetBrains.
    */
-  --font-sans: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
   --font-mono: var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -232,7 +233,7 @@
   }
 
   /*
-   * Headings are monospace, heavy and tightly tracked. `text-wrap: balance`
+   * Headings are Geist Mono, heavy and tightly tracked. `text-wrap: balance`
    * keeps the enormous display sizes from leaving a single orphan word on the
    * last line.
    */
@@ -240,7 +241,7 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-sans);
+    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
     letter-spacing: -0.04em;
     font-weight: 800;
     text-wrap: balance;
@@ -288,14 +289,14 @@
   width: 100%;
   margin-inline: auto;
   max-width: 96rem;
-  padding-inline: 1.5rem;
+  padding-inline: 1rem;
 
   @media (width >= 40rem) {
-    padding-inline: 2.5rem;
+    padding-inline: 1.5rem;
   }
 
   @media (width >= 80rem) {
-    padding-inline: 4rem;
+    padding-inline: 2rem;
   }
 }
 
@@ -310,12 +311,27 @@
   background-position: center;
 }
 
-/* Uppercase tracked micro-label used for eyebrows, nav and metadata. */
+/* Uppercase tracked micro-label used for nav, metadata and tags. Narrow
+ * tracking (0.08em) — the reference sets these at 11px with 0.88px spacing. */
 @utility label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  line-height: 1.2;
-  letter-spacing: 0.24em;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/*
+ * Wide-tracked eyebrow used for centred section eyebrows (`[ label ]`).
+ * The reference sets these at 11px with 3.08px (0.28em) spacing.
+ */
+@utility label-wide {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
 }
 
@@ -327,6 +343,7 @@
  * system rather than a hero with smaller content below it.
  */
 @utility display-xl {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -334,6 +351,7 @@
 }
 
 @utility display-lg {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -341,6 +359,7 @@
 }
 
 @utility display-md {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   font-size: clamp(1.5rem, 3.5vw, 2.5rem);
   line-height: 1.1;
   letter-spacing: -0.035em;
@@ -348,6 +367,7 @@
 }
 
 @utility display-sm {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   line-height: 1.2;
   letter-spacing: -0.03em;

@@ -42,7 +42,7 @@ export function CtaBand({
       {ghost ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-sans text-[clamp(9rem,58vh,34rem)] text-ghost"
+          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,58vh,34rem)] text-ghost"
         >
           {ghost}
         </span>

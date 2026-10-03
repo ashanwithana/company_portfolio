@@ -111,7 +111,7 @@ export function PageHeader({
         {ghost ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-[0.1em] left-0 font-sans text-[clamp(8rem,48vh,28rem)] text-ghost"
+            className="pointer-events-none absolute -top-[0.1em] left-0 font-display text-[clamp(8rem,48vh,28rem)] text-ghost"
           >
             {ghost}
           </span>

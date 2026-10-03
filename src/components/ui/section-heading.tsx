@@ -77,25 +77,28 @@ export function SectionHeading({
   className,
 }: SectionHeadingProps) {
   return (
-    <header className={cn('relative mb-14 md:mb-20', className)}>
+    <header className={cn('relative mb-14 text-center md:mb-20', className)}>
       {ghost ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[0.12em] -left-[0.03em] font-sans text-[clamp(9rem,54vh,32rem)] text-ghost"
+          className="pointer-events-none absolute -top-[0.12em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,54vh,32rem)] text-ghost"
         >
           {ghost}
         </span>
       ) : null}
 
       <div className="relative">
-        <Eyebrow leading={<span className="text-coral tabular-nums">{index}</span>}>
+        <Eyebrow
+          className="justify-center"
+          leading={<span className="text-coral tabular-nums">{index}</span>}
+        >
           {label}
         </Eyebrow>
 
-        <h2 className="mt-7 max-w-4xl display-lg">{title}</h2>
+        <h2 className="mx-auto mt-5 max-w-4xl display-lg">{title}</h2>
 
         {description ? (
-          <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
             {description}
           </p>
         ) : null}
