@@ -4,17 +4,17 @@ export default function Content() {
   return (
     <Prose>
       <p>
-        Every few months someone asks us why we have spent years arguing against rewrites. The
-        short answer is that we keep meeting the consequences of them. This is the longer one.
+        Every few months someone asks us why we have spent years arguing against rewrites. The short
+        answer is that we keep meeting the consequences of them. This is the longer one.
       </p>
 
       <h2>The seduction of the clean slate</h2>
       <p>
         A rewrite is the most appealing project in software. It has a start, an end, and a
-        definition of done that everyone can point at. The existing system is visibly broken,
-        which makes the case unanswerable in a meeting. And there is a deep structural bias
-        toward overestimation: the new thing only has to contain the features you know about, not
-        the ones that only surface once customers depend on them.
+        definition of done that everyone can point at. The existing system is visibly broken, which
+        makes the case unanswerable in a meeting. And there is a deep structural bias toward
+        overestimation: the new thing only has to contain the features you know about, not the ones
+        that only surface once customers depend on them.
       </p>
       <p>
         Two decades of edge cases do not appear in your requirements document. They appear in
@@ -69,12 +69,12 @@ export default function Content() {
 
       <h2>When a rewrite is right</h2>
       <p>
-        We are not dogmatic. Sometimes the existing system genuinely cannot be evolved: the
-        hardware it depends on is discontinued, the licence cannot be renewed, or the domain has
-        changed so much that the old model actively misrepresents the business. The test we apply
-        is simple — <em>can we put a facade in front of it and move one capability at a time?</em>{' '}
-        If yes, migrate. If the answer is no because the thing cannot be isolated at all, then
-        rewrite, but budget for the discovery you skipped.
+        We are not dogmatic. Sometimes the existing system genuinely cannot be evolved: the hardware
+        it depends on is discontinued, the licence cannot be renewed, or the domain has changed so
+        much that the old model actively misrepresents the business. The test we apply is simple —{' '}
+        <em>can we put a facade in front of it and move one capability at a time?</em> If yes,
+        migrate. If the answer is no because the thing cannot be isolated at all, then rewrite, but
+        budget for the discovery you skipped.
       </p>
 
       <h2>The part people forget</h2>

@@ -1,9 +1,11 @@
 import { PageHeader, PageSection } from '@/components/layout/page'
 import { ContactForm } from '@/components/sections/contact-form'
+import { FaqSchema } from '@/components/seo/faq-schema'
 import { StatusBadge } from '@/components/ui/badge'
 import { Reveal } from '@/components/ui/reveal'
+import { FaqSection } from '@/components/ui/faq'
 import { contactFaqs } from '@/content/faqs'
-import { siteConfig } from '@/content/site'
+import { contactContent, siteConfig } from '@/content/site'
 
 export const metadata = {
   title: 'Contact',
@@ -14,6 +16,9 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <>
+      {/* Keeps the structured data in lockstep with the visible questions. */}
+      <FaqSchema items={contactFaqs} />
+
       <PageHeader
         eyebrow="Contact"
         title="Tell us what you are building."
@@ -29,11 +34,9 @@ export default function ContactPage() {
           <aside className="space-y-8 lg:pt-2">
             <Reveal>
               <div className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm">
-                <StatusBadge tone="mint">
-                  {siteConfig.contactContent.availability.badge}
-                </StatusBadge>
+                <StatusBadge tone="mint">{contactContent.availability.badge}</StatusBadge>
                 <p className="mt-5 leading-relaxed text-muted-foreground">
-                  {siteConfig.contactContent.availability.body}
+                  {contactContent.availability.body}
                 </p>
               </div>
             </Reveal>
@@ -41,19 +44,19 @@ export default function ContactPage() {
             <Reveal delay={60}>
               <div className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm">
                 <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
-                  {siteConfig.contactContent.directLabel}
+                  {contactContent.directLabel}
                 </h2>
 
                 <a
                   href={`mailto:${siteConfig.email}`}
-                  className="mt-4 flex items-start gap-3 break-all text-lg transition-colors hover:text-coral"
+                  className="mt-4 flex items-start gap-3 text-lg break-all transition-colors hover:text-coral"
                 >
                   <MailIcon />
                   {siteConfig.email}
                 </a>
 
                 <p className="mt-4 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
-                  {siteConfig.contactContent.responseTime}
+                  {contactContent.responseTime}
                 </p>
               </div>
             </Reveal>
@@ -76,40 +79,15 @@ export default function ContactPage() {
         </div>
       </PageSection>
 
-      {/* FAQs — rendered as real details/summary for no-JS support. */}
-      <PageSection tone="muted">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20">
-          <div>
-            <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-              Before you write
-            </h2>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              The questions we are asked most often, answered honestly rather than optimistically.
-            </p>
-          </div>
-
-          <div className="divide-y divide-border border-y border-border">
-            {contactFaqs.map((faq, index) => (
-              <Reveal key={faq.question} as="div" delay={index * 40} y={12}>
-                <details className="group py-6">
-                  <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-lg transition-colors hover:text-mint">
-                    {faq.question}
-                    <span
-                      aria-hidden="true"
-                      className="mt-1 shrink-0 text-muted-foreground transition-transform group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-                    {faq.answer}
-                  </p>
-                </details>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </PageSection>
+      <FaqSection
+        eyebrow="Before you write"
+        title="The questions we are asked most."
+        items={contactFaqs}
+      >
+        <p className="leading-relaxed text-muted-foreground">
+          Answered honestly rather than optimistically.
+        </p>
+      </FaqSection>
     </>
   )
 }

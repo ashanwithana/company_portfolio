@@ -1,28 +1,34 @@
 import { describe, expect, it } from 'vitest'
 
-import { contactSchema, firstErrors, toFieldErrors, validateContact } from './validation'
+import { contactSchema, firstErrors, newsletterSchema, toFieldErrors } from './validation'
 
 const valid = {
   name: 'Alex Parker',
   email: 'alex@example.com',
-  message: 'I would like to discuss a new product with you.',
+  company: 'Example Ltd',
+  service: 'Web engineering',
+  budget: '60k-150k' as const,
+  message: 'We are rebuilding our platform and need help.',
 }
 
 describe('contactSchema', () => {
   it('accepts a well-formed payload', () => {
-    const result = contactSchema.safeParse(valid)
+    expect(contactSchema.safeParse(valid).success).toBe(true)
+  })
+
+  it('accepts a minimal payload with the optional fields empty', () => {
+    const result = contactSchema.safeParse({ ...valid, company: '', service: '', budget: '' })
     expect(result.success).toBe(true)
   })
 
   it('trims surrounding whitespace before validating', () => {
-    const result = contactSchema.parse({ ...valid, name: '  Alex Parker  ' })
-    expect(result.name).toBe('Alex Parker')
+    expect(contactSchema.parse({ ...valid, name: '  Alex Parker  ' }).name).toBe('Alex Parker')
   })
 
   it.each([
     ['a too-short name', { ...valid, name: 'A' }, 'name'],
     ['an invalid email', { ...valid, email: 'not-an-email' }, 'email'],
-    ['a too-short message', { ...valid, message: 'hi' }, 'message'],
+    ['a too-short message', { ...valid, message: 'too short' }, 'message'],
   ])('rejects %s', (_label, payload, field) => {
     const result = contactSchema.safeParse(payload)
     expect(result.success).toBe(false)
@@ -31,13 +37,14 @@ describe('contactSchema', () => {
     }
   })
 
-  it('rejects any honeypot value', () => {
-    const result = contactSchema.safeParse({ ...valid, website: 'http://spam.example' })
-    expect(result.success).toBe(false)
+  it('rejects a budget outside the allowed set', () => {
+    expect(contactSchema.safeParse({ ...valid, budget: 'free' }).success).toBe(false)
   })
 
-  it('accepts an empty honeypot', () => {
-    expect(contactSchema.safeParse({ ...valid, website: '' }).success).toBe(true)
+  it('rejects any honeypot value', () => {
+    expect(contactSchema.safeParse({ ...valid, website: 'http://spam.example' }).success).toBe(
+      false,
+    )
   })
 
   it('defaults a missing honeypot to an empty string', () => {
@@ -45,33 +52,35 @@ describe('contactSchema', () => {
   })
 })
 
-describe('validateContact', () => {
-  it('returns parsed data on success', () => {
-    const result = validateContact(valid)
-    expect(result).toEqual({ ok: true, data: expect.objectContaining(valid) })
+describe('newsletterSchema', () => {
+  it('accepts a valid email', () => {
+    expect(newsletterSchema.safeParse({ email: 'a@b.com' }).success).toBe(true)
   })
 
-  it('groups issues by field on failure', () => {
-    const result = validateContact({ ...valid, email: 'nope', name: 'A' })
+  it('rejects an invalid email', () => {
+    expect(newsletterSchema.safeParse({ email: 'nope' }).success).toBe(false)
+  })
 
-    // Narrow with the same discriminant the components use at runtime.
-    expect('status' in result && result.status).toBe('error')
-    if ('fieldErrors' in result) {
-      expect(result.fieldErrors.email).toBeDefined()
-      expect(result.fieldErrors.name).toBeDefined()
-    }
+  it('rejects a filled honeypot', () => {
+    expect(newsletterSchema.safeParse({ email: 'a@b.com', website: 'x' }).success).toBe(false)
   })
 })
 
 describe('toFieldErrors', () => {
-  it('separates field-level and form-level issues', () => {
-    const schema = contactSchema
-    const parsed = schema.safeParse({ email: 'bad', name: 'A', message: 'short' })
+  it('groups issues by field', () => {
+    const parsed = contactSchema.safeParse({ ...valid, email: 'bad', name: 'A' })
 
     expect(parsed.success).toBe(false)
     if (!parsed.success) {
       const { fieldErrors } = toFieldErrors(parsed.error)
-      expect(Object.keys(fieldErrors).sort()).toEqual(['email', 'message', 'name'])
+      expect(Object.keys(fieldErrors).sort()).toEqual(['email', 'name'])
+    }
+  })
+
+  it('always returns a form-level message', () => {
+    const parsed = contactSchema.safeParse({})
+    if (!parsed.success) {
+      expect(toFieldErrors(parsed.error).message).toBeTruthy()
     }
   })
 })

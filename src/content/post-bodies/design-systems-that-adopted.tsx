@@ -4,8 +4,8 @@ export default function Content() {
   return (
     <Prose>
       <p>
-        Most design systems fail for the same reason, and it is not usually technical. The
-        component library works. Nobody uses it.
+        Most design systems fail for the same reason, and it is not usually technical. The component
+        library works. Nobody uses it.
       </p>
 
       <h2>Why the first two attempts fail</h2>
@@ -18,9 +18,9 @@ export default function Content() {
       <p>There are two predictable reasons:</p>
       <ol>
         <li>
-          <strong>Contributing was harder than circumventing.</strong> If adopting the system saves a
-          team four hours and contributing to it costs them a week of review, the rational choice is
-          to build locally.
+          <strong>Contributing was harder than circumventing.</strong> If adopting the system saves
+          a team four hours and contributing to it costs them a week of review, the rational choice
+          is to build locally.
         </li>
         <li>
           <strong>Nobody decided what belonged in it.</strong> Without a clear boundary and a named

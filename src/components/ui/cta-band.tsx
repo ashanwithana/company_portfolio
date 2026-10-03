@@ -51,7 +51,7 @@ export function CtaBand({
       )}
     >
       <div
-        className="grid-bg pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"
+        className="pointer-events-none absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)] opacity-40"
         aria-hidden="true"
       />
       <div
@@ -59,7 +59,7 @@ export function CtaBand({
         aria-hidden="true"
       />
 
-      <div className="container-page relative">
+      <div className="relative container-page">
         <div className="max-w-3xl">
           <p className="font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">{eyebrow}</p>
 

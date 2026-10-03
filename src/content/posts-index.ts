@@ -2,6 +2,8 @@ import MigrationBody from '@/content/post-bodies/migration-not-rewrite'
 import PerformanceBody from '@/content/post-bodies/measuring-performance'
 import EvaluationBody from '@/content/post-bodies/evaluating-ai-features'
 import DesignSystemsBody from '@/content/post-bodies/design-systems-that-adopted'
+import OdooGuideBody from '@/content/post-bodies/odoo-implementation-guide'
+import RagChecklistBody from '@/content/post-bodies/rag-evaluation-checklist'
 import type { Post } from '@/content/posts'
 import type { PostFrontmatter } from '@/content/posts'
 
@@ -16,6 +18,30 @@ import type { PostFrontmatter } from '@/content/posts'
 type PostEntry = PostFrontmatter & { Content: Post['Content'] }
 
 const entries: readonly PostEntry[] = [
+  {
+    slug: 'odoo-implementation-guide',
+    title: 'The Odoo implementation guide we wish every project started with',
+    summary:
+      'Data before modules, rehearsed migrations, and training the users instead of the approvers.',
+    date: '2026-09-18',
+    readingTimeMinutes: 9,
+    author: 'Jonas Weber',
+    tags: ['Odoo', 'ERP', 'Implementation'],
+    featured: true,
+    Content: OdooGuideBody,
+  },
+  {
+    slug: 'rag-evaluation-checklist',
+    title: 'The RAG evaluation checklist we run before anything ships',
+    summary:
+      'Seven checks — labelled sets, decline thresholds, shadow mode — that separate a measured system from a promising demo.',
+    date: '2026-07-30',
+    readingTimeMinutes: 8,
+    author: 'Sofia Almeida',
+    tags: ['AI', 'RAG', 'Evaluation'],
+    featured: true,
+    Content: RagChecklistBody,
+  },
   {
     slug: 'migration-not-rewrite',
     title: 'Migrate, do not rewrite',
@@ -71,5 +97,7 @@ export function getAllPosts(): Post[] {
 }
 
 export function getFeaturedPosts(count = 3): Post[] {
-  return getAllPosts().filter((post) => post.featured).slice(0, count)
+  return getAllPosts()
+    .filter((post) => post.featured)
+    .slice(0, count)
 }

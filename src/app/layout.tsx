@@ -2,12 +2,12 @@ import type { Metadata, Viewport } from 'next'
 import { DM_Sans, JetBrains_Mono, Syne } from 'next/font/google'
 import { cookies } from 'next/headers'
 
-import { Footer } from '@/components/layout/footer'
 import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
 import { ScrollProgress } from '@/components/layout/scroll-progress'
 import { Cursor } from '@/components/ui/cursor'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { siteConfig, socialLinks } from '@/content/site'
+import { siteConfig } from '@/content/site'
 import { parseTheme, THEME_COOKIE } from '@/lib/theme'
 
 import './globals.css'
@@ -39,24 +39,28 @@ export const metadata: Metadata = {
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  applicationName: siteConfig.name,
-  authors: [{ name: siteConfig.name, url: siteConfig.url }],
-  creator: siteConfig.name,
+  applicationName: siteConfig.nameWithSuffix,
+  authors: [{ name: siteConfig.nameWithSuffix, url: siteConfig.url }],
+  creator: siteConfig.nameWithSuffix,
+  publisher: siteConfig.nameWithSuffix,
   keywords: [
-    'portfolio',
-    'full-stack engineer',
-    'product designer',
-    'React',
-    'Next.js',
-    'TypeScript',
-    'indie hacker',
+    'product studio',
+    'software engineering',
+    'web development agency',
+    'product design',
+    'design systems',
+    'AI integration',
+    'platform migration',
+    'accessibility',
+    'London',
   ],
+  category: 'technology',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     locale: siteConfig.locale,
     url: siteConfig.url,
-    siteName: siteConfig.name,
+    siteName: siteConfig.nameWithSuffix,
     title: siteConfig.title,
     description: siteConfig.description,
     images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: siteConfig.title }],
@@ -76,7 +80,7 @@ export const metadata: Metadata = {
     icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
     apple: [{ url: '/apple-touch-icon.png' }],
   },
-  category: 'portfolio',
+  formatDetection: { telephone: false },
 }
 
 export const viewport: Viewport = {
@@ -89,9 +93,7 @@ export const viewport: Viewport = {
   initialScale: 1,
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   /**
    * Read the persisted theme on the server.
    *
@@ -102,23 +104,28 @@ export default async function RootLayout({
   const cookieStore = await cookies()
   const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value)
 
-  // Person schema gives search engines structured context about the author.
-  const jsonLd = {
+  const organizationJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: siteConfig.name,
+    '@type': 'Organization',
+    name: siteConfig.nameWithSuffix,
     url: siteConfig.url,
-    email: `mailto:${siteConfig.email}`,
-    jobTitle: 'Full-stack Engineer',
+    email: siteConfig.email,
     description: siteConfig.description,
-    sameAs: socialLinks.map((social) => social.href),
-    address: { '@type': 'PostalAddress', addressCountry: 'IN' },
+    foundingDate: String(siteConfig.foundedYear),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: siteConfig.address.street,
+      addressLocality: siteConfig.address.city,
+      postalCode: siteConfig.address.postalCode,
+      addressCountry: siteConfig.address.country,
+    },
+    sameAs: Object.values(siteConfig.socials),
   }
 
   return (
-    // The class is derived from the theme cookie above, so server and client
-    // markup agree and no suppressHydrationWarning is needed.
-    <html lang="en" className={theme} style={{ colorScheme: theme }}>
+    // The class comes from the theme cookie above, so server and client markup
+    // agree and no suppressHydrationWarning is needed.
+    <html lang="en-GB" className={theme} style={{ colorScheme: theme }}>
       <body
         className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
@@ -134,20 +141,19 @@ export default async function RootLayout({
           <Header />
           <Cursor />
 
-          {/*
-        Structured data for search engines. Rendered here, in the server
-        component, so React emits a real <script> tag rather than a hoisted one.
-        Static, developer-authored literal — no user input reaches it.
-      */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
-      <main id="main">{children}</main>
+          <main id="main">{children}</main>
 
           <Footer />
         </ThemeProvider>
+
+        {/*
+          Organization structured data. Rendered in the server component so React
+          emits a real <script> tag rather than a hoisted-and-ignored one.
+        */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
       </body>
     </html>
   )

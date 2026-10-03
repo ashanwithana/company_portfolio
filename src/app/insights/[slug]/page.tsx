@@ -25,17 +25,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: post.title,
     description: post.summary,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: { canonical: `/insights/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.summary,
       type: 'article',
-      url: `${siteConfig.url}/blog/${post.slug}`,
+      url: `${siteConfig.url}/insights/${post.slug}`,
       publishedTime: post.date,
       authors: [post.author],
       tags: [...post.tags],
     },
-  };
+  }
 }
 
 export default async function BlogPostPage({ params }: Params) {
@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: Params) {
 
   const crumbs = [
     { label: 'Home', href: '/' },
-    { label: 'Insights', href: '/blog' },
+    { label: 'Insights', href: '/insights' },
     { label: post.title },
   ]
 
@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params }: Params) {
     author: { '@type': 'Person', name: post.author },
     publisher: { '@type': 'Organization', name: siteConfig.nameWithSuffix },
     keywords: post.tags.join(', '),
-    mainEntityOfPage: `${siteConfig.url}/blog/${post.slug}`,
+    mainEntityOfPage: `${siteConfig.url}/insights/${post.slug}`,
   }
 
   const Body = post.Content
@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: Params) {
         <ul className="mt-6 flex flex-wrap gap-2">
           {post.tags.map((tag) => (
             <li key={tag}>
-              <Link href={`/blog?tag=${encodeURIComponent(tag)}`}>
+              <Link href={`/insights?tag=${encodeURIComponent(tag)}`}>
                 <Tag>{tag}</Tag>
               </Link>
             </li>
@@ -118,7 +118,7 @@ export default async function BlogPostPage({ params }: Params) {
         <div className="container-page grid gap-px sm:grid-cols-2">
           {newer ? (
             <Link
-              href={`/blog/${newer.slug}`}
+              href={`/insights/${newer.slug}`}
               className="group flex flex-col gap-2 py-10 pr-6 sm:border-r sm:border-border"
             >
               <span className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
@@ -134,7 +134,7 @@ export default async function BlogPostPage({ params }: Params) {
 
           {older ? (
             <Link
-              href={`/blog/${older.slug}`}
+              href={`/insights/${older.slug}`}
               className="group flex flex-col gap-2 py-10 sm:items-end sm:pl-6 sm:text-right"
             >
               <span className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">

@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       url: `${siteConfig.url}/work/${study.slug}`,
       type: 'article',
     },
-  };
+  }
 }
 
 export default async function CaseStudyPage({ params }: Params) {
@@ -109,10 +109,7 @@ export default async function CaseStudyPage({ params }: Params) {
       </div>
 
       {/* Headline results, stated before the narrative. */}
-      <section
-        aria-label="Results"
-        className="container-page py-16 md:py-20"
-      >
+      <section aria-label="Results" className="container-page py-16 md:py-20">
         <dl className="grid gap-8 border-y border-border py-10 sm:grid-cols-2 lg:grid-cols-4">
           {study.metrics.map((metric) => (
             <div key={metric.label}>
@@ -185,23 +182,20 @@ export default async function CaseStudyPage({ params }: Params) {
               ))}
             </ul>
 
-            <a
+            <Link
               href="/contact"
               className="mt-10 inline-flex min-h-11 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
             >
               Start a similar project
               <span aria-hidden="true">→</span>
-            </a>
+            </Link>
           </aside>
         </div>
       </div>
 
       {/* Next case study */}
       {next ? (
-        <nav
-          aria-label="More case studies"
-          className={cn('border-t border-border bg-muted/20')}
-        >
+        <nav aria-label="More case studies" className={cn('border-t border-border bg-muted/20')}>
           <Link
             href={`/work/${next.slug}`}
             className="group container-page flex flex-col gap-4 py-14 sm:flex-row sm:items-center sm:justify-between"

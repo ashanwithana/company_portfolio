@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: role.title,
     description: role.summary,
     alternates: { canonical: `/careers/${role.slug}` },
-  };
+  }
 }
 
 export default async function RolePage({ params }: Params) {
@@ -121,7 +121,7 @@ export default async function RolePage({ params }: Params) {
         </a>
       </header>
 
-      <div className="container-page grid gap-12 pb-20 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20 md:pb-28">
+      <div className="container-page grid gap-12 pb-20 md:pb-28 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20">
         <div className="space-y-12">
           <section aria-labelledby="about-role">
             <h2

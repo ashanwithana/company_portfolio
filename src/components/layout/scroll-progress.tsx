@@ -44,7 +44,7 @@ export function ScrollProgress() {
   return (
     <div
       ref={barRef}
-      className="no-print pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px] origin-left will-change-transform bg-[linear-gradient(90deg,var(--coral),var(--mint),var(--primary))]"
+      className="no-print pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px] origin-left bg-[linear-gradient(90deg,var(--coral),var(--mint),var(--primary))] will-change-transform"
       style={{ transform: 'scaleX(0)' }}
       aria-hidden="true"
     />

@@ -125,13 +125,7 @@ export function BlockArt({ seed, className, ratio = 'wide' }: BlockArtProps) {
 }
 
 /** Small square mark used where an avatar-sized image is needed. */
-export function InitialsAvatar({
-  initials,
-  className,
-}: {
-  initials: string
-  className?: string
-}) {
+export function InitialsAvatar({ initials, className }: { initials: string; className?: string }) {
   const hue = hash(initials) % 360
 
   return (

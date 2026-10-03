@@ -8,7 +8,9 @@ import { cn } from '@/lib/utils'
 
 /** Case study teaser — the three most recent featured projects. */
 export function WorkPreview() {
-  const featured = publishedCaseStudies().filter((study) => study.featured).slice(0, 3)
+  const featured = publishedCaseStudies()
+    .filter((study) => study.featured)
+    .slice(0, 3)
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

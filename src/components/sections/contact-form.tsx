@@ -133,8 +133,7 @@ export function ContactForm() {
             htmlFor="service"
             className="mb-2.5 block font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase"
           >
-            Service{' '}
-            <span className="normal-case opacity-60">(optional)</span>
+            Service <span className="normal-case opacity-60">(optional)</span>
           </label>
           <select
             id="service"
@@ -142,7 +141,7 @@ export function ContactForm() {
             value={values.service}
             onChange={(event) => setValues((prev) => ({ ...prev, service: event.target.value }))}
             className={cn(
-              'w-full rounded-xl border border-border bg-background/60 px-5 py-4 text-base outline-none transition-colors focus:border-primary/60',
+              'w-full rounded-xl border border-border bg-background/60 px-5 py-4 text-base transition-colors outline-none focus:border-primary/60',
               !values.service && 'text-muted-foreground/70',
             )}
           >
@@ -162,8 +161,7 @@ export function ContactForm() {
       {/* Budget — radio group, since these are mutually exclusive choices. */}
       <fieldset className="mt-6">
         <legend className="mb-3 font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Approximate budget{' '}
-          <span className="normal-case opacity-60">(optional)</span>
+          Approximate budget <span className="normal-case opacity-60">(optional)</span>
         </legend>
 
         <div className="flex flex-wrap gap-2">
@@ -282,8 +280,7 @@ function Field({
         htmlFor={id}
         className="mb-2.5 block font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase"
       >
-        {label}{' '}
-        {optional ? <span className="normal-case opacity-60">(optional)</span> : null}
+        {label} {optional ? <span className="normal-case opacity-60">(optional)</span> : null}
       </label>
 
       {as === 'textarea' ? (

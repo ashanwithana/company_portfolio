@@ -39,7 +39,13 @@ export function NewsletterForm({ className }: { className?: string }) {
     <form action={action} className={cn('w-full max-w-md', className)}>
       <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
         <label htmlFor="newsletter-website">Website</label>
-        <input id="newsletter-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        <input
+          id="newsletter-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -61,7 +67,7 @@ export function NewsletterForm({ className }: { className?: string }) {
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? 'newsletter-error' : undefined}
             className={cn(
-              'h-12 w-full rounded-full border bg-background/60 px-5 text-sm outline-none transition-colors',
+              'h-12 w-full rounded-full border bg-background/60 px-5 text-sm transition-colors outline-none',
               'placeholder:text-muted-foreground/60 focus:border-primary/60',
               error ? 'border-destructive/70' : 'border-border',
             )}

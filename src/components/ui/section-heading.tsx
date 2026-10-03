@@ -1,16 +1,39 @@
-'use client'
-
-import * as React from 'react'
-
-import { Reveal } from '@/components/ui/reveal'
-import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
-import { navSections } from '@/content/site'
 import { cn } from '@/lib/utils'
 
-const SECTION_IDS = navSections.map((s) => s.id)
+/**
+ * Section wrapper providing consistent vertical rhythm and landmark semantics.
+ * Used by the home page sections, which are not routes.
+ */
+export function Section({
+  id,
+  label,
+  children,
+  className,
+  tone = 'default',
+}: {
+  id: string
+  label: string
+  children: React.ReactNode
+  className?: string
+  tone?: 'default' | 'muted'
+}) {
+  return (
+    <section
+      id={id}
+      aria-label={label}
+      className={cn(
+        'container-page scroll-mt-24 py-20 md:py-28',
+        tone === 'muted' && 'border-y border-border bg-muted/20',
+        className,
+      )}
+    >
+      {children}
+    </section>
+  )
+}
 
 export type SectionHeadingProps = {
-  id: string
+  /** Two-digit ordinal shown before the label, e.g. "01". */
   index: string
   label: string
   title: string
@@ -19,81 +42,38 @@ export type SectionHeadingProps = {
 }
 
 /**
- * Numbered editorial section header used across About / Work / Skills / Path /
- * Contact. The description anchors the smooth-scroll controller so every call
- * site navigates with the same offset.
+ * Numbered editorial section header used across the home page.
+ *
+ * Purely presentational — a server component, since there is no interactivity.
+ * The label is a real anchor so the section is linkable, and `scroll-mt` on the
+ * section itself handles the sticky-header offset natively.
  */
 export function SectionHeading({
-  id,
   index,
   label,
   title,
   description,
   className,
 }: SectionHeadingProps) {
-  const { scrollTo } = useSmoothScroll({ watch: SECTION_IDS })
-
-  const handleJump = (target: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault()
-    scrollTo(target)
-    // Keep the URL shareable without triggering a Next.js route change.
-    window.history.replaceState(null, '', target)
-  }
-
   return (
     <header className={cn('mb-14 md:mb-20', className)}>
-      <Reveal>
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-xs tracking-[0.3em] text-muted-foreground tabular-nums">
-            {index}
-          </span>
-          <span className="h-px w-10 bg-mint" aria-hidden="true" />
-          <a
-            href={`#${id}`}
-            onClick={handleJump(`#${id}`)}
-            className="inline-flex min-h-8 items-center font-mono text-xs tracking-[0.3em] text-mint uppercase transition-opacity hover:opacity-70"
-          >
-            {label}
-          </a>
-        </div>
-      </Reveal>
+      <div className="flex items-center gap-4">
+        <span className="font-mono text-xs tracking-[0.3em] text-muted-foreground tabular-nums">
+          {index}
+        </span>
+        <span className="h-px w-10 bg-mint" aria-hidden="true" />
+        <span className="font-mono text-xs tracking-[0.3em] text-mint uppercase">{label}</span>
+      </div>
 
-      <Reveal delay={80}>
-        <h2 className="mt-6 max-w-5xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-          {title}
-        </h2>
-      </Reveal>
+      <h2 className="mt-6 max-w-5xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
+        {title}
+      </h2>
 
       {description ? (
-        <Reveal delay={140}>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            {description}
-          </p>
-        </Reveal>
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          {description}
+        </p>
       ) : null}
     </header>
-  )
-}
-
-/** Section wrapper providing consistent vertical rhythm and landmark semantics. */
-export function Section({
-  id,
-  label,
-  children,
-  className,
-}: {
-  id: string
-  label: string
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <section
-      id={id}
-      aria-label={label}
-      className={cn('container-page scroll-mt-24 py-24 md:py-32', className)}
-    >
-      {children}
-    </section>
   )
 }

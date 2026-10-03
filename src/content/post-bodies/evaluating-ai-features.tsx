@@ -44,9 +44,9 @@ export default function Content() {
         stakeholders comfortable with the system: they can see the sources.
       </p>
       <p>
-        It also makes regression analysis possible. When accuracy drops, you need to know whether the
-        documents changed, the retrieval configuration changed, or the model changed. Without traces
-        you are guessing between those three.
+        It also makes regression analysis possible. When accuracy drops, you need to know whether
+        the documents changed, the retrieval configuration changed, or the model changed. Without
+        traces you are guessing between those three.
       </p>
 
       <h2>Run in shadow mode first</h2>

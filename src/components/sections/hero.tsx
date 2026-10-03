@@ -1,10 +1,10 @@
 import { StatusBadge } from '@/components/ui/badge'
 import { ButtonLink } from '@/components/ui/button'
-import { HeroBlob } from '@/components/ui/hero-blob'
+import { HeroVisual } from '@/components/ui/hero-visual'
 import { Reveal } from '@/components/ui/reveal'
 import { Typewriter } from '@/components/ui/typewriter'
-import { siteConfig } from '@/content/site'
 import { studioStats } from '@/content/services'
+import { contactContent, siteConfig } from '@/content/site'
 
 const headline = ['Software that', 'earns its', 'place.']
 
@@ -23,7 +23,7 @@ export function Hero() {
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-20"
     >
       <div
-        className="grid-bg pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]"
+        className="pointer-events-none absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)] opacity-60"
         aria-hidden="true"
       />
       <div
@@ -31,13 +31,16 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      <HeroBlob className="opacity-90 md:right-[6%] md:left-auto md:w-[30rem] md:translate-x-0 md:-translate-y-1/2" />
+      {/*
+        WebGL hero visual. Absolutely positioned so it sits behind the copy on
+        narrow screens and beside it from `lg` up.
+      */}
+      <HeroVisual className="pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(88vw,38rem)] -translate-x-1/2 -translate-y-1/2 lg:right-[3%] lg:left-auto lg:w-[min(42vw,34rem)] lg:translate-x-0 lg:-translate-y-1/2" />
 
-      <div className="container-page relative">
+      {/* Copy paints above the visual so the orb never washes out the headline. */}
+      <div className="relative z-10 container-page">
         <div className="max-w-3xl">
-          <StatusBadge className="animate-fade-up">
-            {siteConfig.contactContent.availability.badge}
-          </StatusBadge>
+          <StatusBadge className="animate-fade-up">{contactContent.availability.badge}</StatusBadge>
 
           {/*
             Each line is a block so the gradient sits on one line. The trailing
@@ -86,10 +89,33 @@ export function Hero() {
             </ButtonLink>
           </div>
 
+          {/* Track record, stated plainly. */}
+          <Reveal delay={440} className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2">
+            {[
+              'Odoo partner',
+              'Dynamics 365',
+              'SAP Business One',
+              'Salesforce',
+              'RAG pipelines',
+            ].map((item, index) => (
+              <span
+                key={item}
+                className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase"
+              >
+                {index > 0 ? (
+                  <span aria-hidden="true" className="mr-3 text-coral">
+                    /
+                  </span>
+                ) : null}
+                {item}
+              </span>
+            ))}
+          </Reveal>
+
           {/* Studio credibility, above the fold but out of the headline's way. */}
           <Reveal
             delay={520}
-            className="mt-16 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-8 border-t border-border pt-8 sm:grid-cols-4"
+            className="mt-14 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-8 border-t border-border pt-8 sm:grid-cols-4"
           >
             {studioStats.map((stat) => (
               <div key={stat.label}>

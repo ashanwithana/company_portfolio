@@ -124,7 +124,7 @@ export async function subscribeAction(
       }
     }
 
-    console.warn('[newsletter] NEWSLETTER_ENDPOINT is not set.');
+    console.warn('[newsletter] NEWSLETTER_ENDPOINT is not set.')
     return { status: 'success', message: 'Subscribed! (Dev mode — nothing was actually sent.)' }
   }
 

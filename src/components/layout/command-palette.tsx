@@ -1,38 +1,44 @@
 'use client'
 
 import { Command } from 'cmdk'
+import { usePathname, useRouter } from 'next/navigation'
 import * as React from 'react'
 
 import { useTheme } from '@/components/providers/theme-provider'
-import { navSections, siteConfig, socialLinks } from '@/content/site'
-import { projects } from '@/content/projects'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
-import { useSmoothScroll } from '@/hooks/use-smooth-scroll'
-import { cn } from '@/lib/utils'
+import { aiPrinciples } from '@/content/ai'
+import { publishedCaseStudies } from '@/content/case-studies'
+import { platforms } from '@/content/enterprise'
+import { getAllPosts } from '@/content/posts-index'
+import { services } from '@/content/services'
+import { allRoutes, siteConfig } from '@/content/site'
+import { roles } from '@/content/roles'
 
-const SECTION_IDS = navSections.map((s) => s.id)
-
-/** No external store to watch — the platform never changes within a session. */
+/** No external store to watch — the platform never changes in a session. */
 const subscribeToNothing = () => () => {}
+
+function capitalise(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
 
 /**
  * ⌘K / Ctrl+K command palette.
  *
- * Wraps `cmdk`, which already handles focus trapping, roving focus and
- * `aria-activedescendant`. We layer on:
- *  - a global hotkey listener,
- *  - scroll-to-section commands,
- *  - "copy email" with a transient confirmation row,
- *  - external links that open safely in a new tab.
+ * Wraps `cmdk`, which handles focus trapping, roving focus and
+ * `aria-activedescendant`. We layer on the global hotkey, router-aware
+ * navigation, and "copy email" with a transient confirmation.
+ *
+ * The command list is derived from the same data the pages use, so it can never
+ * offer a route that does not exist. It ships in the client bundle because it is
+ * interactive by nature — the pages themselves remain server components.
  */
 export function CommandPalette() {
   const [open, setOpen] = React.useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
   const { theme, setTheme } = useTheme()
-  const { scrollTo } = useSmoothScroll({ watch: SECTION_IDS })
   const { copied, copy } = useCopyToClipboard(1800)
 
-  // Global hotkey. `navigator.platform` is deprecated, so feature-detect the
-  // modifier instead of branching on the OS string.
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
@@ -44,34 +50,39 @@ export function CommandPalette() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
-  const runCommand = React.useCallback(
-    (action: () => void) => {
-      setOpen(false)
-      // Let the dialog close before scrolling to avoid fighting the exit transition.
-      requestAnimationFrame(action)
-    },
-    [],
-  )
-
-  const jumpTo = (id: string) => () =>
-    runCommand(() => {
-      scrollTo(`#${id}`)
-      window.history.replaceState(null, '', `#${id}`)
-    })
-
   /**
-   * Platform-dependent shortcut label.
-   *
-   * `navigator.userAgent` doesn't exist on the server, so branching on it during
-   * render is a hydration mismatch. `useSyncExternalStore` is the clean fix: the
-   * server snapshot is a fixed `"Ctrl K"`, the client reads the real platform,
-   * and React swaps it in after hydration without a cascading render.
+   * The platform never changes within a session, so this needs no store
+   * subscription — and the server snapshot keeps the first render identical,
+   * avoiding a hydration mismatch from reading `navigator.userAgent`.
    */
   const isMac = React.useSyncExternalStore(
     subscribeToNothing,
     () => /mac|iphone|ipad/i.test(navigator.userAgent),
     () => false,
   )
+
+  const close = React.useCallback(() => setOpen(false), [])
+
+  const go = React.useCallback(
+    (href: string) => {
+      close()
+      // Let the dialog finish closing before navigating, otherwise the exit
+      // transition and the route change fight each other.
+      requestAnimationFrame(() => router.push(href))
+    },
+    [close, router],
+  )
+
+  // Close the palette after a navigation completes. Done during render via the
+  // documented "adjust state when an input changes" pattern rather than in an
+  // effect, which avoids a cascading render on every route change.
+  const [lastPathname, setLastPathname] = React.useState(pathname)
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname)
+    if (open) setOpen(false)
+  }
+
+  const posts = getAllPosts()
 
   return (
     <>
@@ -80,9 +91,7 @@ export function CommandPalette() {
         onClick={() => setOpen(true)}
         aria-label="Open command palette"
         aria-keyshortcuts="Meta+K Control+K"
-        className={cn(
-          'inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card/50 px-3 font-mono text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/25 hover:text-foreground',
-        )}
+        className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card/50 px-3 font-mono text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/25 hover:text-foreground"
       >
         <CommandGlyph />
         <kbd className="hidden sm:inline">{isMac ? '⌘' : 'Ctrl'} K</kbd>
@@ -92,7 +101,6 @@ export function CommandPalette() {
         open={open}
         onOpenChange={setOpen}
         label="Command palette"
-        shouldFilter
         className="w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-popover/95 shadow-elegant backdrop-blur-xl"
         overlayClassName="fixed inset-0 z-[60] bg-background/70 backdrop-blur-sm"
         contentClassName="outline-none"
@@ -106,7 +114,7 @@ export function CommandPalette() {
           />
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={close}
             aria-label="Close command palette"
             className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -114,82 +122,127 @@ export function CommandPalette() {
           </button>
         </div>
 
-        <Command.List className="max-h-[22rem] overflow-y-auto overscroll-contain p-2">
+        <Command.List className="max-h-[24rem] overflow-y-auto overscroll-contain p-2">
           <Command.Empty className="px-3 py-8 text-center text-sm text-muted-foreground">
             No results found.
           </Command.Empty>
 
-          <Command.Group
-            heading="Navigate"
-            className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.65rem] [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:uppercase"
-          >
-            <PaletteItem label="Home" shortcut="G H" onSelect={() => jumpTo('top')()} />
-            {navSections.map((section) => (
+          <CommandGroup heading="Navigate">
+            {allRoutes.map((item) => (
               <PaletteItem
-                key={section.id}
-                label={section.label}
-                shortcut={`G ${section.label[0]}`}
-                onSelect={jumpTo(section.id)}
+                key={item.href}
+                label={item.label}
+                shortcut={item.shortcut}
+                onSelect={() => go(item.href)}
               />
             ))}
-          </Command.Group>
+          </CommandGroup>
 
-          <Command.Group
-            heading="Projects"
-            className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.65rem] [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:uppercase"
-          >
-            {projects.map((project) => (
+          <CommandGroup heading="Services">
+            {services.map((service) => (
               <PaletteItem
-                key={project.slug}
-                label={project.title}
-                keywords={[project.description, ...project.tech].join(' ')}
-                onSelect={() =>
-                  runCommand(() => {
-                    window.open(project.href, '_blank', 'noopener,noreferrer')
-                  })
-                }
+                key={service.slug}
+                label={service.title}
+                keywords={service.summary}
+                onSelect={() => go(service.canonicalHref ?? `/services/${service.slug}`)}
               />
             ))}
-          </Command.Group>
+          </CommandGroup>
 
-          <Command.Group
-            heading="Actions"
-            className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.65rem] [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:uppercase"
-          >
+          <CommandGroup heading="Enterprise">
+            {platforms.map((platform) => (
+              <PaletteItem
+                key={platform.name}
+                label={platform.name}
+                keywords={platform.focus.join(' ')}
+                onSelect={() => go('/enterprise')}
+              />
+            ))}
+          </CommandGroup>
+
+          <CommandGroup heading="AI">
+            {aiPrinciples.map((principle) => (
+              <PaletteItem
+                key={principle.title}
+                label={principle.title}
+                keywords="AI engineering practice commitment"
+                onSelect={() => go('/ai')}
+              />
+            ))}
+          </CommandGroup>
+
+          <CommandGroup heading="Case studies">
+            {publishedCaseStudies().map((study) => (
+              <PaletteItem
+                key={study.slug}
+                label={study.title}
+                keywords={[study.client, study.summary].join(' ')}
+                onSelect={() => go(`/work/${study.slug}`)}
+              />
+            ))}
+          </CommandGroup>
+
+          <CommandGroup heading="Insights">
+            {posts.map((post) => (
+              <PaletteItem
+                key={post.slug}
+                label={post.title}
+                keywords={post.tags.join(' ')}
+                onSelect={() => go(`/insights/${post.slug}`)}
+              />
+            ))}
+          </CommandGroup>
+
+          <CommandGroup heading="Careers">
+            {roles.map((role) => (
+              <PaletteItem
+                key={role.slug}
+                label={role.title}
+                keywords={`${role.department} ${role.employment}`}
+                onSelect={() => go(`/careers/${role.slug}`)}
+              />
+            ))}
+          </CommandGroup>
+
+          <CommandGroup heading="Actions">
             <PaletteItem
-              label={copied ? 'Email copied!' : 'Copy email'}
+              label={copied ? 'Email copied!' : 'Copy email address'}
               shortcut="C E"
-              onSelect={() => {
-                void copy(siteConfig.email)
-              }}
+              onSelect={() => void copy(siteConfig.email)}
             />
             <PaletteItem
-              label={`Toggle theme (${theme === 'dark' ? 'light' : 'dark'})`}
+              label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
               shortcut="T"
               onSelect={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             />
-          </Command.Group>
+          </CommandGroup>
 
-          <Command.Group
-            heading="Socials"
-            className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.65rem] [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:uppercase"
-          >
-            {socialLinks.map((social) => (
+          <CommandGroup heading="Socials">
+            {Object.entries(siteConfig.socials).map(([network, href]) => (
               <PaletteItem
-                key={social.href}
-                label={social.label}
-                keywords={social.handle}
-                onSelect={() =>
-                  runCommand(() => {
-                    window.open(social.href, '_blank', 'noopener,noreferrer')
-                  })
-                }
+                key={network}
+                label={capitalise(network)}
+                onSelect={() => {
+                  close()
+                  window.open(href, '_blank', 'noopener,noreferrer')
+                }}
               />
             ))}
-          </Command.Group>
+          </CommandGroup>
         </Command.List>
       </Command.Dialog>
     </>
+  )
+}
+
+function CommandGroup({ heading, children }: { heading: string; children: React.ReactNode }) {
+  return (
+    <Command.Group
+      heading={heading}
+      className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.65rem] [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:uppercase"
+    >
+      {children}
+    </Command.Group>
   )
 }
 

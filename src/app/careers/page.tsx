@@ -3,6 +3,9 @@ import Link from 'next/link'
 import { PageHeader, PageSection } from '@/components/layout/page'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
+import { FaqSection } from '@/components/ui/faq'
+import { FaqSchema } from '@/components/seo/faq-schema'
+import { careersFaqs } from '@/content/faqs'
 import { allBenefits, rolesByDepartment } from '@/content/roles'
 
 export const metadata = {
@@ -18,6 +21,8 @@ export default function CareersPage() {
 
   return (
     <>
+      <FaqSchema items={careersFaqs} />
+
       <PageHeader
         eyebrow="Careers"
         title="Fourteen people, deliberately not fifteen."
@@ -122,6 +127,13 @@ export default function CareersPage() {
           </aside>
         </div>
       </PageSection>
+
+      <FaqSection eyebrow="Before you apply" title="How we hire." items={careersFaqs}>
+        <p className="leading-relaxed text-muted-foreground">
+          We keep the process short and pay for any work sample. If you are put off by a multi-stage
+          process, that is a reasonable position.
+        </p>
+      </FaqSection>
     </>
   )
 }

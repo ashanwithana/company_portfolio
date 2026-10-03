@@ -73,7 +73,10 @@ export function Cursor() {
   if (!enabled) return null
 
   return (
-    <div className="no-print pointer-events-none fixed inset-0 z-[80] hidden md:block" aria-hidden="true">
+    <div
+      className="no-print pointer-events-none fixed inset-0 z-[80] hidden md:block"
+      aria-hidden="true"
+    >
       <div
         ref={ringRef}
         className="absolute top-0 left-0 size-8 rounded-full border border-foreground/25 transition-[width,height,opacity,background-color] duration-300 will-change-transform"

@@ -3,9 +3,33 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  typedRoutes: true,
+  /**
+   * `typedRoutes` is disabled deliberately. It cannot type a template-literal
+   * href like `/work/${slug}`, which every dynamic route here uses — so it
+   * either rejects correct code or forces casts that defeat the point. Route
+   * params are validated at runtime by each page's `generateStaticParams` plus
+   * an explicit `notFound()`.
+   */
+  typedRoutes: false,
   experimental: {
     optimizePackageImports: ['motion', 'lucide-react'],
+  },
+  async redirects() {
+    return [
+      // Specialist tracks have canonical practice pages with comparison
+      // tables, FAQs and case studies. Keep the /services slugs from
+      // existing as thin duplicates.
+      {
+        source: '/services/enterprise-systems',
+        destination: '/enterprise',
+        permanent: true,
+      },
+      {
+        source: '/services/ai-engineering',
+        destination: '/ai',
+        permanent: true,
+      },
+    ]
   },
   async headers() {
     return [

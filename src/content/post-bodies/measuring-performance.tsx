@@ -22,16 +22,13 @@ export default function Content() {
         while commuting, which is a materially different network from your office Wi-Fi.
       </p>
 
-      <blockquote>
-        Optimise for the device in your pocket, not the device on your desk.
-      </blockquote>
+      <blockquote>Optimise for the device in your pocket, not the device on your desk.</blockquote>
 
       <h2>Measure real users, then segment</h2>
       <p>
         We start with real-user monitoring, because the aggregate tells you something and the
         distribution tells you why. The useful question is not "what is our p75 LCP" but "what is
-        our p75 for users on the slowest third of devices, on mobile, who arrived from paid
-        search."
+        our p75 for users on the slowest third of devices, on mobile, who arrived from paid search."
       </p>
       <p>
         Segment before you optimise. Averages hide the exact users having the exact problem you were
@@ -70,8 +67,8 @@ expect(inp).toBeLessThan(200)`}</code>
       <h2>Re-measure and say so</h2>
       <p>
         Last: verify the improvement against the baseline you captured. If a number did not move,
-        explain why before anyone asks. We have been wrong often enough that this is not
-        bookkeeping — it is the reason clients trust the numbers we give them.
+        explain why before anyone asks. We have been wrong often enough that this is not bookkeeping
+        — it is the reason clients trust the numbers we give them.
       </p>
     </Prose>
   )

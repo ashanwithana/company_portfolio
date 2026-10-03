@@ -9,14 +9,7 @@ import nextTypescript from 'eslint-config-next/typescript'
  */
 const eslintConfig = [
   {
-    ignores: [
-      '.next/**',
-      'node_modules/**',
-      'out/**',
-      'next-env.d.ts',
-      'coverage/**',
-      'public/**',
-    ],
+    ignores: ['.next/**', 'node_modules/**', 'out/**', 'next-env.d.ts', 'coverage/**', 'public/**'],
   },
   ...nextCoreWebVitals,
   ...nextTypescript,
@@ -34,6 +27,22 @@ const eslintConfig = [
       eqeqeq: ['error', 'smart'],
       'prefer-const': 'error',
       'object-shorthand': 'warn',
+    },
+  },
+  {
+    // Editorial copy is authored as JSX text, where curly quotes and
+    // apostrophes are correct typography rather than escaping bugs.
+    files: ['src/content/post-bodies/**/*.tsx'],
+    rules: {
+      'react/no-unescaped-entities': 'off',
+    },
+  },
+  {
+    // Images in blog/article bodies are authored by hand and always decorative
+    // or already described in the surrounding prose.
+    files: ['src/content/post-bodies/**/*.tsx'],
+    rules: {
+      '@next/next/no-img-element': 'off',
     },
   },
 ]

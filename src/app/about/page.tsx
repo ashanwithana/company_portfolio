@@ -1,9 +1,14 @@
+import Link from 'next/link'
+
 import { PageHeader, PageSection } from '@/components/layout/page'
 import { InitialsAvatar } from '@/components/ui/block-art'
 import { Reveal } from '@/components/ui/reveal'
+import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { ClientLogos } from '@/components/sections/work-preview'
+import { modelProviders } from '@/content/ai'
 import { milestones, process, team, values } from '@/content/company'
+import { platforms } from '@/content/enterprise'
 import { studioStats } from '@/content/services'
 
 export const metadata = {
@@ -20,6 +25,80 @@ export default function AboutPage() {
         title="Fourteen people who would rather be right than fast."
         lede="Northlight is an independent product studio in London. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
       />
+
+      {/* Platforms and models — concrete capability rather than adjectives. */}
+      <PageSection className="pt-0">
+        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
+          What we work with
+        </h2>
+
+        <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <Reveal>
+            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <h3 className="text-lg">Enterprise platforms</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Accredited or certified, and implementing them weekly rather than once a year.
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-1.5">
+                {platforms.map((platform) => (
+                  <li key={platform.name}>
+                    <Tag>{platform.name}</Tag>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/enterprise"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+              >
+                Enterprise practice
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={60}>
+            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <h3 className="text-lg">Models we build against</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Chosen per task against an evaluation set, never by default.
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-1.5">
+                {modelProviders.map((provider) => (
+                  <li key={provider.vendor}>
+                    <Tag>{provider.vendor}</Tag>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/ai"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+              >
+                AI practice
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <h3 className="text-lg">Everything else</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Boring, well-understood tools. Novelty is a cost, and we spend it only where it
+                actually differentiates the product.
+              </p>
+              <ul className="mt-6 flex flex-wrap gap-1.5">
+                {['TypeScript', 'React', 'Next.js', 'PostgreSQL', 'Kubernetes', 'Python'].map(
+                  (item) => (
+                    <li key={item}>
+                      <Tag>{item}</Tag>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+          </Reveal>
+        </div>
+      </PageSection>
 
       {/* Studio stats */}
       <PageSection>
@@ -98,9 +177,7 @@ export default function AboutPage() {
                   <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-mint uppercase">
                     {member.role}
                   </p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {member.bio}
-                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
                 </div>
               </div>
             </Reveal>

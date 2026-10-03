@@ -26,7 +26,7 @@ export function StatusBadge({
       )}
     >
       <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
-        <span className={cn('absolute size-2 rounded-full animate-pulse-ring', toneClass)} />
+        <span className={cn('absolute size-2 animate-pulse-ring rounded-full', toneClass)} />
         <span className={cn('size-1.5 rounded-full bg-current', toneClass)} />
       </span>
       {children}

@@ -58,9 +58,12 @@ export function Typewriter({
       return () => clearTimeout(timer)
     }
 
-    const timer = setTimeout(() => {
-      setText((prev) => (deleting ? prev.slice(0, -1) : word.slice(0, prev.length + 1)))
-    }, deleting ? deleteSpeed : typeSpeed)
+    const timer = setTimeout(
+      () => {
+        setText((prev) => (deleting ? prev.slice(0, -1) : word.slice(0, prev.length + 1)))
+      },
+      deleting ? deleteSpeed : typeSpeed,
+    )
 
     return () => clearTimeout(timer)
   }, [text, deleting, index, word, words, reducedMotion, typeSpeed, deleteSpeed, holdTime])

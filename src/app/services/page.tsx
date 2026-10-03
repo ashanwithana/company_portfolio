@@ -28,7 +28,7 @@ export default function ServicesPage() {
           {services.map((service, index) => (
             <Reveal key={service.slug} as="li" delay={index * 50} y={16}>
               <Link
-                href={`/services/${service.slug}`}
+                href={service.canonicalHref ?? `/services/${service.slug}`}
                 className="group grid gap-6 py-10 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:gap-12"
               >
                 <div>

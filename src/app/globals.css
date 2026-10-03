@@ -41,16 +41,8 @@
   --input: oklch(0% 0 0 / 8%);
   --ring: oklch(50% 0.21 274);
 
-  --gradient-editorial: linear-gradient(
-    135deg,
-    oklch(50% 0.21 274) 0%,
-    oklch(70% 0.15 162) 100%
-  );
-  --gradient-coral: linear-gradient(
-    135deg,
-    oklch(62% 0.18 28) 0%,
-    oklch(50% 0.21 274) 100%
-  );
+  --gradient-editorial: linear-gradient(135deg, oklch(50% 0.21 274) 0%, oklch(70% 0.15 162) 100%);
+  --gradient-coral: linear-gradient(135deg, oklch(62% 0.18 28) 0%, oklch(50% 0.21 274) 100%);
   --gradient-glow: radial-gradient(
     ellipse at center,
     oklch(50% 0.21 274 / 0.28) 0%,
@@ -91,16 +83,8 @@
   --input: oklch(100% 0 0 / 10%);
   --ring: oklch(66% 0.21 274);
 
-  --gradient-editorial: linear-gradient(
-    135deg,
-    oklch(66% 0.21 274) 0%,
-    oklch(86% 0.15 162) 100%
-  );
-  --gradient-coral: linear-gradient(
-    135deg,
-    oklch(74% 0.18 28) 0%,
-    oklch(66% 0.21 274) 100%
-  );
+  --gradient-editorial: linear-gradient(135deg, oklch(66% 0.21 274) 0%, oklch(86% 0.15 162) 100%);
+  --gradient-coral: linear-gradient(135deg, oklch(74% 0.18 28) 0%, oklch(66% 0.21 274) 100%);
   --gradient-glow: radial-gradient(
     ellipse at center,
     oklch(66% 0.21 274 / 0.4) 0%,
@@ -297,8 +281,16 @@
 
 @utility grid-bg {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 6%, transparent) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 64px 64px;
 }
 

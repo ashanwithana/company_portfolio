@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { useReducedMotion } from '@/hooks/use-media-query'
+import { useIsMounted, useReducedMotion } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 type RevealProps = {
@@ -27,6 +27,7 @@ type RevealProps = {
 export function Reveal({ children, className, delay = 0, y = 24, as = 'div' }: RevealProps) {
   const Tag = as
   const reducedMotion = useReducedMotion()
+  const mounted = useIsMounted()
   const ref = React.useRef<HTMLElement>(null)
   const [entered, setEntered] = React.useState(false)
 
@@ -52,7 +53,14 @@ export function Reveal({ children, className, delay = 0, y = 24, as = 'div' }: R
   }, [reducedMotion])
 
   // Reduced motion (or a browser without IO): render the settled state outright.
-  const settled = reducedMotion || typeof IntersectionObserver === 'undefined'
+  //
+  // `mounted` gates the IntersectionObserver check because `typeof
+  // IntersectionObserver` differs between server (undefined) and client
+  // (defined) — reading it during render is a hydration mismatch on every
+  // page. Before mount we render the settled (visible) state, which also keeps
+  // content readable when JavaScript never runs.
+  const ioAvailable = mounted && typeof IntersectionObserver !== 'undefined'
+  const settled = reducedMotion || !ioAvailable
 
   const style: React.CSSProperties =
     settled || entered

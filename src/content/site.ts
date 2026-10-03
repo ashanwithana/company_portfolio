@@ -47,27 +47,48 @@ export type NavItem = {
 }
 
 /** Primary navigation, shared by the header, mobile sheet and command palette. */
+/**
+ * Header navigation.
+ *
+ * Deliberately short — six items is the most that stays legible in a single
+ * pill at typical desktop widths. The specialist tracks (Enterprise, AI) are
+ * reachable from the services page, the footer, the command palette and the
+ * home page, which is where someone looking for them would actually start.
+ */
 export const primaryNav: readonly NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/services', label: 'Services', shortcut: 'S' },
   { href: '/work', label: 'Work', shortcut: 'W' },
   { href: '/about', label: 'About', shortcut: 'A' },
-  { href: '/blog', label: 'Insights', shortcut: 'B' },
-  { href: '/careers', label: 'Careers', shortcut: 'C' },
+  { href: '/insights', label: 'Insights', shortcut: 'B' },
   { href: '/contact', label: 'Contact' },
 ] as const
+
+/** Routes surfaced in the command palette, ordered by group. */
+export const practiceRoutes: readonly NavItem[] = [
+  { href: '/enterprise', label: 'Enterprise systems', shortcut: 'E' },
+  { href: '/ai', label: 'AI engineering', shortcut: 'I' },
+  { href: '/careers', label: 'Careers', shortcut: 'C' },
+] as const
+
+/** Every top-level route, used by the sitemap and the 404 page. */
+export const allRoutes: readonly NavItem[] = [...primaryNav, ...practiceRoutes]
 
 export const footerNav = {
   company: [
     { href: '/about', label: 'About' },
     { href: '/careers', label: 'Careers' },
-    { href: '/blog', label: 'Insights' },
+    { href: '/insights', label: 'Insights' },
     { href: '/contact', label: 'Contact' },
   ],
-  services: [] as { href: string; label: string }[],
+  /** Specialist practice tracks, linked from the services page too. */
+  practices: [
+    { href: '/enterprise', label: 'Enterprise systems' },
+    { href: '/ai', label: 'AI engineering' },
+  ],
   legal: [
     { href: '/privacy', label: 'Privacy' },
-    { href: '/terms', label: 'Terms' },
+    { href: '/accessibility', label: 'Accessibility' },
   ],
 } as const
 

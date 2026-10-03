@@ -59,11 +59,16 @@ export function Header() {
     }
   }, [menuOpen])
 
-  // Close the sheet whenever the route changes.
-  React.useEffect(() => setMenuOpen(false), [pathname])
+  // Close the sheet whenever the route changes. Derived during render using the
+  // documented "adjust state when an input changes" pattern, which avoids the
+  // extra effect pass on every navigation.
+  const [lastPathname, setLastPathname] = React.useState(pathname)
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname)
+    if (menuOpen) setMenuOpen(false)
+  }
 
-  const isActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname.startsWith(href)
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
     <header className={cn('no-print fixed inset-x-0 top-0 z-50', scrolled && 'py-2')}>
@@ -141,7 +146,12 @@ export function Header() {
       </div>
 
       {/* Mobile sheet */}
-      <div id="mobile-nav" ref={menuPanelRef} hidden={!menuOpen} className="container-page mt-2 lg:hidden">
+      <div
+        id="mobile-nav"
+        ref={menuPanelRef}
+        hidden={!menuOpen}
+        className="container-page mt-2 lg:hidden"
+      >
         <nav
           aria-label="Mobile"
           className="overflow-hidden rounded-2xl border border-border bg-background/95 p-2 shadow-elegant backdrop-blur-xl"
@@ -172,5 +182,3 @@ export function Header() {
     </header>
   )
 }
-
-import * as React from 'react'

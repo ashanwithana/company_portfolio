@@ -15,9 +15,46 @@ export type Service = {
   deliverables: readonly string[]
   /** Accent used for card washes and icons. */
   tint: 'primary' | 'mint' | 'coral'
+  /**
+   * Canonical deep page, when one exists. The two specialist tracks have
+   * dedicated practice pages (/enterprise, /ai) with comparison tables, FAQs
+   * and case studies — linking there avoids duplicate thin content under
+   * /services/[slug].
+   */
+  canonicalHref?: string
 }
 
 export const services: readonly Service[] = [
+  {
+    slug: 'enterprise-systems',
+    title: 'ERP & enterprise systems',
+    summary: 'Odoo, Dynamics 365, SAP Business One and Salesforce, implemented against real data.',
+    canonicalHref: '/enterprise',
+    body: 'Most enterprise software projects fail in the gap between the demo and production. The demo works because someone curated the data; production fails because nobody planned for the eleven years of exceptions already sitting in the database.\n\nWe start with the data, not the configuration. Mapping and cleansing comes before any module is switched on, because that work determines whether the go-live succeeds. We implement in staging that mirrors production, migrate in rehearsed phases with a tested rollback for each, and train the team who will use the system rather than the team who approves it.',
+    deliverables: [
+      'Data assessment, mapping and cleansing',
+      'Odoo / Dynamics 365 / SAP B1 implementation',
+      'Customisation and third-party integration',
+      'Phased migration with rehearsed rollback',
+      'Team training and hypercare',
+    ],
+    tint: 'primary',
+  },
+  {
+    slug: 'ai-engineering',
+    title: 'AI engineering',
+    summary: 'RAG pipelines and model integrations that are measured before they are shipped.',
+    canonicalHref: '/ai',
+    body: 'We build retrieval-augmented generation pipelines, tool-calling workflows and — most importantly — the evaluation harness that tells you whether any of it works.\n\nRetrieval systems fail quietly: a plausible wrong answer is worse than no answer, and nobody notices until a customer complains. So the harness ships first, every answer is traceable to its sources, and low-confidence queries escalate to a human instead of guessing.',
+    deliverables: [
+      'Retrieval architecture and chunking strategy',
+      'Evaluation and regression harnesses',
+      'Tool-calling and agentic workflows',
+      'Shadow-mode rollout and accuracy reporting',
+      'Cost modelling and guardrails',
+    ],
+    tint: 'coral',
+  },
   {
     slug: 'product-design',
     title: 'Product design',
@@ -59,20 +96,6 @@ export const services: readonly Service[] = [
       'Infrastructure as code and observability',
     ],
     tint: 'coral',
-  },
-  {
-    slug: 'ai-integration',
-    title: 'AI integration',
-    summary: 'Practical LLM features, not experiments for their own sake.',
-    body: 'We build retrieval pipelines, tool-using agents and evaluation harnesses. The goal is a feature that improves a metric you already care about — with guardrails, cost controls and a way to tell when it is wrong.',
-    deliverables: [
-      'Retrieval-augmented generation pipelines',
-      'Tool-calling and agent workflows',
-      'Evaluation and regression harnesses',
-      'Prompt and model selection',
-      'Guardrails, fallbacks and cost controls',
-    ],
-    tint: 'primary',
   },
   {
     slug: 'design-systems',

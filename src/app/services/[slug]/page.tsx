@@ -6,11 +6,16 @@ import { Breadcrumbs, BreadcrumbSchema } from '@/components/layout/page'
 import { Prose } from '@/components/ui/prose'
 import { Reveal } from '@/components/ui/reveal'
 import { CtaBand } from '@/components/ui/cta-band'
+import { FaqSection } from '@/components/ui/faq'
+import { FaqSchema } from '@/components/seo/faq-schema'
+import { aiFaqs, servicesFaqs } from '@/content/faqs'
+import { contactContent } from '@/content/site'
 import { getService, services } from '@/content/services'
-import { siteConfig } from '@/content/site'
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }))
+  // Specialist tracks redirect to their canonical practice pages (see
+  // redirects in next.config.ts), so they are excluded here.
+  return services.filter((s) => !s.canonicalHref).map((service) => ({ slug: service.slug }))
 }
 
 type Params = { params: Promise<{ slug: string }> }
@@ -25,7 +30,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: service.title,
     description: service.summary,
     alternates: { canonical: `/services/${service.slug}` },
-  };
+  }
 }
 
 export default async function ServiceDetailPage({ params }: Params) {
@@ -40,12 +45,21 @@ export default async function ServiceDetailPage({ params }: Params) {
     { label: service.title },
   ]
 
+  const faqs =
+    service.slug === 'enterprise-systems'
+      ? servicesFaqs
+      : service.slug === 'ai-engineering'
+        ? aiFaqs
+        : null
+
   // Sibling services, so the page is a hub rather than a dead end.
+  // Canonical practice pages are used where they exist.
   const others = services.filter((item) => item.slug !== service.slug)
 
   return (
     <>
       <BreadcrumbSchema items={crumbs} />
+      {faqs ? <FaqSchema items={faqs} /> : null}
 
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
@@ -59,7 +73,7 @@ export default async function ServiceDetailPage({ params }: Params) {
         </p>
       </header>
 
-      <div className="container-page grid gap-12 pb-20 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20 md:pb-28">
+      <div className="container-page grid gap-12 pb-20 md:pb-28 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20">
         <Prose>{<p>{service.body}</p>}</Prose>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
@@ -77,13 +91,13 @@ export default async function ServiceDetailPage({ params }: Params) {
             ))}
           </ul>
 
-          <a
+          <Link
             href="/contact"
             className="mt-10 inline-flex min-h-11 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
           >
             Discuss this
             <span aria-hidden="true">→</span>
-          </a>
+          </Link>
         </aside>
       </div>
 
@@ -99,7 +113,7 @@ export default async function ServiceDetailPage({ params }: Params) {
               <li key={other.slug}>
                 <Reveal delay={index * 50} y={12}>
                   <Link
-                    href={`/services/${other.slug}`}
+                    href={other.canonicalHref ?? `/services/${other.slug}`}
                     className="group flex h-full flex-col justify-between gap-3 bg-background p-6 transition-colors hover:bg-muted/40"
                   >
                     <span className="text-lg leading-snug transition-colors group-hover:text-mint">
@@ -116,10 +130,24 @@ export default async function ServiceDetailPage({ params }: Params) {
         </div>
       </nav>
 
+      {/* Specialist tracks have their own pages and their own FAQs. */}
+      {service.slug === 'enterprise-systems' ? (
+        <FaqSection
+          eyebrow="Enterprise"
+          title="Questions we get about implementations."
+          items={servicesFaqs}
+        />
+      ) : null}
+
+      {service.slug === 'ai-engineering' ? (
+        <FaqSection eyebrow="AI" title="Questions we get about AI work." items={aiFaqs} />
+      ) : null}
+
       <CtaBand
         eyebrow="Next step"
         title={`Ready to talk about ${service.title.toLowerCase()}?`}
-        body={`${siteConfig.contactContent.responseTime} If it is not a fit we will say so rather than waste your time.`}
+        body={`${contactContent.responseTime} If it is not a fit we will say so rather than waste your time.`}
+        secondary={{ href: '/insights', label: 'Read our notes' }}
       />
     </>
   )

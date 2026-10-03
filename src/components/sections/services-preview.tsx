@@ -13,7 +13,7 @@ export function ServicesPreview() {
       {services.map((service, index) => (
         <Reveal key={service.slug} delay={index * 60}>
           <Link
-            href={`/services/${service.slug}`}
+            href={service.canonicalHref ?? `/services/${service.slug}`}
             className={cn(
               'group flex h-full flex-col justify-between gap-8 rounded-2xl border border-border bg-gradient-to-br p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1',
               ACCENT_WASH[service.tint],
