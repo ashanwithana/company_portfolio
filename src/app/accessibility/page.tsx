@@ -68,7 +68,7 @@ export default function AccessibilityPage() {
         </dl>
       </PageSection>
 
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <div className="max-w-3xl space-y-8">
           <section aria-labelledby="known">
             <h2 id="known" className="text-2xl">

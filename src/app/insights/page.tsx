@@ -181,7 +181,7 @@ export default function InsightsPage() {
       </section>
 
       {/* Model selection reference */}
-      <section aria-labelledby="models-heading" className="tone-paper py-20">
+      <section aria-labelledby="models-heading" className="bg-muted py-20">
         <div className="container-page">
           <h2 id="models-heading" className="label text-muted-foreground">
             Model selection, in brief

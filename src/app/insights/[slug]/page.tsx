@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: Params) {
       </div>
 
       {/* Prev / next */}
-      <nav aria-label="More articles" className="tone-paper">
+      <nav aria-label="More articles" className="bg-muted">
         <div className="container-page grid gap-px sm:grid-cols-2">
           {newer ? (
             <Link

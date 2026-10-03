@@ -63,7 +63,7 @@ export default function EnterprisePage() {
       </PageSection>
 
       {/* Platforms */}
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <h2 className="label text-muted-foreground">Platforms we implement</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
@@ -99,7 +99,7 @@ export default function EnterprisePage() {
       </PageSection>
 
       {/* Platform comparison — the question every buyer actually asks. */}
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <h2 className="label text-muted-foreground">Which platform fits</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">

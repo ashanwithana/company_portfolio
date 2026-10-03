@@ -144,18 +144,11 @@ export function PageSection({
 }: {
   children: ReactNode
   className?: string
-  tone?: 'default' | 'muted' | 'paper'
+  tone?: 'default' | 'muted'
   dotGrid?: boolean
 }) {
   return (
-    <section
-      className={cn(
-        'relative py-20 md:py-28',
-        tone === 'muted' && 'bg-muted',
-        tone === 'paper' && 'tone-paper',
-        className,
-      )}
-    >
+    <section className={cn('relative py-20 md:py-28', tone === 'muted' && 'bg-muted', className)}>
       {dotGrid ? (
         <div
           className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"

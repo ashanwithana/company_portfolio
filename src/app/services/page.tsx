@@ -90,7 +90,7 @@ export default function ServicesPage() {
       </PageSection>
 
       {/* Practice stats */}
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <dl className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {studioStats.map((stat) => (
             <div key={stat.label}>

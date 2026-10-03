@@ -115,7 +115,7 @@ export default function AboutPage() {
       </PageSection>
 
       {/* Process */}
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <h2 className="label text-muted-foreground">How an engagement runs</h2>
 
         <ol className="mt-10 space-y-8">
@@ -154,7 +154,7 @@ export default function AboutPage() {
       </PageSection>
 
       {/* Team */}
-      <PageSection tone="paper">
+      <PageSection tone="muted">
         <h2 className="label text-muted-foreground">The studio</h2>
 
         <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

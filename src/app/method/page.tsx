@@ -31,7 +31,7 @@ export default function MethodPage() {
       </div>
 
       <section aria-label="The five phases">
-        <Method steps={methodSteps} tone="dark" showIntro={false} />
+        <Method steps={methodSteps} showIntro={false} />
       </section>
 
       <CtaBand

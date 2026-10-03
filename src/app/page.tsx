@@ -17,7 +17,7 @@ export default function HomePage() {
       <Hero />
 
       <section id="method" aria-label="Our method">
-        <Method steps={methodSteps} tone="dark" />
+        <Method steps={methodSteps} />
       </section>
 
       <WhyUs />

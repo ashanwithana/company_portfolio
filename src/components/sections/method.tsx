@@ -36,12 +36,9 @@ export type MethodStep = {
  */
 export function Method({
   steps,
-  tone = 'paper',
   showIntro = true,
 }: {
   steps: readonly MethodStep[]
-  /** Ground the section sits on: cream on the home page, dark on /method. */
-  tone?: 'paper' | 'dark'
   /** The /method page carries its own PageHeader, so it suppresses this one. */
   showIntro?: boolean
 }) {
@@ -78,7 +75,7 @@ export function Method({
   }
 
   return (
-    <div className={cn('relative', tone === 'paper' ? 'tone-paper' : 'bg-background')}>
+    <div className="relative bg-background">
       <div className="container-page py-24 md:py-32">
         {showIntro ? (
           <div className="mx-auto max-w-3xl text-center">

@@ -180,7 +180,7 @@ export default async function RolePage({ params }: Params) {
       </div>
 
       {role.benefits ? (
-        <section aria-labelledby="benefits" className="tone-paper">
+        <section aria-labelledby="benefits" className="bg-muted">
           <div className="container-page py-14">
             <h2 id="benefits" className="label text-muted-foreground">
               What we offer

@@ -7,9 +7,9 @@
  *
  * Dark is the default theme (see DEFAULT_THEME in lib/theme) and the palette is
  * deliberately narrow: a near-black ground, off-white ink, one hot-pink accent
- * and two supporting hues used sparingly for taxonomy. Large areas of the page
- * invert to warm paper via the `.tone-paper` block below, which is what gives
- * the page its light/dark rhythm.
+ * and two supporting hues used sparingly for taxonomy. Sections stay on the
+ * dark ground in dark mode — muted bands give separation without ever
+ * flipping to a light ground.
  *
  * Authored in hex rather than OKLCH: the accent hues are specified brand values
  * and converting them introduced visible drift between the two themes.
@@ -49,10 +49,6 @@
   --input: #ffffff1f;
   --ring: #e4007c;
 
-  /* Warm paper block, used to invert whole sections. */
-  --paper: #faf7f2;
-  --paper-foreground: #161310;
-
   --gradient-editorial: linear-gradient(135deg, #e4007c 0%, #7c5bff 100%);
   --gradient-coral: linear-gradient(135deg, #e4007c 0%, #ff9f1c 100%);
   --gradient-glow: radial-gradient(ellipse at center, #e4007c33 0%, transparent 70%);
@@ -88,43 +84,10 @@
   --input: #16131026;
   --ring: #d1006b;
 
-  --paper: #171717;
-  --paper-foreground: #f0f0f8;
-
   --gradient-editorial: linear-gradient(135deg, #d1006b 0%, #6a3ff0 100%);
   --gradient-coral: linear-gradient(135deg, #d1006b 0%, #b06000 100%);
   --gradient-glow: radial-gradient(ellipse at center, #d1006b26 0%, transparent 70%);
   --shadow-elegant: 0 30px 80px -24px #16131033;
-}
-
-/*
- * `.tone-paper` inverts a section to the opposite ground regardless of theme, so
- * any block can drop into the page's light/dark rhythm. Declaring the full token
- * set here rather than a handful of overrides means components inside need no
- * theme awareness at all.
- *
- * The explicit background-color matters: redefining `--background` only changes
- * what descendants *read*, it does not paint anything. Without this line a paper
- * section would set dark ink onto the page's dark ground.
- */
-.tone-paper {
-  background-color: var(--paper);
-  color: var(--paper-foreground);
-
-  --background: var(--paper);
-  --foreground: var(--paper-foreground);
-  --card: color-mix(in oklab, var(--paper-foreground) 6%, var(--paper));
-  --card-foreground: var(--paper-foreground);
-  --elevated: color-mix(in oklab, var(--paper-foreground) 10%, var(--paper));
-  --popover: var(--paper);
-  --popover-foreground: var(--paper-foreground);
-  --muted: color-mix(in oklab, var(--paper-foreground) 5%, var(--paper));
-  --muted-foreground: color-mix(in oklab, var(--paper-foreground) 62%, var(--paper));
-  --accent: color-mix(in oklab, var(--paper-foreground) 8%, var(--paper));
-  --accent-foreground: var(--paper-foreground);
-  --border: color-mix(in oklab, var(--paper-foreground) 14%, transparent);
-  --border-strong: color-mix(in oklab, var(--paper-foreground) 28%, transparent);
-  --input: color-mix(in oklab, var(--paper-foreground) 16%, transparent);
 }
 
 @theme inline {
@@ -150,8 +113,6 @@
   --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-paper: var(--paper);
-  --color-paper-foreground: var(--paper-foreground);
 
   /*
    * Two mono voices. JetBrains Mono carries everything functional — body copy,

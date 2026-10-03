@@ -177,7 +177,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
       {/* Next case study */}
       {next ? (
-        <nav aria-label="More case studies" className="tone-paper">
+        <nav aria-label="More case studies" className="bg-muted">
           <Link
             href={`/work/${next.slug}`}
             className="group container-page flex flex-col gap-4 py-14 sm:flex-row sm:items-center sm:justify-between"

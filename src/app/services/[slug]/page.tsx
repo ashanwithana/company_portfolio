@@ -112,7 +112,7 @@ export default async function ServiceDetailPage({ params }: Params) {
 
       {/* Approach, as numbered rows — the same device as the AI pattern list. */}
       {service.approach ? (
-        <PageSection tone="paper">
+        <PageSection tone="muted">
           <h2 className="label text-muted-foreground">How we run it</h2>
 
           <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
@@ -145,7 +145,7 @@ export default async function ServiceDetailPage({ params }: Params) {
 
       {/* When this service is the wrong answer — the honest section. */}
       {service.wrongWhen ? (
-        <PageSection tone="paper">
+        <PageSection tone="muted">
           <h2 className="label text-muted-foreground">
             {service.wrongTitle ?? `When ${service.title.toLowerCase()} is the wrong answer`}
           </h2>
@@ -170,7 +170,7 @@ export default async function ServiceDetailPage({ params }: Params) {
       />
 
       {/* Other services */}
-      <nav aria-label="Other services" className="tone-paper">
+      <nav aria-label="Other services" className="bg-muted">
         <div className="container-page py-14">
           <h2 className="label text-muted-foreground">Other services</h2>
 

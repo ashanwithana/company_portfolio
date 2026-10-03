@@ -3,11 +3,11 @@ import { cn } from '@/lib/utils'
 
 /**
  * Section wrapper providing consistent vertical rhythm and landmark semantics.
+ * Used by the home page sections, which are not routes.
  *
- * `tone="paper"` inverts the whole block to the opposite ground (see
- * `.tone-paper` in globals.css), which is what produces the page's alternating
- * dark/paper rhythm. Because the inversion redefines the token set rather than
- * overriding individual colours, components inside stay theme-agnostic.
+ * `tone="muted"` lays a subtle band behind the section while staying on the
+ * page ground in both themes — the site is dark-first and sections never
+ * flip to a light ground.
  */
 export function Section({
   id,
@@ -21,7 +21,7 @@ export function Section({
   label: string
   children: React.ReactNode
   className?: string
-  tone?: 'default' | 'muted' | 'paper'
+  tone?: 'default' | 'muted'
   dotGrid?: boolean
 }) {
   return (
@@ -31,7 +31,6 @@ export function Section({
       className={cn(
         'relative scroll-mt-28 py-24 md:py-32',
         tone === 'muted' && 'bg-muted',
-        tone === 'paper' && 'tone-paper',
         className,
       )}
     >
