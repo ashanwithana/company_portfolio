@@ -1,4 +1,5 @@
 import { StatusBadge } from '@/components/ui/badge'
+import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { HeroVisual } from '@/components/ui/hero-visual'
 import { siteConfig } from '@/content/site'
 
@@ -44,16 +45,13 @@ export function Hero() {
         </div>
 
         <div className="mt-10 text-center sm:mt-12">
-          <h1
-            className="mx-auto max-w-5xl display-xl"
-            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 120ms both' }}
-          >
-            Software that earns its place.
+          <h1 className="mx-auto max-w-5xl display-xl">
+            <HeadlineReveal text="Software that earns its place." />
           </h1>
 
           <p
             className="mx-auto mt-7 max-w-xl text-[15px] leading-relaxed text-muted-foreground"
-            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 240ms both' }}
+            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 620ms both' }}
           >
             {siteConfig.description}
           </p>

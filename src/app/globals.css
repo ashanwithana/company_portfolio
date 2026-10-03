@@ -173,6 +173,18 @@
   }
 }
 
+/* Word-rise: the headline reveal. Each word travels up out of its own mask. */
+@keyframes word-rise {
+  from {
+    opacity: 0;
+    transform: translateY(105%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ---------------------------------------------------------------------------
  * Base
  * ------------------------------------------------------------------------- */
