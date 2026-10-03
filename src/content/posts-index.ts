@@ -4,6 +4,9 @@ import EvaluationBody from '@/content/post-bodies/evaluating-ai-features'
 import DesignSystemsBody from '@/content/post-bodies/design-systems-that-adopted'
 import OdooGuideBody from '@/content/post-bodies/odoo-implementation-guide'
 import RagChecklistBody from '@/content/post-bodies/rag-evaluation-checklist'
+import OdooVsDynamicsBody from '@/content/post-bodies/odoo-vs-dynamics'
+import SalesforcePitfallsBody from '@/content/post-bodies/salesforce-pitfalls'
+import RagVsFinetuningBody from '@/content/post-bodies/rag-vs-finetuning'
 import type { Post } from '@/content/posts'
 import type { PostFrontmatter } from '@/content/posts'
 
@@ -18,6 +21,41 @@ import type { PostFrontmatter } from '@/content/posts'
 type PostEntry = PostFrontmatter & { Content: Post['Content'] }
 
 const entries: readonly PostEntry[] = [
+  {
+    slug: 'rag-vs-finetuning',
+    title: 'RAG or fine-tuning? How to tell which problem you have',
+    summary:
+      'Retrieval grounds answers in your documents; fine-tuning changes behaviour. The sequence that works, and what each one costs.',
+    date: '2026-10-20',
+    readingTimeMinutes: 8,
+    author: 'Sofia Almeida',
+    tags: ['AI', 'RAG', 'Fine-tuning'],
+    featured: true,
+    Content: RagVsFinetuningBody,
+  },
+  {
+    slug: 'odoo-vs-dynamics-365',
+    title: 'Odoo vs Dynamics 365, from a studio that implements both',
+    summary:
+      'No sales deck: where each platform wins, the costs nobody puts in proposals, and when the answer is neither.',
+    date: '2026-10-12',
+    readingTimeMinutes: 9,
+    author: 'Jonas Weber',
+    tags: ['Odoo', 'Dynamics 365', 'ERP'],
+    featured: true,
+    Content: OdooVsDynamicsBody,
+  },
+  {
+    slug: 'salesforce-implementation-pitfalls',
+    title: 'Five ways Salesforce implementations fail (and the fixes)',
+    summary:
+      'Fields nobody owns, integrations deferred to phase two, activity metrics as targets — all preventable, none in the sales deck.',
+    date: '2026-10-05',
+    readingTimeMinutes: 7,
+    author: 'Amara Okafor',
+    tags: ['Salesforce', 'CRM', 'Implementation'],
+    Content: SalesforcePitfallsBody,
+  },
   {
     slug: 'odoo-implementation-guide',
     title: 'The Odoo implementation guide we wish every project started with',

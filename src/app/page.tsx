@@ -8,7 +8,9 @@ import { ServicesPreview } from '@/components/sections/services-preview'
 import { ClientLogos, WorkPreview } from '@/components/sections/work-preview'
 import { CtaBand } from '@/components/ui/cta-band'
 import { contactContent } from '@/content/site'
+import { differentiators } from '@/content/company'
 import { getAllPosts } from '@/content/posts-index'
+import { Testimonials } from '@/components/sections/testimonials'
 
 export default function HomePage() {
   return (
@@ -139,12 +141,38 @@ export default function HomePage() {
           title="Trusted by teams who cannot afford surprises."
         />
         <ClientLogos />
+
+        {/* Why us — the three commitments competitors will not make. */}
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {differentiators.map((item, i) => (
+            <Reveal key={item.title} delay={i * 60}>
+              <div className="h-full rounded-2xl border border-border bg-background p-7">
+                <p className="font-mono text-xs text-mint tabular-nums">
+                  {(i + 1).toString().padStart(2, '0')}
+                </p>
+                <h3 className="mt-3 text-xl leading-snug">{item.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* Testimonials */}
+      <Section id="testimonials" label="What clients say">
+        <SectionHeading
+          index="05"
+          label="What clients say"
+          title="In their words, with the numbers attached."
+          description="Every quote links to the case study behind it — so you can check the claim rather than take our word for it."
+        />
+        <Testimonials />
       </Section>
 
       {/* Approach */}
       <Section id="approach" label="How we work">
         <SectionHeading
-          index="05"
+          index="06"
           label="How we work"
           title="Five steps, and a fixed number at the end of the second."
           description="No discovery phase that quietly becomes the project. Here is the shape of every engagement we run."
@@ -192,7 +220,7 @@ export default function HomePage() {
       {/* Latest insight */}
       <Section id="insights" label="Latest insight">
         <SectionHeading
-          index="06"
+          index="07"
           label="Latest insight"
           title="What we have been thinking about."
           description="Notes from the work — written when we learn something, not on a content schedule."

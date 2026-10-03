@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { allRoutes, primaryNav, siteConfig, footerNav } from './site'
 import { allBenefits, departments, getRole, roles, rolesByDepartment } from './roles'
-import { milestones, process, team, values } from './company'
+import { differentiators, milestones, process, team, testimonials, values } from './company'
 import { services } from './services'
 import { aiFaqs, careersFaqs, contactFaqs, servicesFaqs } from './faqs'
 import { getAllPosts } from './posts-index'
@@ -140,6 +140,42 @@ describe('company content', () => {
     expect(values.length).toBeGreaterThan(0)
     expect(process.length).toBeGreaterThan(0)
     expect(milestones.length).toBeGreaterThan(0)
+  })
+
+  it('has verifiable testimonials', () => {
+    // A quote without attribution is marketing copy. Every testimonial must
+    // name a person and a company, and link to the case study behind it.
+    for (const testimonial of testimonials) {
+      expect(testimonial.quote.length).toBeGreaterThan(40)
+      expect(testimonial.name).toBeTruthy()
+      expect(testimonial.role).toBeTruthy()
+      expect(testimonial.company).toBeTruthy()
+      expect(testimonial.caseStudySlug).toBeTruthy()
+    }
+
+    const names = testimonials.map((t) => t.name)
+    expect(new Set(names).size).toBe(names.length)
+  })
+
+  it('states differentiators as commitments, not adjectives', () => {
+    expect(differentiators.length).toBeGreaterThanOrEqual(3)
+    for (const item of differentiators) {
+      expect(item.title).toBeTruthy()
+      expect(item.body.length).toBeGreaterThan(20)
+    }
+  })
+
+  it('links every testimonial to a published case study', async () => {
+    // A "read the case study" link that 404s is worse than no link. This
+    // joins the two content modules so a renamed slug fails the build.
+    const { getCaseStudy, publishedCaseStudies } = await import('./case-studies')
+    const published = new Set(publishedCaseStudies().map((s) => s.slug))
+
+    for (const testimonial of testimonials) {
+      expect(testimonial.caseStudySlug).toBeTruthy()
+      expect(getCaseStudy(testimonial.caseStudySlug!)).toBeDefined()
+      expect(published.has(testimonial.caseStudySlug!)).toBe(true)
+    }
   })
 })
 

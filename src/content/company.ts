@@ -150,3 +150,63 @@ export const process: readonly Engagement[] = [
     body: 'Documentation, runbooks and paired working until your team is comfortable. Then we get out of the way.',
   },
 ] as const
+
+export type Testimonial = {
+  quote: string
+  name: string
+  role: string
+  company: string
+  /** Links the quote to a published case study. */
+  caseStudySlug?: string
+}
+
+export const testimonials: readonly Testimonial[] = [
+  {
+    quote:
+      'They talked us out of a rewrite in the first meeting, then spent eleven months proving why that was right. No downtime, no drama, and a platform our team can actually run.',
+    name: 'Elena Marsh',
+    role: 'CTO',
+    company: 'Meridian',
+    caseStudySlug: 'meridian-banking-platform',
+  },
+  {
+    quote:
+      'The evaluation harness caught two regressions before launch — including one from our own documentation change. That alone paid for the engagement.',
+    name: 'David Osei',
+    role: 'Head of Support',
+    company: 'Heliostat',
+    caseStudySlug: 'heliostat-ai-workflow',
+  },
+  {
+    quote:
+      'Nine teams, one design system, 94% adoption in eight months. Previous attempts had failed twice. The difference was that they treated adoption as the product, not the library.',
+    name: 'Ingrid Halvorsen',
+    role: 'VP Engineering',
+    company: 'Northwind',
+    caseStudySlug: 'northwind-design-system',
+  },
+  {
+    quote:
+      'Completion rates went from 54% to 89% because they shadowed our staff before designing anything. Nobody else we spoke to offered to do that.',
+    name: 'Dr. Rachel Kim',
+    role: 'Clinical Director',
+    company: 'Fieldnote',
+    caseStudySlug: 'fieldnote-research-toolkit',
+  },
+] as const
+
+/** Why-us differentiators shown on the home page. */
+export const differentiators: readonly { title: string; body: string }[] = [
+  {
+    title: 'Fixed price after discovery',
+    body: 'You get a number you can hold us to, not an estimate that drifts. If the budget does not fit the work, we say so before you sign.',
+  },
+  {
+    title: 'Measured, not promised',
+    body: 'A baseline in week one, numbers at handover. AI features ship behind an accuracy gate; performance work ships against a budget.',
+  },
+  {
+    title: 'Handover, not lock-in',
+    body: 'Docs, runbooks and pairing until your team is comfortable — then we leave. The test is whether you need us afterwards.',
+  },
+] as const

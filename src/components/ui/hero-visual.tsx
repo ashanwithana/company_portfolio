@@ -6,17 +6,19 @@ import { useReducedMotion } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 /**
- * Hero 3D visual — layered orbital rings + aurora field.
+ * Hero 3D visual — a tilted orbital system rendered with true perspective.
  *
- * Why this approach:
- * - Single cheap fragment shader (2D SDF + 3-octave value noise). No
- *   raymarching, no 96-step loop, so it holds 60fps on integrated GPUs.
- * - Real sizing via ResizeObserver. The previous version read
- *   getBoundingClientRect() inside rAF and never resized, leaving the canvas
- *   at the default 300x150.
- * - Pauses off-screen via IntersectionObserver and honours
- *   prefers-reduced-motion with a single static frame.
- * - Theme-aware via MutationObserver instead of per-frame DOM reads.
+ * What makes this 3D rather than a flat gradient: every ring is a circle in 3D
+ * object space, rotated by yaw/pitch into camera space and projected with a
+ * perspective divide. Near-side arcs render brighter than far-side ones, and a
+ * shell of particles orbits the same centre with depth-attenuated size and
+ * alpha. The pointer drives the camera, so the whole system visibly turns in
+ * depth rather than sliding in the plane.
+ *
+ * Performance budget: the canvas is backed at 60% of display resolution
+ * (upscaled by CSS — glow hides the softness), rings are traced at 20 samples
+ * each and the particle shell is 22 points. One rAF loop, paused off-screen,
+ * static fallback for reduced motion.
  */
 
 const FRAG = /* glsl */ `
@@ -26,12 +28,31 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform vec2 uPointer;   // -1..1, eased
 uniform float uTheme;    // 0 = dark, 1 = light
-uniform float uStatic;   // 1 = render one still frame (reduced motion)
+
+mat3 rotY(float a) {
+  float c = cos(a), s = sin(a);
+  return mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
+}
+
+mat3 rotX(float a) {
+  float c = cos(a), s = sin(a);
+  return mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
+}
+
+// Perspective projection: camera sits at +z looking at the origin.
+vec2 proj(vec3 p, float camD, float viewH) {
+  float denom = max(camD - p.z, 0.25);
+  return p.xy * (camD / denom) / viewH;
+}
 
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
   return fract(p.x * p.y);
+}
+
+float hash1(float n) {
+  return fract(sin(n * 127.1) * 43758.5453);
 }
 
 float vnoise(vec2 p) {
@@ -56,47 +77,97 @@ float fbm(vec2 p) {
   return v;
 }
 
+// Trace one 3D ring: returns closest screen-space distance, plus the depth
+// (frontness) of the closest sample for the near-side-brighter cue.
+//
+// The ring radius breathes with a low-amplitude travelling wave. This is a
+// continuous function of the loop parameter, so the curve stays perfectly
+// smooth — unlike dashes derived from the quantized closest-sample angle,
+// which imprint sharp Voronoi seams fanning from the projected centre.
+float traceRing(
+  vec3 U, vec3 V, float R, float wobFreq, float wobSpeed, float wobAmp,
+  vec2 uv, mat3 rot, float t, float camD, float viewH,
+  out float front
+) {
+  float md = 1e9;
+  front = 0.5;
+  for (int i = 0; i < 20; i++) {
+    float a = float(i) / 20.0 * 6.2831853;
+    float Rw = R * (1.0 + wobAmp * sin(a * wobFreq - t * wobSpeed));
+    vec3 p = rot * (Rw * (cos(a) * U + sin(a) * V));
+    vec2 s = proj(p, camD, viewH);
+    float d = length(uv - s);
+    if (d < md) {
+      md = d;
+      front = clamp(p.z * 0.5 + 0.5, 0.0, 1.0);
+    }
+  }
+  return md;
+}
+
 void main() {
   vec2 frag = gl_FragCoord.xy;
   vec2 uv = (frag * 2.0 - uRes) / min(uRes.x, uRes.y);
   float t = uTime;
 
-  // Gentle pointer parallax on the whole field.
-  vec2 p = uv + uPointer * 0.18;
-  float r = length(p);
-  float ang = atan(p.y, p.x);
+  // Camera: slow auto-orbit plus pointer control.
+  float yaw = t * 0.10 + uPointer.x * 0.7;
+  float pitch = 0.42 + uPointer.y * 0.45;
+  mat3 rot = rotY(yaw) * rotX(pitch);
+  float camD = 3.4;
+  float viewH = 1.35;
 
-  // Domain-warped aurora bands.
+  // Domain-warped aurora backdrop.
+  vec2 p = uv + uPointer * 0.10;
   float warp = fbm(p * 1.4 + vec2(t * 0.05, -t * 0.04));
   float bands = fbm(vec2(p.x * 1.2 + warp * 1.6, p.y * 1.6 - t * 0.06));
   bands = smoothstep(0.25, 0.85, bands);
+  float r = length(p);
 
-  // Three orbital rings, tilted by the pointer.
-  float ring = 0.0;
-  float tilt = 0.35 + uPointer.y * 0.08;
-  for (int i = 0; i < 3; i++) {
-    float fi = float(i);
-    float radius = 0.55 + fi * 0.42;
-    float wob = sin(ang * (2.0 + fi) + t * (0.25 + fi * 0.12) + fi * 2.1) * 0.05;
-    vec2 q = vec2(p.x, p.y / max(tilt, 0.15));
-    float d = abs(length(q) - radius - wob);
-    float glow = exp(-d * (14.0 - fi * 3.0));
-    float dash = 0.55 + 0.45 * sin(ang * (6.0 + fi * 4.0) - t * (0.5 + fi * 0.3));
-    ring += glow * dash * (0.9 - fi * 0.22);
-  }
+  // Three orbital rings in genuinely different planes. Each keeps its own
+  // frontness so the depth cue follows its own nearest arc.
+  float frontA;
+  float dA = traceRing(
+    vec3(1.0, 0.0, 0.0), vec3(0.0, 0.37, 0.93), 0.62, 6.0, 0.50, 0.045,
+    uv, rot, t, camD, viewH, frontA);
+  float ringA = exp(-dA * dA * 5200.0) * (0.55 + 0.85 * frontA);
 
-  // Soft core glow.
-  float core = exp(-r * r * 3.2) * (0.55 + 0.45 * warp);
+  float frontB;
+  // Tilted ~20° off the edge-on YZ plane: foreshortened enough to show depth,
+  // open enough to read as an ellipse rather than a line.
+  float dB = traceRing(
+    normalize(vec3(0.35, 0.0, 0.94)), vec3(0.0, 1.0, 0.0), 0.95, 9.0, 0.70, 0.035,
+    uv, rot, t, camD, viewH, frontB);
+  float ringB = exp(-dB * dB * 7000.0) * (0.55 + 0.85 * frontB);
 
-  // Orbiting satellite dots.
+  float frontC;
+  float dC = traceRing(
+    normalize(vec3(0.86, 0.50, 0.0)), normalize(vec3(-0.19, 0.33, 0.92)), 1.25,
+    12.0, 0.90, 0.030,
+    uv, rot, t, camD, viewH, frontC);
+  float ringC = exp(-dC * dC * 9000.0) * (0.55 + 0.85 * frontC);
+
+  // Particle shell: points distributed through a spherical volume, rotated by
+  // the same camera transform, with perspective size and depth fade.
   float dots = 0.0;
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 22; i++) {
     float fi = float(i);
-    float sp = t * (0.35 + fi * 0.18) * (mod(fi, 2.0) * 2.0 - 1.0) + fi * 2.4;
-    vec2 c = vec2(cos(sp), sin(sp) * tilt) * (0.55 + fi * 0.42);
-    float d = length(p - c);
-    dots += exp(-d * d * 900.0) * 1.4 + exp(-d * d * 90.0) * 0.25;
+    vec3 dir = normalize(vec3(
+      hash1(fi * 1.37 + 0.5) - 0.5,
+      hash1(fi * 2.11 + 3.7) - 0.5,
+      hash1(fi * 3.73 + 9.1) - 0.5));
+    float rad = 0.55 + 0.75 * hash1(fi * 7.3 + 1.3);
+    vec3 wp = rot * (dir * rad);
+    vec2 s = proj(wp, camD, viewH);
+    float d = length(uv - s);
+    float depth = clamp((wp.z + 1.4) / 2.8, 0.0, 1.0);
+    float tw = 0.6 + 0.4 * sin(t * 2.2 + fi * 2.7);
+    float k = 0.020 + 0.030 * depth;
+    dots += exp(-d * d / (k * k)) * (0.20 + 0.80 * depth) * tw;
   }
+
+  // Core glow.
+  float core = exp(-r * r * 3.2) * (0.55 + 0.45 * warp);
 
   // Palette: violet -> mint in dark, warm paper-friendly in light.
   vec3 deepA = mix(vec3(0.30, 0.16, 0.75), vec3(0.95, 0.55, 0.30), uTheme);
@@ -106,9 +177,9 @@ void main() {
 
   vec3 base = mix(deepB, deepA, clamp(bands + r * 0.25, 0.0, 1.0));
   vec3 col = base;
-  col += glowA * ring * (uTheme > 0.5 ? 0.55 : 0.85);
+  col += glowA * (ringA * 0.9 + ringB * 0.7 + ringC * 0.5) * (uTheme > 0.5 ? 0.55 : 0.9);
   col += glowB * core * 0.55;
-  col += vec3(1.0) * dots * (uTheme > 0.5 ? 0.35 : 0.8);
+  col += vec3(1.0) * dots * 0.45 * (uTheme > 0.5 ? 0.5 : 1.0);
 
   // Vignette + dither to kill banding.
   col *= 1.0 - 0.32 * dot(uv * 0.62, uv * 0.62);
@@ -123,6 +194,13 @@ const VERT = /* glsl */ `
 attribute vec2 aPos;
 void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 `
+
+/**
+ * Backing-store resolution as a fraction of display size. The visual is all
+ * soft glow, so 60% resolves identically once upscaled — and it keeps the
+ * per-pixel loop affordable on integrated GPUs.
+ */
+const RENDER_SCALE = 0.6
 
 function compile(gl: WebGLRenderingContext, type: number, src: string) {
   const s = gl.createShader(type)
@@ -141,10 +219,8 @@ export function HeroVisual({ className }: { className?: string }) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  // Always render the canvas so the ref exists on first paint; WebGL init
-  // happens once in the effect below. SSR renders the fallback only.
-  // useSyncExternalStore gives us a hydration-safe mounted flag without a
-  // setState-in-effect cascade.
+  // Hydration-safe mounted flag: false on the server and during hydration,
+  // true afterwards — so the canvas appears without a markup mismatch.
   const mounted = React.useSyncExternalStore(
     () => () => {},
     () => true,
@@ -156,7 +232,7 @@ export function HeroVisual({ className }: { className?: string }) {
     const canvas = canvasRef.current
     const wrap = wrapRef.current
     if (!mounted || !canvas || !wrap) return
-    if (reducedMotion) return // keep the CSS fallback, render one still below
+    if (reducedMotion) return // keep the CSS fallback
 
     const gl =
       (canvas.getContext('webgl', {
@@ -200,7 +276,6 @@ export function HeroVisual({ className }: { className?: string }) {
     const uTime = gl.getUniformLocation(prog, 'uTime')
     const uPointer = gl.getUniformLocation(prog, 'uPointer')
     const uTheme = gl.getUniformLocation(prog, 'uTheme')
-    const uStatic = gl.getUniformLocation(prog, 'uStatic')
 
     let raf = 0
     let running = true
@@ -214,8 +289,8 @@ export function HeroVisual({ className }: { className?: string }) {
     const applySize = () => {
       const rect = wrap.getBoundingClientRect()
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
-      const w = Math.max(2, Math.round(rect.width * dpr))
-      const h = Math.max(2, Math.round(rect.height * dpr))
+      const w = Math.max(2, Math.round(rect.width * dpr * RENDER_SCALE))
+      const h = Math.max(2, Math.round(rect.height * dpr * RENDER_SCALE))
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w
         canvas.height = h
@@ -263,7 +338,6 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform1f(uTime, (performance.now() - t0) / 1000)
       gl.uniform2f(uPointer, px, py)
       gl.uniform1f(uTheme, theme)
-      gl.uniform1f(uStatic, 0)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
     raf = requestAnimationFrame(draw)
