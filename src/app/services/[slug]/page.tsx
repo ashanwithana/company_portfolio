@@ -2,13 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Breadcrumbs, BreadcrumbSchema } from '@/components/layout/page'
+import { BreadcrumbSchema, PageHeader, PageSection } from '@/components/layout/page'
 import { Prose } from '@/components/ui/prose'
 import { Reveal } from '@/components/ui/reveal'
+import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { FaqSection } from '@/components/ui/faq'
 import { FaqSchema } from '@/components/seo/faq-schema'
-import { aiFaqs, servicesFaqs } from '@/content/faqs'
+import { servicesFaqs } from '@/content/faqs'
 import { contactContent } from '@/content/site'
 import { getService, services } from '@/content/services'
 
@@ -45,59 +46,128 @@ export default async function ServiceDetailPage({ params }: Params) {
     { label: service.title },
   ]
 
-  const faqs =
-    service.slug === 'enterprise-systems'
-      ? servicesFaqs
-      : service.slug === 'ai-engineering'
-        ? aiFaqs
-        : null
-
   // Sibling services, so the page is a hub rather than a dead end.
   // Canonical practice pages are used where they exist.
   const others = services.filter((item) => item.slug !== service.slug)
+  const ghost = service.title.split(' ')[0] ?? service.title
+  const paragraphs = service.body.split('\n\n')
 
   return (
     <>
       <BreadcrumbSchema items={crumbs} />
-      {faqs ? <FaqSchema items={faqs} /> : null}
+      <FaqSchema items={servicesFaqs} />
 
-      <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
-        <Breadcrumbs items={crumbs} />
+      <PageHeader eyebrow="Services" ghost={ghost} title={service.title} lede={service.summary} />
 
-        <h1 className="mt-8 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-          {service.title}
-        </h1>
+      {/* Standing description plus the deliverables and stack card. */}
+      <PageSection className="pt-0">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">
+          <Prose>
+            {paragraphs.map((paragraph) => (
+              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            ))}
+          </Prose>
 
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          {service.summary}
-        </p>
-      </header>
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <div className="rounded-3xl border border-border bg-card/40 p-7">
+              <h2 className="label text-muted-foreground">What you get</h2>
+              <ul className="mt-4 space-y-3">
+                {service.deliverables.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
+                  >
+                    <span aria-hidden="true" className="text-coral">
+                      →
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
 
-      <div className="container-page grid gap-12 pb-20 md:pb-28 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20">
-        <Prose>{<p>{service.body}</p>}</Prose>
+              {service.stack ? (
+                <>
+                  <h2 className="mt-8 label text-muted-foreground">Common stack</h2>
+                  <ul className="mt-4 flex flex-wrap gap-1.5">
+                    {service.stack.map((item) => (
+                      <li key={item}>
+                        <Tag>{item}</Tag>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
 
-        <aside className="lg:sticky lg:top-28 lg:self-start">
-          <h2 className="label text-muted-foreground">What you get</h2>
-          <ul className="mt-4 space-y-3">
-            {service.deliverables.map((item) => (
-              <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                <span aria-hidden="true" className="text-coral">
-                  →
-                </span>
-                {item}
-              </li>
+              <Link
+                href="/contact"
+                className="mt-8 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
+              >
+                Discuss this
+                <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </aside>
+        </div>
+      </PageSection>
+
+      {/* Approach, as numbered rows — the same device as the AI pattern list. */}
+      {service.approach ? (
+        <PageSection tone="paper">
+          <h2 className="label text-muted-foreground">How we run it</h2>
+
+          <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
+            Every engagement follows the same sequence. The steps below are in delivery order — each
+            one is independently useful, so an engagement can stop after any of them with something
+            finished.
+          </p>
+
+          <ul className="mt-12 divide-y divide-border border-y border-border">
+            {service.approach.map((step, index) => (
+              <Reveal key={step.name} as="li" delay={index * 50} y={16}>
+                <div className="grid gap-5 py-10 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-14">
+                  <div>
+                    <p className="label text-muted-foreground tabular-nums">
+                      {(index + 1).toString().padStart(2, '0')}
+                    </p>
+                    <h3 className="mt-3 text-2xl leading-tight sm:text-3xl">{step.name}</h3>
+                    <p className="mt-3 leading-relaxed text-muted-foreground">{step.summary}</p>
+                  </div>
+
+                  <div className="lg:pt-10">
+                    <p className="max-w-2xl leading-relaxed text-muted-foreground">{step.detail}</p>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </ul>
+        </PageSection>
+      ) : null}
 
-          <Link
-            href="/contact"
-            className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
-          >
-            Discuss this
-            <span aria-hidden="true">→</span>
-          </Link>
-        </aside>
-      </div>
+      {/* When this service is the wrong answer — the honest section. */}
+      {service.wrongWhen ? (
+        <PageSection tone="paper">
+          <h2 className="label text-muted-foreground">
+            {service.wrongTitle ?? `When ${service.title.toLowerCase()} is the wrong answer`}
+          </h2>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {service.wrongWhen.map((item, index) => (
+              <Reveal key={item.title} delay={index * 50}>
+                <div className="h-full rounded-3xl border border-border bg-background p-7">
+                  <h3 className="text-xl leading-snug">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </PageSection>
+      ) : null}
+
+      <FaqSection
+        eyebrow="Services"
+        title="Questions we get about this kind of work."
+        items={servicesFaqs}
+      />
 
       {/* Other services */}
       <nav aria-label="Other services" className="tone-paper">
@@ -123,19 +193,6 @@ export default async function ServiceDetailPage({ params }: Params) {
           </ul>
         </div>
       </nav>
-
-      {/* Specialist tracks have their own pages and their own FAQs. */}
-      {service.slug === 'enterprise-systems' ? (
-        <FaqSection
-          eyebrow="Enterprise"
-          title="Questions we get about implementations."
-          items={servicesFaqs}
-        />
-      ) : null}
-
-      {service.slug === 'ai-engineering' ? (
-        <FaqSection eyebrow="AI" title="Questions we get about AI work." items={aiFaqs} />
-      ) : null}
 
       <CtaBand
         eyebrow="Next step"

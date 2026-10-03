@@ -84,6 +84,30 @@ describe('services', () => {
     expect(slugs).toContain('enterprise-systems')
     expect(slugs).toContain('ai-engineering')
   })
+
+  it('gives every renderable service the full detail-page content', () => {
+    // The detail template renders approach rows, a stack strip and honesty
+    // cards. A service without them would ship an empty section, so the
+    // content — not the template — owns the guarantee. Specialist tracks are
+    // exempt: their depth lives on the canonical practice pages.
+    for (const service of services) {
+      if (service.canonicalHref) continue
+      expect(service.deliverables.length).toBeGreaterThanOrEqual(4)
+      expect(service.approach!.length).toBeGreaterThanOrEqual(3)
+      expect(service.stack!.length).toBeGreaterThanOrEqual(4)
+      expect(service.wrongWhen!.length).toBeGreaterThanOrEqual(2)
+
+      for (const step of service.approach!) {
+        expect(step.name).toBeTruthy()
+        expect(step.summary.length).toBeGreaterThan(20)
+        expect(step.detail.length).toBeGreaterThan(60)
+      }
+      for (const item of service.wrongWhen!) {
+        expect(item.title).toBeTruthy()
+        expect(item.body.length).toBeGreaterThan(60)
+      }
+    }
+  })
 })
 
 describe('roles', () => {
