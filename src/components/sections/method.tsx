@@ -9,143 +9,189 @@ import { cn } from '@/lib/utils'
 export type MethodStep = {
   /** Giant word, e.g. "Understand". */
   word: string
-  /** Two-digit ghost numeral, e.g. "01". */
+  /** Two-digit numeral, e.g. "01". */
   numeral: string
-  /** Short label for the progress rail. */
+  /** Short label for the rail. */
   label: string
   /** One-line claim, 15px. */
   lead: string
   /** Lowercase dash-led points. */
   points: readonly string[]
+  /** The concrete artifact the phase hands over — the accountability hook. */
+  endsWith: string
 }
 
 /**
- * The five-phase method, as a pinned horizontal scroll.
+ * The five-phase method, staged as a sticky rail beside scrolling phases.
  *
- * This mirrors the reference's signature interaction: the section pins to the
- * viewport while vertical scroll drives a horizontal track of five panels. Each
- * panel carries a ghost numeral, a giant step word, a one-line claim and a
- * short dash-led list. A progress rail at the bottom shows the five phase
- * letters with the active one as a pink dot.
+ * A deliberate departure from the sideways-pinned reference: the left rail
+ * pins a giant numeral that flips as each phase crosses the viewport centre,
+ * with a progress spine and an anchor list of the five phases. The phases
+ * themselves scroll naturally on the right, each closing with an "Ends with"
+ * line — the concrete artifact that makes the phase accountable.
  *
- * Implementation notes:
- * - Scroll progress is computed in a rAF-throttled listener and written
- *   straight to the track's `transform`, so scrolling never triggers a React
- *   render. The active-step state only updates when the step index changes.
- * - Before the effect runs (SSR, hydration, reduced motion, no JS) the track
- *   is a plain vertical stack — the content is fully readable and there is no
- *   markup mismatch, because the horizontal layout is applied exclusively by
- *   setting `data-ready` in the effect.
+ * The active phase is derived from an IntersectionObserver (no rAF loop, no
+ * scroll math), and without JavaScript every phase is simply readable in
+ * order. Reduced motion collapses the numeral crossfade via the global reset.
  */
 export function Method({
   steps,
   tone = 'paper',
+  showIntro = true,
 }: {
   steps: readonly MethodStep[]
-  /** Ground the pinned section sits on: cream on the home page, dark on /method. */
+  /** Ground the section sits on: cream on the home page, dark on /method. */
   tone?: 'paper' | 'dark'
+  /** The /method page carries its own PageHeader, so it suppresses this one. */
+  showIntro?: boolean
 }) {
-  const wrapRef = React.useRef<HTMLDivElement>(null)
-  const trackRef = React.useRef<HTMLDivElement>(null)
-  const reducedMotion = useReducedMotion()
   const [active, setActive] = React.useState(0)
-  const activeRef = React.useRef(0)
+  const articleRefs = React.useRef<(HTMLElement | null)[]>([])
+  const reducedMotion = useReducedMotion()
 
   React.useEffect(() => {
-    const wrap = wrapRef.current
-    const track = trackRef.current
-    if (!wrap || !track) return
-    if (reducedMotion) return
+    const articles = articleRefs.current.filter((el): el is HTMLElement => el !== null)
+    if (articles.length === 0) return
+    if (typeof IntersectionObserver === 'undefined') return
 
-    wrap.dataset.ready = 'true'
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          const index = articles.indexOf(entry.target as HTMLElement)
+          if (index >= 0) setActive(index)
+        }
+      },
+      // A band around the viewport centre: the phase crossing it is current.
+      { rootMargin: '-40% 0px -40% 0px', threshold: 0 },
+    )
 
-    let frame = 0
+    for (const article of articles) observer.observe(article)
+    return () => observer.disconnect()
+  }, [])
 
-    const update = () => {
-      frame = 0
-      const wrapTop = wrap.offsetTop
-      const total = wrap.offsetHeight - window.innerHeight
-      const progress = total > 0 ? Math.min(Math.max((window.scrollY - wrapTop) / total, 0), 1) : 0
-
-      const maxShift = Math.max(track.scrollWidth - window.innerWidth, 0)
-      track.style.transform = `translate3d(${-progress * maxShift}px, 0, 0)`
-
-      // Inner parallax: ghost numerals drift against the track direction, so
-      // the backdrop feels deeper than the copy. Written straight to the DOM —
-      // still no React render on the scroll path.
-      const panels = track.querySelectorAll<HTMLElement>('.method-panel')
-      const mid = window.innerWidth / 2
-      panels.forEach((panel) => {
-        const rect = panel.getBoundingClientRect()
-        const offset = rect.left + rect.width / 2 - mid
-        const ghost = panel.querySelector<HTMLElement>(':scope > span')
-        if (ghost) ghost.style.transform = `translate3d(${(-offset * 0.08).toFixed(1)}px, 0, 0)`
-      })
-
-      const index = Math.min(Math.floor(progress * steps.length), steps.length - 1)
-      if (index !== activeRef.current) {
-        activeRef.current = index
-        setActive(index)
-      }
-    }
-
-    const schedule = () => {
-      if (frame) return
-      frame = requestAnimationFrame(update)
-    }
-
-    update()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule, { passive: true })
-    return () => {
-      if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
-      delete wrap.dataset.ready
-    }
-  }, [reducedMotion, steps.length])
+  const goToPhase = (index: number) => {
+    articleRefs.current[index]?.scrollIntoView({
+      behavior: reducedMotion ? 'auto' : 'smooth',
+      block: 'center',
+    })
+  }
 
   return (
-    // Scroll room for the pin: five panels plus room for the intro to clear.
-    // On mobile (and without JS) this collapses — the track is a plain stack.
-    <div
-      ref={wrapRef}
-      className={cn(
-        'method-wrap relative md:h-[520vh]',
-        tone === 'paper' ? 'tone-paper' : 'bg-background',
-      )}
-    >
-      <div className="method-viewport md:sticky md:top-0 md:flex md:h-screen md:flex-col md:justify-center md:overflow-hidden">
-        <div className="container-page">
-          <Eyebrow className="justify-center">The method</Eyebrow>
-          <h2 className="mx-auto mt-5 max-w-3xl text-center display-lg">
-            Five phases, one number.
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-muted-foreground md:text-lg">
-            Technology accelerates faster every day. Most businesses fall behind. We close that gap
-            with a five-phase method that does not follow the curve — it bends it.
-          </p>
-        </div>
+    <div className={cn('relative', tone === 'paper' ? 'tone-paper' : 'bg-background')}>
+      <div className="container-page py-24 md:py-32">
+        {showIntro ? (
+          <div className="mx-auto max-w-3xl text-center">
+            <Eyebrow className="justify-center">The method</Eyebrow>
+            <h2 className="mx-auto mt-5 display-lg">Five phases, one number.</h2>
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+              Technology accelerates faster every day. Most businesses fall behind. We close that
+              gap with a five-phase method that does not follow the curve — it bends it. Every phase
+              ends with something you can hold us to.
+            </p>
+          </div>
+        ) : null}
 
-        <div
-          ref={trackRef}
-          className="method-track mt-14 flex flex-col gap-16 px-4 will-change-transform md:mt-10 md:flex-row md:items-stretch md:gap-0 md:px-0"
-        >
-          {steps.map((step) => (
-            <article
-              key={step.word}
-              aria-label={`Phase ${step.numeral}: ${step.word}`}
-              className="method-panel relative shrink-0 px-4 md:w-[74vw] md:px-[7vw] lg:w-[56vw] lg:px-[5vw]"
-            >
-              <span
+        <div className="mt-16 grid gap-12 md:mt-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+          {/* Sticky rail: flipping numeral, progress spine, phase anchors. */}
+          <div className="hidden lg:block">
+            <div className="sticky top-32">
+              <div
+                className="relative font-display text-[clamp(8rem,18vw,15rem)] leading-[0.85] font-extrabold tracking-[-0.04em] tabular-nums"
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-[0.22em] left-0 font-display text-[clamp(12.5rem,60vh,24.5rem)] text-ghost select-none"
               >
-                {step.numeral}
-              </span>
+                {steps.map((step, i) => (
+                  <span
+                    key={step.numeral}
+                    className={cn(
+                      'block transition-[opacity,transform] duration-500 ease-out',
+                      i === active
+                        ? 'relative opacity-100'
+                        : 'pointer-events-none absolute inset-0 translate-y-4 opacity-0',
+                    )}
+                  >
+                    <span className={i === active ? 'text-foreground' : ''}>{step.numeral}</span>
+                    <span className="text-coral">.</span>
+                  </span>
+                ))}
+              </div>
 
-              <div className="relative">
-                <h3 className="font-display text-[clamp(3rem,14.5vw,8rem)] leading-[1] font-bold tracking-normal text-balance">
+              <p className="mt-6 label text-muted-foreground">
+                Phase {active + 1} of {steps.length} — {steps[active]?.label}
+              </p>
+
+              {/* Progress spine. */}
+              <div
+                className="mt-4 h-px w-full bg-border-strong"
+                role="progressbar"
+                aria-valuemin={1}
+                aria-valuemax={steps.length}
+                aria-valuenow={active + 1}
+                aria-label="Method progress"
+              >
+                <div
+                  className="h-full origin-left bg-coral transition-transform duration-500 ease-out"
+                  style={{ transform: `scaleX(${(active + 1) / steps.length})` }}
+                />
+              </div>
+
+              {/* Anchor list. */}
+              <ul className="mt-8 space-y-1">
+                {steps.map((step, i) => (
+                  <li key={step.word}>
+                    <button
+                      type="button"
+                      onClick={() => goToPhase(i)}
+                      aria-current={i === active ? 'true' : undefined}
+                      className={cn(
+                        'group flex min-h-10 w-full items-center gap-4 rounded-xl px-3 text-left transition-colors',
+                        i === active
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground',
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'font-mono text-[11px] tabular-nums',
+                          i === active ? 'text-coral' : 'text-muted-foreground/60',
+                        )}
+                      >
+                        {step.numeral}
+                      </span>
+                      <span className="text-[15px]">{step.label}</span>
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          'ml-auto transition-transform duration-300',
+                          i === active ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0',
+                        )}
+                      >
+                        →
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Phases. */}
+          <div>
+            {steps.map((step, i) => (
+              <article
+                key={step.word}
+                ref={(el) => {
+                  articleRefs.current[i] = el
+                }}
+                aria-label={`Phase ${step.numeral}: ${step.word}`}
+                className="border-t border-border py-14 first:border-t-0 first:pt-0 md:py-20 lg:min-h-[62vh] lg:first:pt-14"
+              >
+                {/* Inline numeral for narrow screens, where the rail is hidden. */}
+                <p className="label text-coral tabular-nums lg:hidden">
+                  {step.numeral} / {String(steps.length).padStart(2, '0')}
+                </p>
+
+                <h3 className="mt-4 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[1] font-bold tracking-normal text-balance lg:mt-0">
                   {step.word}
                   <span aria-hidden="true" className="text-coral">
                     .
@@ -169,54 +215,17 @@ export function Method({
                     </li>
                   ))}
                 </ul>
-              </div>
-            </article>
-          ))}
 
-          {/* End spacer so the last panel can travel fully into view. */}
-          <div aria-hidden="true" className="hidden shrink-0 md:block md:w-[12vw]" />
-        </div>
-
-        {/* Progress rail: reached phases as bold letters joined by long rules,
-            upcoming phases as dots, the final node a pink destination dot.
-            Only the active phase carries its label beneath. */}
-        <div className="container-page mt-12 hidden md:block" aria-hidden="true">
-          <div className="flex max-w-xl items-start">
-            {steps.map((step, i) => (
-              <React.Fragment key={step.word}>
-                <div className="flex flex-col items-center gap-2.5">
-                  <span
-                    className={cn(
-                      'font-display leading-none font-bold transition-colors duration-500',
-                      i <= active
-                        ? 'text-[28px] text-foreground'
-                        : 'text-[10px] leading-[2.8] text-foreground',
-                      i === steps.length - 1 && i > active && 'text-coral',
-                    )}
-                  >
-                    {i <= active ? step.word.charAt(0) : '●'}
-                  </span>
-                  <span
-                    className={cn(
-                      'font-mono text-[9px] tracking-[0.14em] uppercase',
-                      i === active ? 'text-muted-foreground' : 'invisible',
-                    )}
-                  >
-                    {step.label}
-                  </span>
-                </div>
-                {i < steps.length - 1 ? (
-                  <span
-                    aria-hidden="true"
-                    className="mx-1 mt-[13px] h-px flex-1 bg-border-strong"
-                  />
-                ) : null}
-              </React.Fragment>
+                <p className="mt-8 flex max-w-md items-baseline gap-3 border-t border-border pt-5 text-[13px]">
+                  <span className="shrink-0 label text-[0.6rem] text-coral">Ends with</span>
+                  <span className="text-foreground">{step.endsWith}</span>
+                </p>
+              </article>
             ))}
           </div>
         </div>
 
-        {/* Screen-reader + no-JS equivalent of the progress state. */}
+        {/* Screen-reader status for the rail state. */}
         <p className="sr-only" role="status">
           Phase {active + 1} of {steps.length}: {steps[active]?.word}
         </p>

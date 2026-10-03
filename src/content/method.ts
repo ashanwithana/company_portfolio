@@ -1,9 +1,12 @@
 import type { MethodStep } from '@/components/sections/method'
 
 /**
- * The studio's five-phase method, shared by the home page's pinned section and
- * the dedicated /method page. One source so the two can never disagree about
- * what the phases are called or what each one claims.
+ * The studio's five-phase method, shared by the home page section and the
+ * dedicated /method page. One source so the two can never disagree about
+ * what the phases are called or what each one hands over.
+ *
+ * Every phase ends with a concrete artifact — that is the "one number" idea:
+ * the engagement is accountable at every step, not just at the end.
  */
 export const methodSteps: readonly MethodStep[] = [
   {
@@ -16,6 +19,7 @@ export const methodSteps: readonly MethodStep[] = [
       'two weeks embedded: we read the code and watch the work',
       'clarity before code, always',
     ],
+    endsWith: 'a written brief of what is actually wrong',
   },
   {
     word: 'Shape',
@@ -27,6 +31,7 @@ export const methodSteps: readonly MethodStep[] = [
       'fixed price after discovery, not an estimate that drifts',
       'you approve the plan, not just a mood board',
     ],
+    endsWith: 'the number — fixed, in writing',
   },
   {
     word: 'Build',
@@ -38,6 +43,7 @@ export const methodSteps: readonly MethodStep[] = [
       'performance and accessibility budgets enforced in CI',
       'enterprise data migrated in rehearsed phases',
     ],
+    endsWith: 'working software, every cycle',
   },
   {
     word: 'Prove',
@@ -49,6 +55,7 @@ export const methodSteps: readonly MethodStep[] = [
       'AI features ship behind an accuracy gate, not a demo',
       'if a number did not move, we explain why',
     ],
+    endsWith: 'numbers against the baseline, or an explanation',
   },
   {
     word: 'Hand over',
@@ -60,5 +67,6 @@ export const methodSteps: readonly MethodStep[] = [
       'understood without a manual, improved without permission',
       'handover, not lock-in',
     ],
+    endsWith: 'a team that does not need us',
   },
 ]
