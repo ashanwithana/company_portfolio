@@ -66,6 +66,7 @@ export const primaryNav: readonly NavItem[] = [
 
 /** Routes surfaced in the command palette, ordered by group. */
 export const practiceRoutes: readonly NavItem[] = [
+  { href: '/method', label: 'Method', shortcut: 'M' },
   { href: '/enterprise', label: 'Enterprise systems', shortcut: 'E' },
   { href: '/ai', label: 'AI engineering', shortcut: 'I' },
   { href: '/careers', label: 'Careers', shortcut: 'C' },

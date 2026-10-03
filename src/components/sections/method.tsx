@@ -37,7 +37,14 @@ export type MethodStep = {
  *   markup mismatch, because the horizontal layout is applied exclusively by
  *   setting `data-ready` in the effect.
  */
-export function Method({ steps }: { steps: readonly MethodStep[] }) {
+export function Method({
+  steps,
+  tone = 'paper',
+}: {
+  steps: readonly MethodStep[]
+  /** Ground the pinned section sits on: cream on the home page, dark on /method. */
+  tone?: 'paper' | 'dark'
+}) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
   const trackRef = React.useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
@@ -101,7 +108,13 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
   return (
     // Scroll room for the pin: five panels plus room for the intro to clear.
     // On mobile (and without JS) this collapses — the track is a plain stack.
-    <div ref={wrapRef} className="method-wrap tone-paper relative md:h-[520vh]">
+    <div
+      ref={wrapRef}
+      className={cn(
+        'method-wrap relative md:h-[520vh]',
+        tone === 'paper' ? 'tone-paper' : 'bg-background',
+      )}
+    >
       <div className="method-viewport md:sticky md:top-0 md:flex md:h-screen md:flex-col md:justify-center md:overflow-hidden">
         <div className="container-page">
           <Eyebrow className="justify-center">The method</Eyebrow>

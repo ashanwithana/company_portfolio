@@ -381,7 +381,7 @@
  * stroke reads as noise.
  */
 @utility text-ghost {
-  color: color-mix(in oklab, var(--foreground) 6%, transparent);
+  color: color-mix(in oklab, var(--foreground) 8%, transparent);
   font-weight: 800;
   line-height: 0.82;
   letter-spacing: -0.04em;

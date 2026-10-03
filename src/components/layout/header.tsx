@@ -6,7 +6,7 @@ import * as React from 'react'
 
 import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
-import { primaryNav, siteConfig } from '@/content/site'
+import { siteConfig } from '@/content/site'
 import { services } from '@/content/services'
 import { publishedCaseStudies } from '@/content/case-studies'
 import { cn } from '@/lib/utils'
@@ -32,7 +32,7 @@ const navEntries: readonly NavEntry[] = [
       })),
     ],
   },
-  { href: '/#method', label: 'Method' },
+  { href: '/method', label: 'Method' },
   {
     href: '/work',
     label: 'Work',
@@ -275,23 +275,38 @@ export function Header() {
           className="overflow-hidden rounded-3xl border border-border bg-popover p-2 shadow-elegant"
         >
           <ul className="flex flex-col">
-            {primaryNav.map((item) => (
-              <li key={item.href}>
+            {navEntries.map((entry) => (
+              <li key={entry.label}>
                 <Link
-                  href={item.href}
-                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  href={entry.href}
+                  aria-current={isActive(entry.href) ? 'page' : undefined}
                   className={cn(
                     'flex min-h-12 items-center justify-between rounded-2xl px-4 font-mono text-xs tracking-[0.18em] uppercase transition-colors',
-                    isActive(item.href)
+                    isActive(entry.href)
                       ? 'bg-accent text-coral'
                       : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                   )}
                 >
-                  {item.label}
+                  {entry.label}
                   <span aria-hidden="true" className="text-muted-foreground/60">
                     ↗
                   </span>
                 </Link>
+
+                {entry.children ? (
+                  <ul className="mb-1 ml-4 flex flex-col border-l border-border pl-2">
+                    {entry.children.slice(0, 5).map((child) => (
+                      <li key={child.href + child.label}>
+                        <Link
+                          href={child.href}
+                          className="flex min-h-10 items-center rounded-xl px-3 text-[13px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             ))}
           </ul>
