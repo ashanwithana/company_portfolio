@@ -14,10 +14,9 @@ import { cn } from '@/lib/utils'
  *
  *   1. Depth attenuation. Each point's size and brightness scale with its z in
  *      camera space, so the limb brightens and the far side recedes.
- *   2. Three inclined orbital ellipses, a pink arc and two customer route arcs
- *      traced in the same camera space, plus a Colombo home node.
- *      camera space, which give the silhouette an unambiguous frame of
- *      reference and catch a travelling highlight.
+ *   2. Two customer route arcs from the Colombo home node, traced in the same
+ *      camera space. No rings, no orbits — the sphere carries no geometric
+ *      circles at all.
  *
  * Points are rasterised as small squares rather than a sprite atlas: at this
  * density the difference is invisible and it keeps the whole effect to one
@@ -137,7 +136,7 @@ void main() {
 /** Ring / orbital pass — drawn as line strips around the same globe. */
 const LINE_VERT = /* glsl */ `
 attribute vec3 aPos;
-attribute float aKind;   // 1 = orbit, 2 = pink arc, 3 = customer route
+attribute float aKind;   // 3 = customer route (the only linework left)
 uniform mat4 uMVP;
 varying float vKind;
 varying float vDepth;
@@ -151,24 +150,15 @@ void main() {
 
 const LINE_FRAG = /* glsl */ `
 precision mediump float;
-uniform vec3 uColorLine;
 uniform vec3 uColorAccent;
 uniform float uTheme;
 varying float vKind;
 varying float vDepth;
 void main() {
-  // Orbits are a quiet frame of reference; the pink arc and the customer
-  // routes carry the accent colour. Routes read slightly stronger so they
-  // survive at a glance. All fade toward their far arc so they pass behind
-  // the globe rather than sitting on top of it.
-  float isArc = step(1.5, vKind);
-  float isRoute = step(2.5, vKind);
-  float a = mix(vKind > 0.5 ? 0.26 : 0.34, 0.55, isArc);
-  a = mix(a, 0.9, isRoute);
-  // Orbits fade toward their far arc so they read as passing behind the globe.
+  // The customer routes read as glowing pink threads. They fade toward their
+  // far arc so they pass behind the globe rather than sitting on top of it.
   float depth = mix(0.25, 1.0, vDepth);
-  vec3 col = mix(mix(uColorLine, uColorAccent, vKind * 0.45), uColorAccent, max(isArc, isRoute));
-  gl_FragColor = vec4(col, a * depth * mix(1.0, 0.55, uTheme));
+  gl_FragColor = vec4(uColorAccent, 0.9 * depth * mix(1.0, 0.55, uTheme));
 }
 `
 
@@ -258,7 +248,6 @@ const WORLD: readonly string[] = [
 
 const POINT_COUNT = 24000
 const GLOBE_RADIUS = 1
-const ORBIT_SEGMENTS = 200
 /** Number of pink accent nodes scattered across the landmasses. */
 const ACCENT_TARGET = 8
 /**
@@ -508,9 +497,10 @@ export function HeroVisual({ className }: { className?: string }) {
     gl.bindBuffer(gl.ARRAY_BUFFER, accentBuf)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(accents), gl.STATIC_DRAW)
 
-    // ---- Orbital ellipses + customer route arcs ------------------------------
-    // No limb ring by design: the sphere edge is carried by the dot fade
-    // alone, so nothing geometric sits on the silhouette.
+    // ---- Customer route arcs -------------------------------------------------
+    // The only line work on the globe: the two routes from Colombo. There are
+    // deliberately no decorative rings or orbits — the sphere carries no
+    // geometric circles at all, just the dot shade fading at the edge.
     const linePositions: number[] = []
     const lineKinds: number[] = []
     /** [buffer offset, vertex count] for each line strip. */
@@ -519,36 +509,6 @@ export function HeroVisual({ className }: { className?: string }) {
       strips.push({ offset: linePositions.length / 3, count: points.length })
       for (const [x, y, z] of points) linePositions.push(x, y, z)
       for (let i = 0; i < points.length; i++) lineKinds.push(kind)
-    }
-
-    // Orbits: circles of varying radius and inclination, so they cross in front
-    // of and behind the globe. The last one is the pink arc sweeping over the
-    // top, like the reference's.
-    const orbits: readonly (readonly [number, number, number, number, number])[] = [
-      // [radius, x-tilt, z-tilt, y-offset, kind]
-      [1.28, 0.42, 0.18, 0, 1],
-      [1.44, -0.3, 0.55, 0.06, 1],
-      [1.16, 0.9, -0.2, -0.04, 1],
-      [1.66, 0.5, 0.12, 0.1, 2],
-    ]
-    for (const [r, tx, tz, yo, kind] of orbits) {
-      const cx = Math.cos(tx)
-      const sx = Math.sin(tx)
-      const cz = Math.cos(tz)
-      const sz = Math.sin(tz)
-      const points: [number, number, number][] = []
-      for (let i = 0; i <= ORBIT_SEGMENTS; i++) {
-        const a = (i / ORBIT_SEGMENTS) * Math.PI * 2
-        // Circle in the XY plane, then rotated about X then Z.
-        const px = Math.cos(a) * r
-        const py = Math.sin(a) * r
-        const y1 = py * cx - px * sx
-        const z1 = py * sx + px * cx
-        const x2 = y1 * cz - z1 * sz
-        const z2 = y1 * sz + z1 * cz
-        points.push([x2, y1 * 0 + yo, z2])
-      }
-      pushStrip(kind, points)
     }
 
     // Customer routes: great-circle arcs from the Colombo studio to Oman and
@@ -598,7 +558,6 @@ export function HeroVisual({ className }: { className?: string }) {
 
     gl.useProgram(lines.prog)
     const lMvp = gl.getUniformLocation(lines.prog, 'uMVP')!
-    const lLine = gl.getUniformLocation(lines.prog, 'uColorLine')!
     const lAccent = gl.getUniformLocation(lines.prog, 'uColorAccent')!
     const lTheme = gl.getUniformLocation(lines.prog, 'uTheme')!
 
@@ -719,7 +678,6 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.enableVertexAttribArray(lKind)
       gl.vertexAttribPointer(lKind, 1, gl.FLOAT, false, 0, 0)
       gl.uniformMatrix4fv(lMvp, false, mvp)
-      gl.uniform3f(lLine, 0.9, 0.9, 0.95)
       gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(lTheme, theme)
 
