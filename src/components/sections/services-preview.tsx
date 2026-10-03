@@ -1,9 +1,8 @@
 import Link from 'next/link'
 
 import { Reveal } from '@/components/ui/reveal'
-import { Tag } from '@/components/ui/badge'
 import { services } from '@/content/services'
-import { ACCENT_BORDER, ACCENT_TEXT, ACCENT_WASH } from '@/lib/accent'
+import { ACCENT_BORDER, ACCENT_DOT, ACCENT_WASH } from '@/lib/accent'
 import { cn } from '@/lib/utils'
 
 /** Services teaser on the home page — condensed versions of the full page. */
@@ -25,18 +24,34 @@ export function ServicesPreview() {
               <p className="mt-3 leading-relaxed text-muted-foreground">{service.summary}</p>
             </div>
 
-            <div className="flex items-center justify-between">
-              <ul className="flex flex-wrap gap-1.5">
-                {service.deliverables.slice(0, 2).map((item) => (
-                  <li key={item}>
-                    <Tag className={ACCENT_TEXT[service.tint]}>{item}</Tag>
+            <div className="flex items-end justify-between gap-6">
+              {/*
+                Deliverables as a ruled list rather than chips. The labels are
+                full phrases, so chips stretched to two lines and dominated the
+                card; a short list keeps the card scannable and matches the
+                rule-led lists used elsewhere in the design system.
+              */}
+              <ul className="space-y-2">
+                {service.deliverables.slice(0, 3).map((item) => (
+                  <li
+                    key={item}
+                    className="relative pl-4 text-sm leading-snug text-muted-foreground"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute top-[0.65em] left-0 h-px w-2.5',
+                        ACCENT_DOT[service.tint],
+                      )}
+                    />
+                    {item}
                   </li>
                 ))}
               </ul>
 
               <span
                 aria-hidden="true"
-                className="text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
+                className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-foreground"
               >
                 →
               </span>

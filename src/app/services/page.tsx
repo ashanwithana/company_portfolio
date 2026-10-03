@@ -2,10 +2,10 @@ import Link from 'next/link'
 
 import { PageHeader, PageSection } from '@/components/layout/page'
 import { Reveal } from '@/components/ui/reveal'
-import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { services, studioStats } from '@/content/services'
-import { ACCENT_TEXT } from '@/lib/accent'
+import { ACCENT_DOT } from '@/lib/accent'
+import { cn } from '@/lib/utils'
 
 export const metadata = {
   title: 'Services',
@@ -46,10 +46,21 @@ export default function ServicesPage() {
                     {service.summary}
                   </p>
 
-                  <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {/* Ruled list rather than chips: the deliverables are full phrases. */}
+                  <ul className="mt-5 space-y-2">
                     {service.deliverables.slice(0, 3).map((item) => (
-                      <li key={item}>
-                        <Tag className={ACCENT_TEXT[service.tint]}>{item}</Tag>
+                      <li
+                        key={item}
+                        className="relative pl-5 text-sm leading-snug text-muted-foreground"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            'absolute top-[0.65em] left-0 h-px w-3',
+                            ACCENT_DOT[service.tint],
+                          )}
+                        />
+                        {item}
                       </li>
                     ))}
                   </ul>
@@ -68,7 +79,7 @@ export default function ServicesPage() {
       </PageSection>
 
       {/* Practice stats */}
-      <PageSection tone="muted">
+      <PageSection tone="paper">
         <dl className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {studioStats.map((stat) => (
             <div key={stat.label}>

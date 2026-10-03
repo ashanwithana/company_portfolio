@@ -30,14 +30,19 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      {/* Globe: centred, larger than the viewport height, cropped by the fold. */}
-      <HeroVisual className="pointer-events-none absolute top-0 left-1/2 aspect-square w-[min(150vw,64rem)] -translate-x-1/2 -translate-y-[18%]" />
+      {/*
+        Globe: centred, sized off viewport width so the whole sphere reads as a
+        sphere. Sized by height instead, the camera ends up inside it and the
+        point cloud degenerates into scattered dots.
+      */}
+      <HeroVisual className="pointer-events-none absolute top-[3%] left-1/2 aspect-square w-[min(88vw,46rem)] -translate-x-1/2" />
 
       <div className="relative z-10 container-page">
         {/* Status pill sits above the globe's upper limb. */}
         <StatusBadge className="animate-fade-up">{contactContent.availability.badge}</StatusBadge>
 
-        <div className="mt-[38svh]">
+        {/* Headline starts over the globe's lower third, as in the reference. */}
+        <div className="mt-[56svh]">
           <h1 className="max-w-4xl display-xl">
             {headline.map((line, index) => (
               <span

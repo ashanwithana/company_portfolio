@@ -110,8 +110,15 @@
  * any block can drop into the page's light/dark rhythm. Declaring the full token
  * set here rather than a handful of overrides means components inside need no
  * theme awareness at all.
+ *
+ * The explicit background-color matters: redefining `--background` only changes
+ * what descendants *read*, it does not paint anything. Without this line a paper
+ * section would set dark ink onto the page's dark ground.
  */
 .tone-paper {
+  background-color: var(--paper);
+  color: var(--paper-foreground);
+
   --background: var(--paper);
   --foreground: var(--paper-foreground);
   --card: color-mix(in oklab, var(--paper-foreground) 6%, var(--paper));

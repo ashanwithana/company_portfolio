@@ -140,7 +140,7 @@ varying float vDepth;
 void main() {
   // Kept faint: the rings are a frame of reference for the sphere, not a
   // competing graphic. The limb ring in particular must not out-read the dots.
-  float a = vKind > 0.5 ? 0.16 : 0.30;
+  float a = vKind > 0.5 ? 0.26 : 0.34;
   // Orbits fade toward their far arc so they read as passing behind the globe.
   float depth = mix(0.25, 1.0, vDepth);
   vec3 col = mix(uColorLine, uColorAccent, vKind * 0.45);
@@ -227,7 +227,7 @@ const LAND_LOBES: readonly (readonly [number, number, number, number])[] = [
   [55, -30, 10, 0.6],
 ]
 
-const POINT_COUNT = 6000
+const POINT_COUNT = 11000
 const GLOBE_RADIUS = 1
 const RING_SEGMENTS = 180
 const ORBIT_SEGMENTS = 200
@@ -405,13 +405,13 @@ export function HeroVisual({ className }: { className?: string }) {
       const lon = (Math.atan2(z, x) * 180) / Math.PI
       const lat = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
 
-      const isLand = landAt(lon, lat) > 0.34
+      const isLand = landAt(lon, lat) > 0.27
       // Keep the sea sparse so land reads as the figure and sea as ground.
-      if (!isLand && random() > 0.26) continue
+      if (!isLand && random() > 0.2) continue
 
       // Roughly one accent node per 150 land points, capped, so the pink reads
       // as scattered signal rather than a second landmass.
-      const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.0067
+      const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.004
       if (isAccent) accentsPlaced++
 
       positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS)
@@ -614,7 +614,7 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform1f(pTime, t)
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
-      gl.uniform1f(pScale, canvas.height * 0.005)
+      gl.uniform1f(pScale, canvas.height * 0.0038)
       gl.uniform3f(pLand, 1.0, 0.99, 1.0)
       gl.uniform3f(pSea, 0.6, 0.65, 0.8)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)

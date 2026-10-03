@@ -46,7 +46,7 @@ export default function AiPage() {
       </PageSection>
 
       {/* RAG patterns */}
-      <PageSection tone="muted">
+      <PageSection tone="paper">
         <h2 className="label text-muted-foreground">Retrieval architectures</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
@@ -224,7 +224,7 @@ export default function AiPage() {
       </PageSection>
 
       {/* When RAG is wrong — the honest section competitors skip. */}
-      <PageSection tone="muted">
+      <PageSection tone="paper">
         <h2 className="label text-muted-foreground">When RAG is the wrong answer</h2>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -253,7 +253,7 @@ export default function AiPage() {
       </PageSection>
 
       {/* AI case studies */}
-      <PageSection tone="muted">
+      <PageSection tone="paper">
         <h2 className="label text-muted-foreground">AI case studies</h2>
 
         <div className="mt-12 space-y-20">

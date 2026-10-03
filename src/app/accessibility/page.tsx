@@ -70,7 +70,7 @@ export default function AccessibilityPage() {
         </dl>
       </PageSection>
 
-      <PageSection tone="muted">
+      <PageSection tone="paper">
         <div className="max-w-3xl space-y-8">
           <section aria-labelledby="known">
             <h2 id="known" className="text-2xl">
