@@ -196,16 +196,19 @@ export const testimonials: readonly Testimonial[] = [
 ] as const
 
 /** Why-us differentiators shown on the home page. */
-export const differentiators: readonly { title: string; body: string }[] = [
+export const differentiators: readonly { tag: string; title: string; body: string }[] = [
   {
+    tag: 'Money',
     title: 'Fixed price after discovery',
     body: 'You get a number you can hold us to, not an estimate that drifts. If the budget does not fit the work, we say so before you sign.',
   },
   {
+    tag: 'Proof',
     title: 'Measured, not promised',
     body: 'A baseline in week one, numbers at handover. AI features ship behind an accuracy gate; performance work ships against a budget.',
   },
   {
+    tag: 'Freedom',
     title: 'Handover, not lock-in',
     body: 'Docs, runbooks and pairing until your team is comfortable — then we leave. The test is whether you need us afterwards.',
   },
