@@ -63,6 +63,18 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
       const maxShift = Math.max(track.scrollWidth - window.innerWidth, 0)
       track.style.transform = `translate3d(${-progress * maxShift}px, 0, 0)`
 
+      // Inner parallax: ghost numerals drift against the track direction, so
+      // the backdrop feels deeper than the copy. Written straight to the DOM —
+      // still no React render on the scroll path.
+      const panels = track.querySelectorAll<HTMLElement>('.method-panel')
+      const mid = window.innerWidth / 2
+      panels.forEach((panel) => {
+        const rect = panel.getBoundingClientRect()
+        const offset = rect.left + rect.width / 2 - mid
+        const ghost = panel.querySelector<HTMLElement>(':scope > span')
+        if (ghost) ghost.style.transform = `translate3d(${(-offset * 0.08).toFixed(1)}px, 0, 0)`
+      })
+
       const index = Math.min(Math.floor(progress * steps.length), steps.length - 1)
       if (index !== activeRef.current) {
         activeRef.current = index
@@ -116,7 +128,7 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
             >
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-[0.22em] left-0 font-display text-[clamp(12rem,48vh,24rem)] text-ghost select-none"
+                className="pointer-events-none absolute -top-[0.22em] left-0 font-display text-[clamp(12.5rem,60vh,24.5rem)] text-ghost select-none"
               >
                 {step.numeral}
               </span>
@@ -126,7 +138,7 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
                   {step.word}
                 </h3>
 
-                <p className="mt-6 max-w-md text-[15px] leading-relaxed text-foreground/90">
+                <p className="mt-6 max-w-md text-[15px] leading-[1.7] font-light text-foreground/90">
                   {step.lead}
                 </p>
 
@@ -134,11 +146,8 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
                   {step.points.map((point) => (
                     <li
                       key={point}
-                      className="relative pl-7 text-[12px] leading-relaxed text-muted-foreground"
+                      className="text-[12px] leading-relaxed font-light text-muted-foreground"
                     >
-                      <span aria-hidden="true" className="absolute top-0 left-0 text-coral">
-                        —
-                      </span>
                       {point}
                     </li>
                   ))}

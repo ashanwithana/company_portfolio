@@ -46,10 +46,33 @@ export function Footer() {
         aria-hidden="true"
       />
 
+      {/* Write-to-us card, mirroring the reference's footer email panel. */}
+      <div className="relative container-page pt-12 sm:pt-14">
+        <a
+          href={`mailto:${siteConfig.email}`}
+          className="group flex flex-col gap-1 rounded-[12px] border border-border bg-foreground/[0.015] px-6 py-5 transition-colors hover:border-border-strong"
+        >
+          <span className="font-mono text-[10px] tracking-[0.08em] text-muted-foreground uppercase">
+            email
+          </span>
+          <span className="text-base text-foreground">
+            write to us · {siteConfig.email}
+            <span
+              aria-hidden="true"
+              className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-coral"
+            >
+              →
+            </span>
+          </span>
+        </a>
+      </div>
+
       <div className="relative container-page grid gap-12 py-12 sm:grid-cols-3 sm:py-16">
         {columns.map((column) => (
           <nav key={column.heading} aria-label={column.heading}>
-            <h2 className="label text-muted-foreground">{column.heading}</h2>
+            <h2 className="font-mono text-[11px] leading-[1.4] font-normal tracking-[0.12em] text-muted-foreground">
+              {column.heading}
+            </h2>
             <ul className="mt-5 space-y-3">
               {column.links.map((link) => (
                 <li key={link.href + link.label}>

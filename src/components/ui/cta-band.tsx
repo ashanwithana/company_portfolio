@@ -1,11 +1,13 @@
 import { Eyebrow } from '@/components/ui/badge'
+import { ButtonLink } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 /**
  * Closing call to action, reused at the bottom of most marketing pages.
  *
- * `href` should point at a real route so it works without JavaScript; the
- * optional action renders a secondary link beside it.
+ * Centred like the reference's closing sections. `href` should point at a real
+ * route so it works without JavaScript; the optional action renders a
+ * secondary link beside it.
  */
 export function CtaBand({
   eyebrow,
@@ -48,32 +50,28 @@ export function CtaBand({
         </span>
       ) : null}
 
-      <div className="relative container-page">
-        <div className="max-w-3xl">
-          <Eyebrow accent>{eyebrow}</Eyebrow>
+      <div className="relative container-page text-center">
+        <div className="mx-auto max-w-3xl">
+          <Eyebrow accent className="justify-center">
+            {eyebrow}
+          </Eyebrow>
 
-          <h2 className="mt-7 display-lg">{title}</h2>
+          <h2 className="mt-5 display-lg">{title}</h2>
 
-          <p className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
             {body}
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <a
-              href={href}
-              className="inline-flex h-14 items-center justify-center gap-2.5 rounded-full bg-coral px-8 font-mono text-xs tracking-[0.2em] text-coral-foreground uppercase shadow-[0_10px_30px_-12px_var(--coral)] transition-shadow hover:shadow-[0_16px_44px_-12px_var(--coral)]"
-            >
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <ButtonLink href={href} size="lg">
               {actionLabel}
               <span aria-hidden="true">→</span>
-            </a>
+            </ButtonLink>
 
             {secondary ? (
-              <a
-                href={secondary.href}
-                className="inline-flex h-14 items-center justify-center rounded-full border border-border-strong px-8 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:border-coral hover:text-coral"
-              >
+              <ButtonLink href={secondary.href} variant="outline" size="lg">
                 {secondary.label}
-              </a>
+              </ButtonLink>
             ) : null}
           </div>
         </div>
