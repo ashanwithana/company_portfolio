@@ -198,9 +198,9 @@ export const testimonials: readonly Testimonial[] = [
 /** Why-us differentiators shown on the home page. */
 export const differentiators: readonly { tag: string; title: string; body: string }[] = [
   {
-    tag: 'Money',
-    title: 'Fixed price after discovery',
-    body: 'You get a number you can hold us to, not an estimate that drifts. If the budget does not fit the work, we say so before you sign.',
+    tag: 'Honesty',
+    title: 'We tell you when we are wrong for the job',
+    body: 'Wrong stack, wrong timing, wrong fit — you will hear it on the first call, not when it is too late to walk away. We would rather point you somewhere better than sell you something that will not work.',
   },
   {
     tag: 'Proof',
