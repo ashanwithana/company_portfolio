@@ -15,10 +15,21 @@ export default function HomePage() {
     <>
       <Hero />
 
+      {/* Services */}
+      <Section id="services" label="What we do">
+        <SectionHeading
+          index="01"
+          label="What we do"
+          title="Six things we are genuinely good at."
+          description="We keep the practice deliberately narrow. Every service below is one we have delivered repeatedly, with a team that has done it before."
+        />
+        <ServicesPreview />
+      </Section>
+
       {/* Specialist practice tracks */}
       <Section id="practices" label="Practice tracks" tone="muted">
         <SectionHeading
-          index="01"
+          index="02"
           label="Practice tracks"
           title="Two areas we have gone deep on."
           description="Most of our work sits in these two tracks, so they get their own pages, their own case studies and their own standards."
@@ -95,17 +106,6 @@ export default function HomePage() {
             </Link>
           </Reveal>
         </div>
-      </Section>
-
-      {/* Services */}
-      <Section id="services" label="What we do">
-        <SectionHeading
-          index="02"
-          label="What we do"
-          title="Six things we are genuinely good at."
-          description="We keep the practice deliberately narrow. Every service below is one we have delivered repeatedly, with a team that has done it before."
-        />
-        <ServicesPreview />
       </Section>
 
       {/* Work */}
