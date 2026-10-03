@@ -727,25 +727,6 @@ export function HeroVisual({ className }: { className?: string }) {
       />
 
       {/*
-        Limb circle. One hairline at the sphere's exact silhouette, so the
-        horizon is a closed line rather than an edge implied by scattered dots.
-
-        The inset is measured, not guessed: walking the rendered rim in 1-degree
-        steps puts the outer edge of the dot field at 0.812 of the wrapper
-        radius, and an element with inset i has a radius of (1 - 2i) of that
-        same radius — hence inset-[9.4%]. The rings this replaces sat at
-        inset-[8%] (0.84), about 6px proud of the dots, which is exactly why
-        they read as hoops floating around the globe instead of its edge.
-
-        One circle, not two. The second, tilted ring turned a sphere into an
-        orbital diagram.
-      */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-[9.4%] rounded-full border border-foreground/20"
-      />
-
-      {/*
         CSS fallback: a dotted sphere built from two radial gradients. Visible
         during SSR, before WebGL boots, and permanently when WebGL is unavailable
         or motion is reduced.
@@ -774,6 +755,30 @@ export function HeroVisual({ className }: { className?: string }) {
           )}
         />
       ) : null}
+
+      {/*
+        Limb circle. One hairline at the sphere's exact silhouette, so the
+        horizon is a closed line rather than an edge implied by scattered dots.
+
+        Rendered after the canvas deliberately. These siblings are all
+        position: absolute with no z-index, so paint order is DOM order — with
+        the hairline first, the globe's limb dots drew over it and the line read
+        as broken where they crossed. In front, it holds as a continuous horizon.
+
+        The inset is measured, not guessed: walking the rendered rim in 1-degree
+        steps puts the outer edge of the dot field at 0.812 of the wrapper
+        radius, and an element with inset i has a radius of (1 - 2i) of that
+        same radius — hence inset-[9.4%]. The rings this replaces sat at
+        inset-[8%] (0.84), about 6px proud of the dots, which is exactly why
+        they read as hoops floating around the globe instead of its edge.
+
+        One circle, not two. The second, tilted ring turned a sphere into an
+        orbital diagram.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-[9.4%] rounded-full border border-foreground/20"
+      />
     </div>
   )
 }
