@@ -37,3 +37,24 @@ export const ACCENT_DOT: Record<Tint, string> = {
   amber: 'bg-amber',
   coral: 'bg-coral',
 }
+
+/** Flat ground for the case study plate, keyed to the tint. */
+export const ACCENT_GLOW: Record<Tint, string> = {
+  primary: 'bg-gradient-to-br from-primary/12 via-background to-elevated',
+  amber: 'bg-gradient-to-br from-amber/12 via-background to-elevated',
+  coral: 'bg-gradient-to-br from-coral/12 via-background to-elevated',
+}
+
+/** Hairline index number on the plate. */
+export const ACCENT_RULE: Record<Tint, string> = {
+  primary: 'text-primary/60',
+  amber: 'text-amber/60',
+  coral: 'text-coral/60',
+}
+
+/** Oversized monogram on the plate — decorative, so kept faint. */
+export const ACCENT_MONOGRAM: Record<Tint, string> = {
+  primary: 'text-primary/25',
+  amber: 'text-amber/25',
+  coral: 'text-coral/25',
+}

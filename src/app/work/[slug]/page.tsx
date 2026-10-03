@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs, BreadcrumbSchema } from '@/components/layout/page'
-import { BlockArt } from '@/components/ui/block-art'
+import { CasePlate } from '@/components/ui/case-plate'
 import { Tag } from '@/components/ui/badge'
 import { Prose } from '@/components/ui/prose'
 import { caseStudies, getCaseStudy, publishedCaseStudies } from '@/content/case-studies'
@@ -104,7 +104,13 @@ export default async function CaseStudyPage({ params }: Params) {
       </header>
 
       <div className="container-page">
-        <BlockArt seed={study.slug} ratio="wide" className="w-full" />
+        <CasePlate
+          client={study.client}
+          index={caseStudies.findIndex((item) => item.slug === study.slug) + 1}
+          tint={study.tint}
+          ratio="wide"
+          className="w-full"
+        />
       </div>
 
       {/* Headline results, stated before the narrative. */}

@@ -1,11 +1,11 @@
 import Link from 'next/link'
 
 import { PageHeader, PageSection } from '@/components/layout/page'
-import { InitialsAvatar } from '@/components/ui/block-art'
+import { InitialsAvatar } from '@/components/ui/initials-avatar'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
-import { ClientLogos } from '@/components/sections/work-preview'
+import { ClientLogos } from '@/components/sections/client-logos'
 import { modelProviders } from '@/content/ai'
 import { milestones, process, team, values } from '@/content/company'
 import { platforms } from '@/content/enterprise'

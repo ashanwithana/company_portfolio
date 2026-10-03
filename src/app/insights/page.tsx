@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/layout/page'
-import { BlockArt } from '@/components/ui/block-art'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
@@ -93,9 +92,7 @@ export default function InsightsPage() {
                 priority
                 className="hidden h-full w-full rounded-2xl object-cover md:block"
               />
-            ) : (
-              <BlockArt seed={featured.slug} ratio="portrait" className="hidden md:block" />
-            )}
+            ) : null}
           </Link>
         </section>
       ) : null}

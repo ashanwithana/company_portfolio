@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
 import * as React from 'react'
 
-import { BlockArt } from '@/components/ui/block-art'
+import { CasePlate } from '@/components/ui/case-plate'
 import { useIsMounted } from '@/hooks/use-media-query'
 import { ACCENT_BORDER, ACCENT_WASH } from '@/lib/accent'
 import type { CaseStudy, CaseStudyCategory } from '@/content/case-studies'
@@ -132,7 +132,7 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
       */}
       <motion.ul layout={!reducedMotion} className="grid gap-5 md:grid-cols-2">
         <AnimatePresence mode="popLayout" initial={false}>
-          {visible.map((study) => (
+          {visible.map((study, position) => (
             <motion.li
               key={study.slug}
               layout
@@ -149,7 +149,13 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
                   ACCENT_BORDER[study.tint],
                 )}
               >
-                <BlockArt seed={study.slug} ratio="wide" className="w-full shrink-0" />
+                <CasePlate
+                  client={study.client}
+                  index={position + 1}
+                  tint={study.tint}
+                  ratio="wide"
+                  className="w-full shrink-0"
+                />
 
                 <div className="flex flex-1 flex-col gap-3 px-2 pb-2">
                   <p className="label text-[0.55rem] text-muted-foreground">

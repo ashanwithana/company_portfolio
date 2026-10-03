@@ -1,5 +1,5 @@
 import { PageHeader, PageSection } from '@/components/layout/page'
-import { BlockArt } from '@/components/ui/block-art'
+import { CasePlate } from '@/components/ui/case-plate'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
@@ -13,6 +13,12 @@ export const metadata = {
   description:
     'RAG pipelines, model integrations and evaluation harnesses. We build retrieval systems that are measured before they are shipped — and that can decline when they do not know.',
 }
+
+/**
+ * AI case studies carry no tint of their own, so the plates cycle the three
+ * accents in order. It is decorative differentiation, not a category signal.
+ */
+const AI_TINTS = ['coral', 'primary', 'amber'] as const
 
 export default function AiPage() {
   return (
@@ -249,7 +255,7 @@ export default function AiPage() {
         <h2 className="label text-muted-foreground">AI case studies</h2>
 
         <div className="mt-12 space-y-20">
-          {aiCaseStudies.map((study) => (
+          {aiCaseStudies.map((study, position) => (
             <article key={study.slug}>
               <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">
                 <div>
@@ -284,7 +290,12 @@ export default function AiPage() {
                 </div>
 
                 <aside className="flex flex-col gap-5">
-                  <BlockArt seed={study.slug} ratio="square" />
+                  <CasePlate
+                    client={study.client}
+                    index={position + 1}
+                    tint={AI_TINTS[position % AI_TINTS.length]!}
+                    ratio="square"
+                  />
 
                   <dl className="grid grid-cols-2 gap-5">
                     {study.metrics.map((metric) => (
