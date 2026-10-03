@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { allRoutes, primaryNav, siteConfig, footerNav } from './site'
 import { allBenefits, departments, getRole, roles, rolesByDepartment } from './roles'
 import { differentiators, milestones, process, team, testimonials, values } from './company'
+import { coverFor } from './covers'
 import { services } from './services'
 import { aiFaqs, careersFaqs, contactFaqs, servicesFaqs } from './faqs'
 import { getAllPosts } from './posts-index'
@@ -259,5 +260,25 @@ describe('posts', () => {
 
     expect(previous).toBeUndefined()
     expect(next?.slug).toBeDefined()
+  })
+})
+
+describe('cover photography', () => {
+  const posts = getAllPosts()
+
+  it('gives every post a real cover image', () => {
+    for (const post of posts) {
+      const cover = coverFor(post.slug)
+      expect(cover, `missing cover for ${post.slug}`).toBeDefined()
+    }
+  })
+
+  it('describes the photograph rather than repeating the title', () => {
+    for (const post of posts) {
+      const cover = coverFor(post.slug)!
+      expect(cover.alt.length).toBeGreaterThan(12)
+      expect(cover.alt.toLowerCase()).not.toContain(post.title.toLowerCase())
+      expect(cover.credit).toMatch(/CC0/)
+    }
   })
 })

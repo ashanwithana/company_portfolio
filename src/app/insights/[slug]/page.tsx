@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs, BreadcrumbSchema } from '@/components/layout/page'
 import { CtaBand } from '@/components/ui/cta-band'
 import { Tag } from '@/components/ui/badge'
+import { coverFor, coverSize } from '@/content/covers'
 import { formatPostDate } from '@/content/posts'
 import { getAllPosts } from '@/content/posts-index'
 import { siteConfig } from '@/content/site'
@@ -22,6 +24,20 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   if (!post) return { title: 'Post not found' }
 
+  const cover = coverFor(post.slug)
+  const images = cover
+    ? {
+        images: [
+          {
+            url: cover.src,
+            width: coverSize.width,
+            height: coverSize.height,
+            alt: cover.alt,
+          },
+        ],
+      }
+    : {}
+
   return {
     title: post.title,
     description: post.summary,
@@ -34,6 +50,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       publishedTime: post.date,
       authors: [post.author],
       tags: [...post.tags],
+      ...images,
     },
   }
 }
@@ -45,6 +62,7 @@ export default async function BlogPostPage({ params }: Params) {
 
   if (!post) notFound()
 
+  const cover = coverFor(post.slug)
   const index = posts.findIndex((item) => item.slug === slug)
   const newer = index > 0 ? posts[index - 1] : undefined
   const older = index < posts.length - 1 ? posts[index + 1] : undefined
@@ -108,6 +126,20 @@ export default async function BlogPostPage({ params }: Params) {
           ))}
         </ul>
       </header>
+
+      {cover ? (
+        <figure className="container-page pb-12">
+          <Image
+            src={cover.src}
+            alt={cover.alt}
+            width={coverSize.width}
+            height={coverSize.height}
+            priority
+            sizes="(min-width: 1280px) 1200px, 100vw"
+            className="w-full rounded-3xl border border-border object-cover"
+          />
+        </figure>
+      ) : null}
 
       <div className="container-page border-t border-border pt-12 pb-20 md:pb-28">
         <Body />

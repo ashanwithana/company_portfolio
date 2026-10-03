@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 import { PageHeader } from '@/components/layout/page'
@@ -6,6 +7,7 @@ import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { aiCaseStudies, aiPrinciples, modelProviders, ragPatterns } from '@/content/ai'
+import { coverFor, coverPortraitSize, coverSize } from '@/content/covers'
 import { enterpriseCases, platforms } from '@/content/enterprise'
 import { publishedCaseStudies } from '@/content/case-studies'
 import { getAllPosts } from '@/content/posts-index'
@@ -31,6 +33,7 @@ export default function InsightsPage() {
 
   const allTags = [...new Set(posts.flatMap((post) => post.tags))].sort()
   const [featured, ...rest] = posts
+  const featuredCover = featured ? coverFor(featured.slug) : undefined
 
   return (
     <>
@@ -80,7 +83,19 @@ export default function InsightsPage() {
               <p className="mt-6 label text-[0.6rem] text-muted-foreground">By {featured.author}</p>
             </div>
 
-            <BlockArt seed={featured.slug} ratio="portrait" className="hidden md:block" />
+            {featuredCover ? (
+              <Image
+                src={featuredCover.portraitSrc}
+                alt={featuredCover.alt}
+                width={coverPortraitSize.width}
+                height={coverPortraitSize.height}
+                sizes="(min-width: 768px) 22rem, 100vw"
+                priority
+                className="hidden h-full w-full rounded-2xl object-cover md:block"
+              />
+            ) : (
+              <BlockArt seed={featured.slug} ratio="portrait" className="hidden md:block" />
+            )}
           </Link>
         </section>
       ) : null}
@@ -92,40 +107,58 @@ export default function InsightsPage() {
         </h2>
 
         <ul className="mt-8 divide-y divide-border border-y border-border">
-          {rest.map((post, index) => (
-            <Reveal key={post.slug} as="li" delay={index * 50} y={12}>
-              <article>
-                <Link
-                  href={`/insights/${post.slug}`}
-                  className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
-                >
-                  <div className="max-w-2xl">
-                    <p className="label text-[0.55rem] text-muted-foreground">
-                      {formatPostDate(post.date)} · {post.readingTimeMinutes} min read
-                    </p>
+          {rest.map((post, index) => {
+            const cover = coverFor(post.slug)
 
-                    <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-coral">
-                      {post.title}
-                    </h3>
+            return (
+              <Reveal key={post.slug} as="li" delay={index * 50} y={12}>
+                <article>
+                  <Link
+                    href={`/insights/${post.slug}`}
+                    className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
+                  >
+                    <div className="flex items-start gap-6">
+                      {cover ? (
+                        <Image
+                          src={cover.src}
+                          alt=""
+                          width={coverSize.width}
+                          height={coverSize.height}
+                          sizes="(min-width: 640px) 10rem, 100vw"
+                          loading={index < 2 ? 'eager' : 'lazy'}
+                          className="aspect-16/10 w-40 shrink-0 rounded-xl border border-border object-cover transition-transform duration-500 group-hover:scale-[1.02] sm:w-44"
+                        />
+                      ) : null}
 
-                    <p className="mt-3 leading-relaxed text-muted-foreground">{post.summary}</p>
+                      <div className="max-w-2xl">
+                        <p className="label text-[0.55rem] text-muted-foreground">
+                          {formatPostDate(post.date)} · {post.readingTimeMinutes} min read
+                        </p>
 
-                    <p className="mt-4 label text-[0.55rem] text-muted-foreground">
-                      By {post.author}
-                    </p>
-                  </div>
+                        <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-coral">
+                          {post.title}
+                        </h3>
 
-                  <ul className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-40 sm:justify-end">
-                    {post.tags.map((tag) => (
-                      <li key={tag}>
-                        <Tag>{tag}</Tag>
-                      </li>
-                    ))}
-                  </ul>
-                </Link>
-              </article>
-            </Reveal>
-          ))}
+                        <p className="mt-3 leading-relaxed text-muted-foreground">{post.summary}</p>
+
+                        <p className="mt-4 label text-[0.55rem] text-muted-foreground">
+                          By {post.author}
+                        </p>
+                      </div>
+                    </div>
+
+                    <ul className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-40 sm:justify-end">
+                      {post.tags.map((tag) => (
+                        <li key={tag}>
+                          <Tag>{tag}</Tag>
+                        </li>
+                      ))}
+                    </ul>
+                  </Link>
+                </article>
+              </Reveal>
+            )
+          })}
         </ul>
       </section>
 
