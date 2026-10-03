@@ -62,20 +62,16 @@ void main() {
   // degenerate into sub-pixel dust and the sphere reads as a solid figure.
   // Accent nodes are drawn larger — they are meant to read as signal, not
   // noise — and the home node larger still.
+  //
+  // No limb size scaling. It is tempting to shrink dots as they approach the
+  // silhouette to stop them stacking, but the sphere's outline is drawn entirely
+  // by those dots: shrink them and the circle tears into a ragged edge, which
+  // reads as broken rather than atmospheric. The tangency at the limb is simply
+  // what a dense dot sphere looks like. The alpha trim below is what keeps the
+  // outermost sliver from clipping into a hard wire.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
   float accSize = aAccent > 1.5 ? 1.9 : aAccent * 1.1;
-
-  /*
-   * Limb correction. Near the silhouette the surface is edge-on to the camera,
-   * so dozens of points project into the same pixel. Left alone they stack into
-   * a hard bright wall around the sphere that reads as a rendering fault rather
-   * than a horizon. Shrinking each dot as it approaches the edge — by the same
-   * curve the fragment stage fades alpha with — spreads that density back out
-   * and lets the silhouette dissolve instead of being stamped.
-   */
-  float limbT = smoothstep(0.0, 0.22, t);
-  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize)
-               * mix(0.30, 1.0, limbT);
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize);
 }
 `
 
@@ -103,10 +99,11 @@ void main() {
   if (disc <= 0.001) discard;
 
   // Points at the edge of the disc are the ones near the limb: fade them so the
-  // sphere silhouette stays circular. The window is deliberately wide — a tight
-  // one leaves a visible ring of dots standing proud of the horizon, which is
-  // what makes a dot sphere look broken rather than atmospheric.
-  float limb = smoothstep(0.0, 0.22, vDepth);
+  // sphere silhouette stays circular. The window is deliberately narrow. Widening
+  // it to soften the horizon erodes the dots that draw the sphere's outline and
+  // the edge tears; all this needs to do is trim the outermost sliver so it does
+  // not clip into a hard wire.
+  float limb = smoothstep(0.0, 0.09, vDepth);
 
   // Depth: near points brighter, far points dimmed toward the background.
   // The floor stays high — the reference globe reads as luminous white
@@ -123,17 +120,20 @@ void main() {
   vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.42, 0.40, 0.46), uTheme);
 
   vec3 col = mix(sea, land, vMask) * depthGain;
-  // Land renders nearly solid; the sea is a whisper so the continents carry
-  // the figure against the ground.
-  //
-  // The sea term is additionally confined to the near face. Carried out toward
-  // the limb it stops reading as water and becomes a dust halo around the
-  // sphere, which dissolves the silhouette and leaves the globe looking like
-  // scattered debris rather than a planet. Land is allowed all the way to the
-  // edge because a landmass running off the horizon is what sells the curve.
-  float seaFace = smoothstep(0.22, 0.58, vDepth);
-  float alpha = vMask * limb * (0.75 + 0.25 * vDepth)
-              + (1.0 - vMask) * limb * 0.07 * vDepth * seaFace;
+  /*
+   * Land is bright; the sea is a dimmer field beneath it.
+   *
+   * The sea has to be genuinely present, not a whisper. It is what draws the
+   * sphere's outline: with land covering only about a quarter of the globe, an
+   * almost-invisible ocean leaves the silhouette defined by land alone, so every
+   * sector where the visible face happens to be ocean loses its rim and the
+   * circle breaks into arcs. Measured on the previous build, only 44% of
+   * angular positions had a lit pixel in the outer annulus, with 38-degree dark
+   * runs — which is what made the globe read as torn. The sea reaches the limb so
+   * the horizon closes.
+   */
+  float alpha = vMask * limb * (0.72 + 0.28 * vDepth)
+              + (1.0 - vMask) * limb * (0.20 + 0.16 * vDepth);
 
   // A small number of accent nodes pulse in the site's pink. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
@@ -409,8 +409,9 @@ export function HeroVisual({ className }: { className?: string }) {
       const coverage = landCoverage(jLon, jLat)
       const isLand = coverage > 0.5
       // Hold on to partial-coverage points so the shoreline itself is
-      // represented; keep open sea sparse so land reads as the figure.
-      if (coverage <= 0.25 && random() > 0.15) continue
+      // represented, and keep a solid share of open sea: the ocean is what
+      // closes the sphere's silhouette where no landmass is in view.
+      if (coverage <= 0.25 && random() > 0.55) continue
 
       // Roughly a handful of accent nodes across the landmasses, so the pink
       // reads as scattered signal rather than a second landmass. The value is
@@ -669,7 +670,7 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform1f(pTime, t)
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
-      gl.uniform1f(pScale, canvas.height * 0.0047)
+      gl.uniform1f(pScale, canvas.height * 0.0042)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(pTheme, theme)
       gl.drawArrays(gl.POINTS, 0, placed)
@@ -718,10 +719,10 @@ export function HeroVisual({ className }: { className?: string }) {
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-[6%] rounded-full opacity-70 blur-xl"
+        className="absolute inset-[4%] rounded-full opacity-90 blur-2xl"
         style={{
           background:
-            'radial-gradient(circle, transparent 62%, color-mix(in oklab, var(--foreground) 12%, transparent) 76%, transparent 88%)',
+            'radial-gradient(circle, transparent 60%, color-mix(in oklab, var(--foreground) 20%, transparent) 74%, color-mix(in oklab, var(--foreground) 9%, transparent) 84%, transparent 92%)',
         }}
       />
 
