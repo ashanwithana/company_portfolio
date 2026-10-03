@@ -130,11 +130,10 @@ export function Header() {
   return (
     <header className="no-print fixed inset-x-0 top-0 z-50">
       {/*
-        Centred island rather than full-bleed: the pill lives inside the page
-        container, so it reads as a compact control instead of a second header
-        bar stretching edge to edge.
+        Compact centred island: capped well inside the page container so it
+        reads as a floating control rather than a second header bar.
       */}
-      <div className="container-page pt-3">
+      <div className="mx-auto w-full max-w-[64rem] px-4 pt-3 sm:px-6">
         <div
           className={cn(
             // Full-width floating island: 32px inset, 32px radius, near-black at
@@ -278,7 +277,7 @@ export function Header() {
         id="mobile-nav"
         ref={menuPanelRef}
         hidden={!menuOpen}
-        className="container-page pt-2 xl:hidden"
+        className="mx-auto w-full max-w-[64rem] px-4 pt-2 sm:px-6 xl:hidden"
       >
         <nav
           aria-label="Mobile"
