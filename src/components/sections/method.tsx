@@ -76,7 +76,15 @@ export function Method({
 
   return (
     <div className="relative bg-background">
-      <div className="container-page py-24 md:py-32">
+      <div
+        className={cn(
+          'container-page',
+          // Without the intro (the /method page has its own header), the
+          // wrapper keeps only bottom rhythm — otherwise a full section of
+          // empty padding sits between the header and the first phase.
+          showIntro ? 'py-24 md:py-32' : 'pt-2 pb-24 md:pb-32',
+        )}
+      >
         {showIntro ? (
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow className="justify-center">The method</Eyebrow>
@@ -88,7 +96,15 @@ export function Method({
           </div>
         ) : null}
 
-        <div className="mt-16 grid gap-12 md:mt-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
+        <div
+          className={cn(
+            'grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20',
+            // Without the intro there is no heading to separate from, so the
+            // grid tucks up under the page header instead of holding a full
+            // section gap of dead air.
+            showIntro ? 'mt-16 md:mt-20' : 'mt-8 md:mt-10',
+          )}
+        >
           {/* Sticky rail: flipping numeral, progress spine, phase anchors. */}
           <div className="hidden lg:block">
             <div className="sticky top-32">
