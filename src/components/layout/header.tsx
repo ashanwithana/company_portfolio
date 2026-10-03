@@ -10,7 +10,12 @@ import { primaryNav, siteConfig } from '@/content/site'
 import { cn } from '@/lib/utils'
 
 /**
- * Sticky site header: brand, primary nav, ⌘K trigger, theme toggle, mobile menu.
+ * Floating pill navigation.
+ *
+ * The bar is a single rounded-full island that floats over the page rather than
+ * sitting in a bordered header strip. The scroll state only tightens its padding
+ * and shadow — it never changes what is rendered, so there is no layout shift as
+ * the page moves underneath it.
  *
  * Active state comes from `usePathname` rather than a scroll observer, so the
  * highlight is correct the moment a route changes — and correct without
@@ -71,26 +76,44 @@ export function Header() {
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
-    <header className={cn('no-print fixed inset-x-0 top-0 z-50', scrolled && 'py-2')}>
+    <header
+      className={cn(
+        'no-print fixed inset-x-0 top-0 z-50 transition-[padding] duration-500',
+        scrolled ? 'pt-3' : 'pt-5',
+      )}
+    >
       <div className="container-page">
         <div
           className={cn(
-            'flex items-center justify-between gap-4 rounded-full border border-transparent px-2 py-3 transition-all duration-500',
-            scrolled &&
-              'border-border bg-background/70 shadow-[0_10px_40px_-24px_rgba(0,0,0,0.6)] backdrop-blur-xl',
+            'flex items-center justify-between gap-6 rounded-full border border-border bg-card/70 py-2.5 pr-2.5 pl-5 backdrop-blur-xl transition-shadow duration-500',
+            scrolled && 'border-border-strong shadow-[0_18px_50px_-30px_rgba(0,0,0,0.9)]',
           )}
         >
           <Link
             href="/"
             aria-label={`${siteConfig.name} — home`}
-            className="rounded-lg px-2 font-display text-lg font-semibold tracking-tight"
+            className="flex shrink-0 items-center gap-3 rounded-full"
           >
-            {siteConfig.name}
-            <span className="text-coral">{siteConfig.logoSuffix}</span>
+            <span className="text-base font-bold tracking-tight">
+              {siteConfig.name}
+              <span className="text-coral">{siteConfig.logoSuffix}</span>
+            </span>
+            {/* Route dots — decorative, mirroring the pill's shape. */}
+            <span className="hidden items-center gap-1.5 sm:flex" aria-hidden="true">
+              {[0, 1, 2, 3].map((i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    'size-1.5 rounded-full transition-colors duration-500',
+                    i === 3 ? 'bg-coral' : 'bg-foreground/40',
+                  )}
+                />
+              ))}
+            </span>
           </Link>
 
-          <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center gap-1 rounded-full border border-border bg-card/40 px-2 py-1.5 backdrop-blur-sm">
+          <nav aria-label="Primary" className="hidden xl:block">
+            <ul className="flex items-center gap-1">
               {primaryNav.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -98,10 +121,8 @@ export function Header() {
                     aria-current={isActive(item.href) ? 'page' : undefined}
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
-                      'flex min-h-8 items-center rounded-full px-4 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors',
-                      isActive(item.href)
-                        ? 'bg-foreground/[0.06] text-foreground'
-                        : 'text-muted-foreground hover:text-foreground',
+                      'flex min-h-9 items-center rounded-full px-3.5 font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors',
+                      isActive(item.href) ? 'text-coral' : 'text-muted-foreground hover:text-foreground',
                     )}
                   >
                     {item.label}
@@ -111,7 +132,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <CommandPalette />
             <ThemeToggle />
 
@@ -121,7 +142,7 @@ export function Header() {
               aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={menuOpen}
               aria-controls="mobile-nav"
-              className="inline-flex size-10 items-center justify-center rounded-full border border-border bg-card/50 backdrop-blur-sm transition-colors hover:border-foreground/25 lg:hidden"
+              className="inline-flex size-10 items-center justify-center rounded-full border border-border transition-colors hover:border-border-strong hover:bg-accent xl:hidden"
             >
               <span className="sr-only">Toggle navigation</span>
               <svg
@@ -146,15 +167,10 @@ export function Header() {
       </div>
 
       {/* Mobile sheet */}
-      <div
-        id="mobile-nav"
-        ref={menuPanelRef}
-        hidden={!menuOpen}
-        className="container-page mt-2 lg:hidden"
-      >
+      <div id="mobile-nav" ref={menuPanelRef} hidden={!menuOpen} className="container-page mt-2 xl:hidden">
         <nav
           aria-label="Mobile"
-          className="overflow-hidden rounded-2xl border border-border bg-background/95 p-2 shadow-elegant backdrop-blur-xl"
+          className="overflow-hidden rounded-3xl border border-border bg-popover p-2 shadow-elegant"
         >
           <ul className="flex flex-col">
             {primaryNav.map((item) => (
@@ -163,10 +179,10 @@ export function Header() {
                   href={item.href}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   className={cn(
-                    'flex min-h-11 items-center justify-between rounded-xl px-4 font-mono text-xs tracking-[0.2em] uppercase transition-colors',
+                    'flex min-h-12 items-center justify-between rounded-2xl px-4 font-mono text-xs tracking-[0.18em] uppercase transition-colors',
                     isActive(item.href)
-                      ? 'bg-foreground/[0.06] text-foreground'
-                      : 'text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground',
+                      ? 'bg-accent text-coral'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                   )}
                 >
                   {item.label}

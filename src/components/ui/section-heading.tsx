@@ -2,7 +2,11 @@ import { cn } from '@/lib/utils'
 
 /**
  * Section wrapper providing consistent vertical rhythm and landmark semantics.
- * Used by the home page sections, which are not routes.
+ *
+ * `tone="paper"` inverts the whole block to the opposite ground (see
+ * `.tone-paper` in globals.css), which is what produces the page's alternating
+ * dark/paper rhythm. Because the inversion redefines the token set rather than
+ * overriding individual colours, components inside stay theme-agnostic.
  */
 export function Section({
   id,
@@ -10,24 +14,34 @@ export function Section({
   children,
   className,
   tone = 'default',
+  dotGrid = false,
 }: {
   id: string
   label: string
   children: React.ReactNode
   className?: string
-  tone?: 'default' | 'muted'
+  tone?: 'default' | 'muted' | 'paper'
+  dotGrid?: boolean
 }) {
   return (
     <section
       id={id}
       aria-label={label}
       className={cn(
-        'container-page scroll-mt-24 py-20 md:py-28',
-        tone === 'muted' && 'border-y border-border bg-muted/20',
+        'relative scroll-mt-28 py-24 md:py-32',
+        tone === 'muted' && 'bg-muted',
+        tone === 'paper' && 'tone-paper',
         className,
       )}
     >
-      {children}
+      {dotGrid ? (
+        <div
+          className="pointer-events-none absolute inset-0 dot-grid opacity-60 mask-fade-radial"
+          aria-hidden="true"
+        />
+      ) : null}
+
+      <div className="relative container-page">{children}</div>
     </section>
   )
 }
@@ -38,42 +52,56 @@ export type SectionHeadingProps = {
   label: string
   title: string
   description?: string
+  /**
+   * Word rendered as oversized ghost type behind the heading, bleeding off the
+   * edge. Decorative — never the only place the section is named.
+   */
+  ghost?: string
   className?: string
 }
 
 /**
- * Numbered editorial section header used across the home page.
+ * Numbered editorial section header.
  *
- * Purely presentational — a server component, since there is no interactivity.
- * The label is a real anchor so the section is linkable, and `scroll-mt` on the
- * section itself handles the sticky-header offset natively.
+ * A server component — there is no interactivity here. The oversized ghost word
+ * sits behind the content and is hidden from assistive technology, since the
+ * `title` already names the section.
  */
 export function SectionHeading({
   index,
   label,
   title,
   description,
+  ghost,
   className,
 }: SectionHeadingProps) {
   return (
-    <header className={cn('mb-14 md:mb-20', className)}>
-      <div className="flex items-center gap-4">
-        <span className="font-mono text-xs tracking-[0.3em] text-muted-foreground tabular-nums">
-          {index}
+    <header className={cn('relative mb-14 md:mb-20', className)}>
+      {ghost ? (
+        <span
+          aria-hidden="true"
+          className="text-ghost pointer-events-none absolute -top-[0.18em] -left-[0.04em] font-display text-[clamp(5rem,17vw,15rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
+        >
+          {ghost}
         </span>
-        <span className="h-px w-10 bg-mint" aria-hidden="true" />
-        <span className="font-mono text-xs tracking-[0.3em] text-mint uppercase">{label}</span>
-      </div>
-
-      <h2 className="mt-6 max-w-5xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-        {title}
-      </h2>
-
-      {description ? (
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          {description}
-        </p>
       ) : null}
+
+      <div className="relative">
+        <p className="label flex items-center gap-3 text-muted-foreground">
+          <span className="text-coral tabular-nums">{index}</span>
+          <span aria-hidden="true">[</span>
+          <span className="text-foreground">{label}</span>
+          <span aria-hidden="true">]</span>
+        </p>
+
+        <h2 className="mt-7 max-w-4xl display-lg">{title}</h2>
+
+        {description ? (
+          <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {description}
+          </p>
+        ) : null}
+      </div>
     </header>
   )
 }

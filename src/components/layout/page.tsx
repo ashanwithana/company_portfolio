@@ -19,14 +19,14 @@ export type Crumb = {
 export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   return (
     <nav aria-label="Breadcrumb" className={cn('min-w-0', className)}>
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+      <ol className="label flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.6rem] text-muted-foreground">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
 
           return (
-            <li key={item.label} className="flex items-center gap-2">
+            <li key={item.label} className="flex items-center gap-2.5">
               {item.href && !isLast ? (
-                <Link href={item.href} className="rounded transition-colors hover:text-foreground">
+                <Link href={item.href} className="rounded transition-colors hover:text-coral">
                   {item.label}
                 </Link>
               ) : (
@@ -35,7 +35,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
                 </span>
               )}
               {!isLast ? (
-                <span aria-hidden="true" className="text-muted-foreground/50">
+                <span aria-hidden="true" className="text-muted-foreground/40">
                   /
                 </span>
               ) : null}
@@ -73,33 +73,60 @@ export function BreadcrumbSchema({ items }: { items: Crumb[] }) {
   )
 }
 
-/** Page-level hero used at the top of every inner page. */
+/**
+ * Page-level hero used at the top of every inner page.
+ *
+ * `ghost` repeats the eyebrow as oversized background type, which ties every
+ * inner page to the home page's visual language without a bespoke illustration.
+ */
 export function PageHeader({
   eyebrow,
   title,
   lede,
+  ghost,
   children,
   className,
 }: {
   eyebrow: string
   title: string
   lede?: string
+  ghost?: string
   children?: ReactNode
   className?: string
 }) {
   return (
-    <header className={cn('container-page pt-32 pb-14 md:pt-40 md:pb-20', className)}>
-      <p className="font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">{eyebrow}</p>
+    <header className={cn('relative overflow-hidden pt-36 pb-16 md:pt-44 md:pb-24', className)}>
+      <div
+        className="pointer-events-none absolute inset-0 dot-grid opacity-50 mask-fade-radial"
+        aria-hidden="true"
+      />
 
-      <h1 className="mt-6 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-        {title}
-      </h1>
-
-      {lede ? (
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{lede}</p>
+      {ghost ? (
+        <span
+          aria-hidden="true"
+          className="text-ghost pointer-events-none absolute -top-[0.14em] left-0 font-display text-[clamp(4rem,15vw,13rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
+        >
+          {ghost}
+        </span>
       ) : null}
 
-      {children}
+      <div className="relative container-page">
+        <p className="label flex items-center gap-3 text-muted-foreground">
+          <span aria-hidden="true">[</span>
+          <span className="text-coral">{eyebrow}</span>
+          <span aria-hidden="true">]</span>
+        </p>
+
+        <h1 className="mt-7 max-w-5xl display-lg">{title}</h1>
+
+        {lede ? (
+          <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {lede}
+          </p>
+        ) : null}
+
+        {children}
+      </div>
     </header>
   )
 }
@@ -109,20 +136,30 @@ export function PageSection({
   children,
   className,
   tone = 'default',
+  dotGrid = false,
 }: {
   children: ReactNode
   className?: string
-  tone?: 'default' | 'muted'
+  tone?: 'default' | 'muted' | 'paper'
+  dotGrid?: boolean
 }) {
   return (
     <section
       className={cn(
-        'py-20 md:py-28',
-        tone === 'muted' && 'border-y border-border bg-muted/20',
+        'relative py-20 md:py-28',
+        tone === 'muted' && 'bg-muted',
+        tone === 'paper' && 'tone-paper',
         className,
       )}
     >
-      <div className="container-page">{children}</div>
+      {dotGrid ? (
+        <div
+          className="pointer-events-none absolute inset-0 dot-grid opacity-60 mask-fade-radial"
+          aria-hidden="true"
+        />
+      ) : null}
+
+      <div className="relative container-page">{children}</div>
     </section>
   )
 }

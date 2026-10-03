@@ -5,7 +5,7 @@ import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { services, studioStats } from '@/content/services'
-import { ACCENT_TEXT } from '@/components/ui/cta-band'
+import { ACCENT_TEXT } from '@/lib/accent'
 
 export const metadata = {
   title: 'Services',

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import * as React from 'react'
 
 import { BlockArt } from '@/components/ui/block-art'
-import { ACCENT_BORDER, ACCENT_WASH } from '@/components/ui/cta-band'
+import { ACCENT_BORDER, ACCENT_WASH } from '@/lib/accent'
 import type { CaseStudy, CaseStudyCategory } from '@/content/case-studies'
 import { cn } from '@/lib/utils'
 

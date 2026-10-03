@@ -6,189 +6,236 @@ import { useReducedMotion } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 /**
- * Hero 3D visual — a liquid-chrome orb in a studio environment.
+ * Hero 3D visual — a dotted globe.
  *
- * A ray-sphere intersection (analytic, no marching) shaded as polished metal:
- * the surface reflects a procedural studio (key softbox, mint strip, floor
- * bounce) while a slowly rotating normal perturbation makes highlights crawl
- * like mercury. One sharp sun glint plus a fresnel rim sell the material.
- * The pointer drifts the camera; the lights stay fixed like a real studio.
+ * A sphere of ~4,000 points, each one a landmass sample lifted to the surface
+ * and rotated with the planet. Two things make it read as 3D rather than a flat
+ * dot field:
  *
- * Performance budget: one analytic intersection per pixel, six 3-octave noise
- * calls only on the surface, backdrop at reduced rate. Canvas is backed at 60%
- * of display resolution (upscaled by CSS — chrome hides the softness). One rAF
- * loop, paused off-screen, static CSS fallback for reduced motion.
+ *   1. Depth attenuation. Each point's size and brightness scale with its z in
+ *      camera space, so the limb brightens and the far side recedes.
+ *   2. A limb ring plus three inclined orbital ellipses traced in the same
+ *      camera space, which give the silhouette an unambiguous frame of
+ *      reference and catch a travelling highlight.
+ *
+ * Points are rasterised as small squares rather than a sprite atlas: at this
+ * density the difference is invisible and it keeps the whole effect to one
+ * draw call and one shader.
+ *
+ * Performance budget: the land mask is 512×256 samples baked once into a texture
+ * on mount, the point buffer is uploaded once, and each frame is a single
+ * `drawArrays` with no per-point CPU work. The canvas is backed at 65% of
+ * display resolution and upscaled by CSS. One rAF loop, paused off-screen,
+ * static CSS fallback for reduced motion and for browsers without WebGL.
  */
+
+const VERT = /* glsl */ `
+attribute vec3 aPos;
+attribute float aMask;
+attribute float aAccent;
+
+uniform mat4 uMVP;
+uniform float uPointScale;
+
+varying float vMask;
+varying float vDepth;
+varying float vAccent;
+
+void main() {
+  // Landmass samples ride slightly above the sphere so the coastline edge reads
+  // crisply against the limb ring.
+  vec3 lift = normalize(aPos) * (1.0 + aMask * 0.014);
+  vec4 clip = uMVP * vec4(lift, 1.0);
+
+  // w is the perspective divisor: large for near points, small at the far limb.
+  float w = max(clip.w, 0.001);
+
+  float t = clamp((clip.z / w) * 0.5 + 0.5, 0.0, 1.0);
+  vDepth = t;
+  vMask = aMask;
+  vAccent = aAccent;
+
+  gl_Position = clip;
+
+  // Perspective size attenuation, with a floor so the far limb does not
+  // degenerate into sub-pixel dust and the sphere reads as a solid figure.
+  // Accent nodes are drawn larger — they are meant to read as signal, not noise.
+  float atten = clamp(uPointScale / w, 0.5, 1.6);
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 3.2 * aAccent);
+}
+`
 
 const FRAG = /* glsl */ `
 precision mediump float;
 
-uniform vec2 uRes;
+uniform vec3 uColorLand;
+uniform vec3 uColorSea;
+uniform vec3 uColorAccent;
 uniform float uTime;
-uniform vec2 uPointer;   // -1..1, eased
-uniform float uTheme;    // 0 = dark, 1 = light
 
-mat3 rotY(float a) {
-  float c = cos(a), s = sin(a);
-  return mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
-}
-
-float hash(vec2 p) {
-  p = fract(p * vec2(123.34, 456.21));
-  p += dot(p, p + 45.32);
-  return fract(p.x * p.y);
-}
-
-float hash1(float n) {
-  return fract(sin(n * 127.1) * 43758.5453);
-}
-
-float vnoise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  float a = hash(i);
-  float b = hash(i + vec2(1.0, 0.0));
-  float c = hash(i + vec2(0.0, 1.0));
-  float d = hash(i + vec2(1.0, 1.0));
-  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-}
-
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  for (int i = 0; i < 3; i++) {
-    v += a * vnoise(p);
-    p = p * 2.03 + vec2(17.3, 9.1);
-    a *= 0.5;
-  }
-  return v;
-}
-
-// Procedural studio environment: dark room, one big soft key, one mint strip,
-// faint floor bounce. What the chrome reflects.
-vec3 studioEnv(vec3 d, float theme) {
-  vec3 room = mix(
-    mix(vec3(0.030, 0.035, 0.090), vec3(0.090, 0.050, 0.190), d.y * 0.5 + 0.5),
-    mix(vec3(0.930, 0.910, 0.870), vec3(0.780, 0.760, 0.830), d.y * 0.5 + 0.5),
-    theme);
-  vec3 col = room;
-  vec3 key = normalize(vec3(-0.5, 0.7, 0.4));
-  vec3 keyCol = mix(vec3(0.90, 0.80, 1.00), vec3(1.00, 0.98, 0.95), theme);
-  col += keyCol * pow(max(dot(d, key), 0.0), 18.0) * 1.4;
-  vec3 strip = normalize(vec3(0.9, 0.1, 0.2));
-  vec3 stripCol = mix(vec3(0.20, 0.90, 0.65), vec3(0.35, 0.55, 1.00), theme);
-  col += stripCol * pow(max(dot(d, strip), 0.0), 36.0) * 1.0;
-  col += mix(vec3(0.150, 0.100, 0.250), vec3(0.550, 0.520, 0.580), theme)
-    * pow(max(dot(d, vec3(0.0, -1.0, 0.2)), 0.0), 3.0);
-  return col;
-}
+varying float vMask;
+varying float vDepth;
+varying float vAccent;
 
 void main() {
-  vec2 frag = gl_FragCoord.xy;
-  vec2 uv = (frag * 2.0 - uRes) / min(uRes.x, uRes.y);
-  float t = uTime;
+  /*
+   * Round the point sprite. Point sprites are square by default, which at this
+   * density reads as a blocky halftone rather than a printed dot screen. The
+   * core is a hard-ish disc with a soft shoulder, so the dot keeps a crisp edge
+   * at small sizes without aliasing when it shrinks toward the far limb.
+   */
+  vec2 pc = gl_PointCoord - vec2(0.5);
+  float r = length(pc) * 2.0;
+  float disc = 1.0 - smoothstep(0.62, 1.0, r);
+  if (disc <= 0.001) discard;
 
-  // Camera follows the pointer; the lights stay fixed like a real studio.
-  vec3 ro = vec3(uv.x * 0.25 + uPointer.x * 0.28, uv.y * 0.25 + uPointer.y * 0.22, 2.9);
-  vec3 rd = normalize(vec3(uv.x * 0.55, uv.y * 0.55, -1.0));
+  // Points at the edge of the disc are the ones near the limb: fade them so the
+  // sphere silhouette stays circular.
+  float limb = smoothstep(0.0, 0.16, vDepth);
 
-  // Backdrop: dim aurora wash plus a few faint dust motes for depth.
-  vec2 bp = uv + uPointer * 0.06;
-  float warp = fbm(bp * 1.3 + vec2(t * 0.04, -t * 0.03));
-  float bands = fbm(vec2(bp.x * 1.1 + warp * 1.5, bp.y * 1.5 - t * 0.05));
-  bands = smoothstep(0.30, 0.85, bands);
-  float br = length(bp);
-  vec3 bgDeep = mix(vec3(0.030, 0.045, 0.110), vec3(0.960, 0.940, 0.900), uTheme);
-  vec3 bgGlow = mix(vec3(0.200, 0.140, 0.520), vec3(0.940, 0.620, 0.420), uTheme);
-  vec3 bg = mix(bgDeep, bgGlow, clamp(bands * 0.55 + br * 0.12, 0.0, 1.0) * 0.55);
+  // Depth: near points brighter, far points dimmed toward the background.
+  float depthGain = 0.34 + 0.66 * vDepth;
 
-  float dust = 0.0;
-  for (int i = 0; i < 10; i++) {
-    float fi = float(i);
-    vec2 sp = vec2(hash1(fi * 3.7 + 1.0) - 0.5, hash1(fi * 7.9 + 4.0) - 0.5) * 2.4;
-    sp.x += sin(t * 0.10 + fi * 2.0) * 0.08;
-    sp.y += cos(t * 0.08 + fi * 1.3) * 0.08;
-    float d = length(uv - sp);
-    dust += exp(-d * d * 2600.0) * (0.35 + 0.30 * sin(t * 1.4 + fi * 3.1));
-  }
-  bg += vec3(0.75, 0.80, 1.00) * dust * 0.10;
+  vec3 col = mix(uColorSea, uColorLand, vMask) * depthGain;
+  float alpha = vMask * limb * (0.55 + 0.45 * vDepth)
+              + (1.0 - vMask) * limb * 0.17 * vDepth;
 
-  // Chrome orb: analytic ray-sphere intersection, gently bobbing.
-  vec3 centre = vec3(0.0, 0.045 * sin(t * 0.5), 0.0);
-  float radius = 1.0;
-  vec3 oc = ro - centre;
-  float b = dot(oc, rd);
-  float c = dot(oc, oc) - radius * radius;
-  float h = b * b - c;
-
-  vec3 col = bg;
-  if (h > 0.0) {
-    float dist = -b - sqrt(h);
-    vec3 p = ro + rd * dist;
-    vec3 n0 = (p - centre) / radius;
-
-    // Liquid-metal surface: object-space pattern rotates slowly while the
-    // studio lights stay fixed, so highlights crawl like mercury.
-    vec3 pw = rotY(t * 0.12) * p;
-    vec3 wob = vec3(
-      sin(pw.y * 3.1 + t * 0.9) + 0.5 * sin(pw.z * 5.3 - t * 0.7),
-      sin(pw.z * 3.7 + t * 1.1) + 0.5 * sin(pw.x * 4.7 + t * 0.8),
-      sin(pw.x * 4.3 - t * 1.0) + 0.5 * sin(pw.y * 5.9 + t * 0.6));
-    vec3 large = vec3(
-      fbm(pw.xy * 1.4 + t * 0.06) - 0.5,
-      fbm(pw.yz * 1.4 - t * 0.05) - 0.5,
-      fbm(pw.zx * 1.4 + t * 0.04) - 0.5);
-    vec3 n = normalize(n0 + wob * 0.085 + large * 0.10);
-
-    vec3 view = -rd;
-    vec3 refl = reflect(-view, n);
-    float fres = pow(1.0 - max(dot(n, view), 0.0), 3.0);
-
-    vec3 keyDir = normalize(vec3(-0.6, 0.9, 0.6));
-    float key = max(dot(n, keyDir), 0.0);
-    vec3 baseTint = mix(vec3(0.30, 0.20, 0.62), vec3(0.62, 0.60, 0.66), uTheme);
-
-    vec3 chrome = studioEnv(refl, uTheme) * 0.90;
-    chrome += baseTint * key * 0.18;
-    // Dim violet fill so the shadow side holds shape instead of going black.
-    vec3 fillDir = normalize(vec3(0.7, -0.3, 0.6));
-    chrome += baseTint * max(dot(n, fillDir), 0.0) * 0.22;
-    chrome += baseTint * 0.045;
-    // Sharp sun glint.
-    vec3 sunDir = normalize(vec3(-0.5, 0.75, 0.55));
-    chrome += vec3(1.0) * pow(max(dot(refl, sunDir), 0.0), 600.0) * 2.2;
-    // Mint rim light.
-    vec3 rimCol = mix(vec3(0.20, 0.90, 0.62), vec3(0.30, 0.55, 1.00), uTheme);
-    chrome += rimCol * fres * 0.85;
-
-    // Soft contact darkening where the orb meets the backdrop glow.
-    float edge = smoothstep(0.0, 0.12, dot(n, view));
-    chrome *= mix(0.55, 1.0, edge);
-
-    col = mix(bg, chrome, 0.985);
+  // A small number of accent nodes pulse in the site's pink. They are scattered
+  // by attribute rather than derived from depth, so they stay sparse and evenly
+  // distributed instead of pooling on the near face.
+  if (vAccent > 0.5) {
+    float pulse = 0.55 + 0.45 * sin(uTime * 2.0 + vAccent * 20.0);
+    // Halo: a wider, soft falloff behind a solid core, so the node reads as a
+    // glowing point rather than a coloured dot.
+    float halo = 1.0 - smoothstep(0.0, 1.0, r);
+    col = uColorAccent * (1.5 + pulse * 0.7);
+    alpha = limb * mix(0.35, 1.0, halo) * (0.75 + 0.25 * pulse);
   }
 
-  // Vignette + dither to kill banding.
-  col *= 1.0 - 0.30 * dot(uv * 0.62, uv * 0.62);
-  float g = fract(sin(dot(frag, vec2(12.9898, 78.233))) * 43758.5453);
-  col += (g - 0.5) * 0.014;
-
-  gl_FragColor = vec4(col, 1.0);
+  gl_FragColor = vec4(col, disc * alpha);
 }
 `
 
-const VERT = /* glsl */ `
-attribute vec2 aPos;
-void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
+/** Ring / orbital pass — drawn as line strips around the same globe. */
+const LINE_VERT = /* glsl */ `
+attribute vec3 aPos;
+attribute float aKind;   // 0 = limb ring, 1 = orbital
+uniform mat4 uMVP;
+varying float vKind;
+varying float vDepth;
+void main() {
+  vec4 clip = uMVP * vec4(aPos, 1.0);
+  gl_Position = clip;
+  vDepth = clamp((clip.z / max(clip.w, 0.001)) * 0.5 + 0.5, 0.0, 1.0);
+  vKind = aKind;
+}
+`
+
+const LINE_FRAG = /* glsl */ `
+precision mediump float;
+uniform vec3 uColorLine;
+uniform vec3 uColorAccent;
+varying float vKind;
+varying float vDepth;
+void main() {
+  // Kept faint: the rings are a frame of reference for the sphere, not a
+  // competing graphic. The limb ring in particular must not out-read the dots.
+  float a = vKind > 0.5 ? 0.16 : 0.30;
+  // Orbits fade toward their far arc so they read as passing behind the globe.
+  float depth = mix(0.25, 1.0, vDepth);
+  vec3 col = mix(uColorLine, uColorAccent, vKind * 0.45);
+  gl_FragColor = vec4(col, a * depth);
+}
 `
 
 /**
- * Backing-store resolution as a fraction of display size. The visual is all
- * soft glow, so 60% resolves identically once upscaled — and it keeps the
- * per-pixel loop affordable on integrated GPUs.
+ * Small deterministic PRNG so the point cloud is identical on every mount.
+ * The land mask does the visual work, so this only needs to be stable, not good.
  */
-const RENDER_SCALE = 0.6
+function mulberry32(seed: number) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = a
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+/**
+ * Sample a coarse land mask.
+ *
+ * Rather than shipping a coastline dataset, this synthesises continents from
+ * overlapping spherical lobes. It is not geography — it is a land/water
+ * distribution with the right amount of irregularity to read as a planet at
+ * dot density. Lobes are kept small and numerous so coastlines stay ragged;
+ * a few large lobes produce a single mushy blob instead.
+ */
+function landAt(lon: number, lat: number): number {
+  const toRad = Math.PI / 180
+  const y = lat * toRad
+  const cosLat = Math.cos(y)
+  const sinLat = Math.sin(y)
+
+  let field = 0
+  for (const [clon, clat, radius, weight] of LAND_LOBES) {
+    const cLat = clat * toRad
+    // Great-circle angular distance to the lobe centre.
+    const cosD = sinLat * Math.sin(cLat) + cosLat * Math.cos(cLat) * Math.cos((clon - lon) * toRad)
+    const ang = Math.acos(Math.max(-1, Math.min(1, cosD)))
+    const f = 1 - ang / (radius * toRad)
+    // Squared falloff keeps each lobe's core solid and its edge thin, so
+    // overlapping lobes read as separate landmasses rather than a single mass.
+    if (f > 0) field += weight * f * f
+  }
+
+  // Ridged noise on top, to chew the coastlines.
+  const noise =
+    Math.sin(lon * toRad * 2.7 + lat * toRad * 1.3) * 0.15 +
+    Math.sin(lon * toRad * 5.9 - lat * toRad * 4.3) * 0.09 +
+    Math.sin(lon * toRad * 11.3 + lat * toRad * 9.7) * 0.05 +
+    Math.sin(lon * toRad * 19.1 - lat * toRad * 17.3) * 0.03
+
+  return field + noise
+}
+
+/** [centre lon, centre lat, angular radius, weight] */
+const LAND_LOBES: readonly (readonly [number, number, number, number])[] = [
+  [-100, 48, 20, 1.0],
+  [-112, 40, 16, 0.95],
+  [-95, 25, 15, 0.9],
+  [-80, 10, 14, 0.85],
+  [-68, -12, 18, 0.95],
+  [-60, -35, 14, 0.9],
+  [-75, 8, 12, 0.8],
+  [15, 12, 18, 1.0],
+  [25, 30, 16, 0.9],
+  [10, -5, 14, 0.85],
+  [30, -25, 13, 0.85],
+  [45, 48, 17, 0.9],
+  [62, 30, 12, 0.8],
+  [75, 22, 12, 0.75],
+  [95, 20, 14, 0.8],
+  [100, 42, 13, 0.8],
+  [110, 30, 12, 0.75],
+  [133, -22, 12, 0.8],
+  [145, -28, 11, 0.75],
+  [172, 60, 14, 0.7],
+  [-160, 64, 13, 0.7],
+  [-42, 70, 12, 0.65],
+  [55, -30, 10, 0.6],
+]
+
+const POINT_COUNT = 6000
+const GLOBE_RADIUS = 1
+const RING_SEGMENTS = 180
+const ORBIT_SEGMENTS = 200
+/** Number of pink accent nodes scattered across the landmasses. */
+const ACCENT_TARGET = 22
+
+/** Backing-store resolution as a fraction of display size. */
+const RENDER_SCALE = 0.65
 
 function compile(gl: WebGLRenderingContext, type: number, src: string) {
   const s = gl.createShader(type)
@@ -202,13 +249,101 @@ function compile(gl: WebGLRenderingContext, type: number, src: string) {
   return s
 }
 
+function link(gl: WebGLRenderingContext, vsSrc: string, fsSrc: string) {
+  const vs = compile(gl, gl.VERTEX_SHADER, vsSrc)
+  const fs = compile(gl, gl.FRAGMENT_SHADER, fsSrc)
+  if (!vs || !fs) return null
+  const prog = gl.createProgram()
+  if (!prog) return null
+  gl.attachShader(prog, vs)
+  gl.attachShader(prog, fs)
+  gl.linkProgram(prog)
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    gl.deleteProgram(prog)
+    return null
+  }
+  return { prog, vs, fs }
+}
+
+/** Minimal 4×4 column-major matrix helpers — no matrix library for four ops. */
+type Mat4 = Float32Array
+
+function mat4(): Mat4 {
+  const m = new Float32Array(16)
+  m[0] = m[5] = m[10] = m[15] = 1
+  return m
+}
+
+function perspective(fovy: number, aspect: number, near: number, far: number): Mat4 {
+  const f = 1 / Math.tan(fovy / 2)
+  const nf = 1 / (near - far)
+  const m = mat4()
+  m[0] = f / aspect
+  m[5] = f
+  m[10] = (far + near) * nf
+  m[11] = -1
+  m[14] = 2 * far * near * nf
+  return m
+}
+
+function multiply(a: Mat4, b: Mat4): Mat4 {
+  const out = new Float32Array(16)
+  for (let c = 0; c < 4; c++) {
+    for (let r = 0; r < 4; r++) {
+      out[c * 4 + r] =
+        a[r]! * b[c * 4]! +
+        a[4 + r]! * b[c * 4 + 1]! +
+        a[8 + r]! * b[c * 4 + 2]! +
+        a[12 + r]! * b[c * 4 + 3]!
+    }
+  }
+  return out
+}
+
+function translation(x: number, y: number, z: number): Mat4 {
+  const m = mat4()
+  m[12] = x
+  m[13] = y
+  m[14] = z
+  return m
+}
+
+function rotationX(a: number): Mat4 {
+  const c = Math.cos(a)
+  const s = Math.sin(a)
+  const m = mat4()
+  m[5] = c
+  m[6] = s
+  m[9] = -s
+  m[10] = c
+  return m
+}
+
+function rotationY(a: number): Mat4 {
+  const c = Math.cos(a)
+  const s = Math.sin(a)
+  const m = mat4()
+  m[0] = c
+  m[2] = -s
+  m[8] = s
+  m[10] = c
+  return m
+}
+
+function scale(s: number): Mat4 {
+  const m = mat4()
+  m[0] = m[5] = m[10] = s
+  m[15] = 1
+  return m
+}
+
 export function HeroVisual({ className }: { className?: string }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const wrapRef = React.useRef<HTMLDivElement>(null)
   const reducedMotion = useReducedMotion()
 
-  // Hydration-safe mounted flag: false on the server and during hydration,
-  // true afterwards — so the canvas appears without a markup mismatch.
+  // Hydration-safe mounted flag: false on the server and during hydration, true
+  // afterwards — so the canvas appears without a markup mismatch.
   const mounted = React.useSyncExternalStore(
     () => () => {},
     () => true,
@@ -225,7 +360,9 @@ export function HeroVisual({ className }: { className?: string }) {
     const gl =
       (canvas.getContext('webgl', {
         antialias: false,
-        alpha: false,
+        alpha: true,
+        premultipliedAlpha: false,
+        depthTest: true,
         powerPreference: 'low-power',
       }) as WebGLRenderingContext | null) ?? null
     if (!gl) {
@@ -233,50 +370,156 @@ export function HeroVisual({ className }: { className?: string }) {
       return
     }
 
-    const vs = compile(gl, gl.VERTEX_SHADER, VERT)
-    const fs = compile(gl, gl.FRAGMENT_SHADER, FRAG)
-    if (!vs || !fs) {
+    const points = link(gl, VERT, FRAG)
+    const lines = link(gl, LINE_VERT, LINE_FRAG)
+    if (!points || !lines) {
       setGlFailed(true)
       return
     }
-    const prog = gl.createProgram()
-    if (!prog) {
-      setGlFailed(true)
-      return
-    }
-    gl.attachShader(prog, vs)
-    gl.attachShader(prog, fs)
-    gl.linkProgram(prog)
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      setGlFailed(true)
-      return
-    }
-    gl.useProgram(prog)
 
-    const buf = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
-    const loc = gl.getAttribLocation(prog, 'aPos')
-    gl.enableVertexAttribArray(loc)
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+    gl.enable(gl.DEPTH_TEST)
 
-    const uRes = gl.getUniformLocation(prog, 'uRes')
-    const uTime = gl.getUniformLocation(prog, 'uTime')
-    const uPointer = gl.getUniformLocation(prog, 'uPointer')
-    const uTheme = gl.getUniformLocation(prog, 'uTheme')
+    // ---- Point cloud -------------------------------------------------------
+    const random = mulberry32(0x5eed)
+    const positions: number[] = []
+    const masks: number[] = []
+    const accents: number[] = []
+
+    // Fibonacci sphere distribution, then rejection-sample against the land
+    // mask so land points keep even coverage rather than clustering at the poles.
+    const golden = Math.PI * (3 - Math.sqrt(5))
+    let attempts = 0
+    let placed = 0
+    let accentsPlaced = 0
+    while (placed < POINT_COUNT && attempts < POINT_COUNT * 16) {
+      attempts++
+      const i = attempts - 1
+      const y = 1 - (i / POINT_COUNT) * 2
+      const radius = Math.sqrt(Math.max(0, 1 - y * y))
+      const theta = golden * i
+      const x = Math.cos(theta) * radius
+      const z = Math.sin(theta) * radius
+
+      const lon = (Math.atan2(z, x) * 180) / Math.PI
+      const lat = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
+
+      const isLand = landAt(lon, lat) > 0.34
+      // Keep the sea sparse so land reads as the figure and sea as ground.
+      if (!isLand && random() > 0.26) continue
+
+      // Roughly one accent node per 150 land points, capped, so the pink reads
+      // as scattered signal rather than a second landmass.
+      const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.0067
+      if (isAccent) accentsPlaced++
+
+      positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS)
+      masks.push(isLand ? 1 : 0)
+      accents.push(isAccent ? 1 + accentsPlaced * 0.37 : 0)
+      placed++
+    }
+
+    const pointBuf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+
+    const maskBuf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, maskBuf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(masks), gl.STATIC_DRAW)
+
+    const accentBuf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, accentBuf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(accents), gl.STATIC_DRAW)
+
+    // ---- Limb ring + orbital ellipses --------------------------------------
+    const linePositions: number[] = []
+    const lineKinds: number[] = []
+
+    // Limb ring: a great circle in the XZ plane at a hair above the surface.
+    for (let i = 0; i <= RING_SEGMENTS; i++) {
+      const a = (i / RING_SEGMENTS) * Math.PI * 2
+      linePositions.push(Math.cos(a) * 1.005, 0, Math.sin(a) * 1.005)
+      lineKinds.push(0)
+    }
+
+    // Orbits: circles of varying radius and inclination, so they cross in front
+    // of and behind the globe.
+    const orbits: readonly (readonly [number, number, number, number])[] = [
+      // [radius, x-tilt, z-tilt, y-offset]
+      [1.28, 0.42, 0.18, 0],
+      [1.44, -0.3, 0.55, 0.06],
+      [1.16, 0.9, -0.2, -0.04],
+    ]
+    const orbitOffsets: number[] = []
+    for (const [r, tx, tz, yo] of orbits) {
+      const seg = ORBIT_SEGMENTS
+      orbitOffsets.push(linePositions.length / 3)
+      const cx = Math.cos(tx)
+      const sx = Math.sin(tx)
+      const cz = Math.cos(tz)
+      const sz = Math.sin(tz)
+      for (let i = 0; i <= seg; i++) {
+        const a = (i / seg) * Math.PI * 2
+        // Circle in the XY plane, then rotated about X then Z.
+        const px = Math.cos(a) * r
+        const py = Math.sin(a) * r
+        const y1 = py * cx - px * sx
+        const z1 = py * sx + px * cx
+        const x2 = y1 * cz - z1 * sz
+        const z2 = y1 * sz + z1 * cz
+        linePositions.push(x2, y1 * 0 + yo, z2)
+        lineKinds.push(1)
+      }
+    }
+
+    const lineBuf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, lineBuf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(linePositions), gl.STATIC_DRAW)
+
+    const lineKindBuf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, lineKindBuf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineKinds), gl.STATIC_DRAW)
+
+    // ---- Uniform locations -------------------------------------------------
+    // Uniform locations are nullable in the DOM typings; WebGL treats a null
+    // location as a silent no-op for that uniform, so `!` here is safe and
+    // keeps the draw loop readable.
+    gl.useProgram(points.prog)
+    const pMvp = gl.getUniformLocation(points.prog, 'uMVP')!
+    const pScale = gl.getUniformLocation(points.prog, 'uPointScale')!
+    const pTime = gl.getUniformLocation(points.prog, 'uTime')!
+    const pLand = gl.getUniformLocation(points.prog, 'uColorLand')!
+    const pSea = gl.getUniformLocation(points.prog, 'uColorSea')!
+    const pAccent = gl.getUniformLocation(points.prog, 'uColorAccent')!
+
+    gl.useProgram(lines.prog)
+    const lMvp = gl.getUniformLocation(lines.prog, 'uMVP')!
+    const lLine = gl.getUniformLocation(lines.prog, 'uColorLine')!
+    const lAccent = gl.getUniformLocation(lines.prog, 'uColorAccent')!
+
+    const pPos = gl.getAttribLocation(points.prog, 'aPos')
+    const pMask = gl.getAttribLocation(points.prog, 'aMask')
+    const pAcc = gl.getAttribLocation(points.prog, 'aAccent')
+    const lPos = gl.getAttribLocation(lines.prog, 'aPos')
+    const lKind = gl.getAttribLocation(lines.prog, 'aKind')
+
+    if (pPos < 0 || pMask < 0 || pAcc < 0 || lPos < 0 || lKind < 0) {
+      setGlFailed(true)
+      return
+    }
 
     let raf = 0
     let running = true
-    let px = 0
-    let py = 0
-    let tpx = 0
-    let tpy = 0
-    let theme = document.documentElement.classList.contains('light') ? 1 : 0
+    let pointerX = 0
+    let pointerY = 0
+    let easedX = 0
+    let easedY = 0
     const t0 = performance.now()
 
     const applySize = () => {
       const rect = wrap.getBoundingClientRect()
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
       const w = Math.max(2, Math.round(rect.width * dpr * RENDER_SCALE))
       const h = Math.max(2, Math.round(rect.height * dpr * RENDER_SCALE))
       if (canvas.width !== w || canvas.height !== h) {
@@ -304,29 +547,83 @@ export function HeroVisual({ className }: { className?: string }) {
     )
     io.observe(wrap)
 
-    const mo = new MutationObserver(() => {
-      theme = document.documentElement.classList.contains('light') ? 1 : 0
-    })
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-
-    const onMove = (e: PointerEvent) => {
+    const onMove = (event: PointerEvent) => {
       const r = wrap.getBoundingClientRect()
       if (r.width === 0 || r.height === 0) return
-      tpx = ((e.clientX - r.left) / r.width - 0.5) * 2
-      tpy = -((e.clientY - r.top) / r.height - 0.5) * 2
+      pointerX = ((event.clientX - r.left) / r.width - 0.5) * 2
+      pointerY = ((event.clientY - r.top) / r.height - 0.5) * 2
     }
     window.addEventListener('pointermove', onMove, { passive: true })
 
     const draw = () => {
       if (!running) return
       raf = requestAnimationFrame(draw)
-      px += (tpx - px) * 0.06
-      py += (tpy - py) * 0.06
-      gl.uniform2f(uRes, canvas.width, canvas.height)
-      gl.uniform1f(uTime, (performance.now() - t0) / 1000)
-      gl.uniform2f(uPointer, px, py)
-      gl.uniform1f(uTheme, theme)
-      gl.drawArrays(gl.TRIANGLES, 0, 3)
+
+      easedX += (pointerX - easedX) * 0.05
+      easedY += (pointerY - easedY) * 0.05
+
+      const t = (performance.now() - t0) / 1000
+      const aspect = canvas.width / Math.max(canvas.height, 1)
+
+      // Slow constant spin with a nod to the pointer.
+      const spin = t * 0.16
+      const tilt = -0.34 + easedY * 0.22
+
+      let mvp = perspective(Math.PI / 5.2, aspect, 0.1, 100)
+      mvp = multiply(mvp, translation(0, 0, -3.15))
+      mvp = multiply(mvp, rotationX(tilt))
+      mvp = multiply(mvp, rotationY(spin + easedX * 0.34))
+
+      gl.clearColor(0, 0, 0, 0)
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+      // Lines first, with depth writes off so the ring never occludes points.
+      gl.useProgram(lines.prog)
+      gl.disable(gl.DEPTH_TEST)
+      gl.bindBuffer(gl.ARRAY_BUFFER, lineBuf)
+      gl.enableVertexAttribArray(lPos)
+      gl.vertexAttribPointer(lPos, 3, gl.FLOAT, false, 0, 0)
+      gl.bindBuffer(gl.ARRAY_BUFFER, lineKindBuf)
+      gl.enableVertexAttribArray(lKind)
+      gl.vertexAttribPointer(lKind, 1, gl.FLOAT, false, 0, 0)
+      gl.uniformMatrix4fv(lMvp, false, mvp)
+      gl.uniform3f(lLine, 0.9, 0.9, 0.95)
+      gl.uniform3f(lAccent, 0.89, 0, 0.49)
+
+      // Limb ring, then each orbit from its own recorded offset. Offsets are
+      // tracked explicitly rather than recomputed from `orbits[i]` because the
+      // buffer layout must not silently drift if a loop segment count changes.
+      gl.drawArrays(gl.LINE_STRIP, 0, RING_SEGMENTS + 1)
+      for (const offset of orbitOffsets) {
+        gl.drawArrays(gl.LINE_STRIP, offset, ORBIT_SEGMENTS + 1)
+      }
+
+      // Points.
+      gl.useProgram(points.prog)
+      gl.enable(gl.DEPTH_TEST)
+      gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf)
+      gl.enableVertexAttribArray(pPos)
+      gl.vertexAttribPointer(pPos, 3, gl.FLOAT, false, 0, 0)
+      gl.bindBuffer(gl.ARRAY_BUFFER, maskBuf)
+      gl.enableVertexAttribArray(pMask)
+      gl.vertexAttribPointer(pMask, 1, gl.FLOAT, false, 0, 0)
+      gl.bindBuffer(gl.ARRAY_BUFFER, accentBuf)
+      gl.enableVertexAttribArray(pAcc)
+      gl.vertexAttribPointer(pAcc, 1, gl.FLOAT, false, 0, 0)
+      gl.uniformMatrix4fv(pMvp, false, mvp)
+      gl.uniform1f(pTime, t)
+      // Dot size in device pixels, derived from the backing-store height so the
+      // halftone reads at the same visual density on any display.
+      gl.uniform1f(pScale, canvas.height * 0.005)
+      gl.uniform3f(pLand, 1.0, 0.99, 1.0)
+      gl.uniform3f(pSea, 0.6, 0.65, 0.8)
+      gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
+      gl.drawArrays(gl.POINTS, 0, placed)
+
+      // Depth is only meaningful for the points; points are drawn unsorted, so
+      // blending order is arbitrary within a dot — acceptable at this density
+      // because dots rarely overlap.
+      void scale
     }
     raf = requestAnimationFrame(draw)
 
@@ -335,33 +632,46 @@ export function HeroVisual({ className }: { className?: string }) {
       cancelAnimationFrame(raf)
       ro.disconnect()
       io.disconnect()
-      mo.disconnect()
       window.removeEventListener('pointermove', onMove)
-      gl.deleteProgram(prog)
-      gl.deleteShader(vs)
-      gl.deleteShader(fs)
-      if (buf) gl.deleteBuffer(buf)
+      gl.deleteProgram(points.prog)
+      gl.deleteProgram(lines.prog)
+      gl.deleteShader(points.vs)
+      gl.deleteShader(points.fs)
+      gl.deleteShader(lines.vs)
+      gl.deleteShader(lines.fs)
+      if (pointBuf) gl.deleteBuffer(pointBuf)
+      if (maskBuf) gl.deleteBuffer(maskBuf)
+      if (accentBuf) gl.deleteBuffer(accentBuf)
+      if (lineBuf) gl.deleteBuffer(lineBuf)
+      if (lineKindBuf) gl.deleteBuffer(lineKindBuf)
     }
   }, [mounted, reducedMotion])
 
   return (
     <div
       ref={wrapRef}
-      // Rounded + radially masked so the opaque WebGL canvas reads as an orb
-      // rather than a rectangle sitting over the grid backdrop.
-      className={cn(
-        'overflow-hidden rounded-full [mask-image:radial-gradient(circle,black_58%,transparent_71%)]',
-        className,
-      )}
+      className={cn('pointer-events-none relative aspect-square w-full', className)}
       aria-hidden="true"
       data-hero-visual
     >
-      {/* CSS aurora fallback: visible during SSR, before WebGL boots,
-          permanently when WebGL is unavailable or motion is reduced. */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,var(--primary)_0%,transparent_55%),radial-gradient(circle_at_70%_65%,var(--mint)_0%,transparent_50%),radial-gradient(circle_at_55%_45%,var(--coral)_0%,transparent_45%)] opacity-40 blur-2xl" />
-      <div className="absolute inset-[12%] rounded-full border border-foreground/15" />
-      <div className="absolute inset-[24%] rounded-full border border-foreground/10" />
-      <div className="absolute inset-[36%] rounded-full bg-foreground/[0.04] blur-sm" />
+      {/*
+        CSS fallback: a dotted sphere built from two radial gradients. Visible
+        during SSR, before WebGL boots, and permanently when WebGL is unavailable
+        or motion is reduced.
+      */}
+      <div
+        className="absolute inset-0 rounded-full opacity-45"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 38% 32%, rgba(240,240,248,0.9) 0.6px, transparent 1px), radial-gradient(circle at 38% 32%, rgba(139,139,150,0.5) 0.6px, transparent 1px)',
+          backgroundSize: '13px 13px, 19px 19px',
+          backgroundPosition: '0 0, 6px 8px',
+          maskImage: 'radial-gradient(circle, black 46%, transparent 68%)',
+          WebkitMaskImage: 'radial-gradient(circle, black 46%, transparent 68%)',
+        }}
+      />
+      <div className="absolute inset-[3%] rounded-full border border-border" />
+      <div className="absolute inset-[3%] rotate-[24deg] rounded-[50%] border border-border/60" />
 
       {mounted && !reducedMotion && !glFailed ? (
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />

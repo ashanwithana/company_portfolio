@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { services } from '@/content/services'
-import { ACCENT_BORDER, ACCENT_TEXT, ACCENT_WASH } from '@/components/ui/cta-band'
+import { ACCENT_BORDER, ACCENT_TEXT, ACCENT_WASH } from '@/lib/accent'
 import { cn } from '@/lib/utils'
 
 /** Services teaser on the home page — condensed versions of the full page. */

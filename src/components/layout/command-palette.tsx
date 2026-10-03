@@ -91,18 +91,20 @@ export function CommandPalette() {
         onClick={() => setOpen(true)}
         aria-label="Open command palette"
         aria-keyshortcuts="Meta+K Control+K"
-        className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card/50 px-3 font-mono text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:border-foreground/25 hover:text-foreground"
+        className="inline-flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-border-strong hover:bg-accent hover:text-foreground"
       >
-        <CommandGlyph />
-        <kbd className="hidden sm:inline">{isMac ? '⌘' : 'Ctrl'} K</kbd>
+        <SearchGlyph />
+        {/* The shortcut is surfaced here rather than in a kbd chip so the pill
+            keeps the same square footprint as the theme toggle beside it. */}
+        <span className="sr-only">Command palette — {isMac ? 'Meta' : 'Ctrl'} K</span>
       </button>
 
       <Command.Dialog
         open={open}
         onOpenChange={setOpen}
         label="Command palette"
-        className="w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-popover/95 shadow-elegant backdrop-blur-xl"
-        overlayClassName="fixed inset-0 z-[60] bg-background/70 backdrop-blur-sm"
+        className="w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-border bg-popover shadow-elegant"
+        overlayClassName="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm"
         contentClassName="outline-none"
       >
         <div className="flex items-center gap-3 border-b border-border px-4">
@@ -259,11 +261,11 @@ function PaletteItem({ label, onSelect, shortcut, keywords }: PaletteItemProps) 
       value={label}
       keywords={keywords ? [keywords] : undefined}
       onSelect={onSelect}
-      className="flex cursor-pointer items-center justify-between gap-4 rounded-xl px-3 py-2.5 text-sm transition-colors data-[selected=true]:bg-foreground/[0.06] data-[selected=true]:text-foreground"
+      className="group flex cursor-pointer items-center justify-between gap-4 rounded-2xl px-3 py-3 text-sm transition-colors data-[selected=true]:bg-coral data-[selected=true]:text-coral-foreground"
     >
       <span className="truncate">{label}</span>
       {shortcut ? (
-        <kbd className="shrink-0 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground">
+        <kbd className="shrink-0 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground group-data-[selected=true]:text-coral-foreground">
           {shortcut}
         </kbd>
       ) : null}
@@ -271,35 +273,16 @@ function PaletteItem({ label, onSelect, shortcut, keywords }: PaletteItemProps) 
   )
 }
 
-function CommandGlyph() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M15 6a3 3 0 1 1 6 0a3 3 0 0 1-6 0M9 6a3 3 0 1 1-6 0a3 3 0 0 1 6 0M15 18a3 3 0 1 0 6 0a3 3 0 0 0-6 0M9 18a3 3 0 1 0-6 0a3 3 0 0 0 6 0" />
-      <rect x="9" y="9" width="6" height="6" rx="1" />
-    </svg>
-  )
-}
-
 function SearchGlyph() {
   return (
     <svg
-      width="16"
-      height="16"
+      width="17"
+      height="17"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.8"
       strokeLinecap="round"
-      className="shrink-0 text-muted-foreground"
       aria-hidden="true"
     >
       <circle cx="11" cy="11" r="7" />

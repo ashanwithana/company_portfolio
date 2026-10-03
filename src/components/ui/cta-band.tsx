@@ -1,25 +1,5 @@
 import { cn } from '@/lib/utils'
 
-export type Accent = 'primary' | 'mint' | 'coral'
-
-export const ACCENT_TEXT: Record<Accent, string> = {
-  primary: 'text-primary',
-  mint: 'text-mint',
-  coral: 'text-coral',
-}
-
-export const ACCENT_BORDER: Record<Accent, string> = {
-  primary: 'border-primary/35',
-  mint: 'border-mint/35',
-  coral: 'border-coral/35',
-}
-
-export const ACCENT_WASH: Record<Accent, string> = {
-  primary: 'from-primary/12 via-primary/5 to-transparent',
-  mint: 'from-mint/12 via-mint/5 to-transparent',
-  coral: 'from-coral/12 via-coral/5 to-transparent',
-}
-
 /**
  * Closing call to action, reused at the bottom of most marketing pages.
  *
@@ -30,6 +10,7 @@ export function CtaBand({
   eyebrow,
   title,
   body,
+  ghost,
   href = '/contact',
   actionLabel = 'Start a project',
   secondary,
@@ -38,6 +19,7 @@ export function CtaBand({
   eyebrow: string
   title: string
   body: string
+  ghost?: string
   href?: string
   actionLabel?: string
   secondary?: { href: string; label: string }
@@ -45,34 +27,44 @@ export function CtaBand({
 }) {
   return (
     <section
-      className={cn(
-        'relative overflow-hidden border-t border-border bg-muted/20 py-24 md:py-32',
-        className,
-      )}
+      className={cn('relative overflow-hidden border-t border-border py-28 md:py-36', className)}
     >
       <div
-        className="pointer-events-none absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)] opacity-40"
+        className="pointer-events-none absolute inset-0 dot-grid opacity-70 mask-fade-radial"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -top-32 left-1/2 h-96 w-[52rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-40 blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 h-96 w-[60rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-50 blur-3xl"
         aria-hidden="true"
       />
+
+      {ghost ? (
+        <span
+          aria-hidden="true"
+          className="text-ghost pointer-events-none absolute -bottom-[0.12em] left-1/2 -translate-x-1/2 font-display text-[clamp(5rem,19vw,17rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
+        >
+          {ghost}
+        </span>
+      ) : null}
 
       <div className="relative container-page">
         <div className="max-w-3xl">
-          <p className="font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">{eyebrow}</p>
+          <p className="label flex items-center gap-3 text-muted-foreground">
+            <span aria-hidden="true">[</span>
+            <span className="text-coral">{eyebrow}</span>
+            <span aria-hidden="true">]</span>
+          </p>
 
-          <h2 className="mt-6 text-3xl leading-[1.1] text-balance sm:text-4xl lg:text-5xl">
-            {title}
-          </h2>
+          <h2 className="mt-7 display-lg">{title}</h2>
 
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{body}</p>
+          <p className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {body}
+          </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <a
               href={href}
-              className="inline-flex h-14 items-center justify-center rounded-full bg-coral px-8 font-mono text-sm tracking-[0.2em] text-white uppercase shadow-[0_10px_30px_-12px_var(--coral)] transition-shadow hover:shadow-[0_16px_40px_-10px_var(--coral)]"
+              className="inline-flex h-14 items-center justify-center gap-2.5 rounded-full bg-coral px-8 font-mono text-xs tracking-[0.2em] text-coral-foreground uppercase shadow-[0_10px_30px_-12px_var(--coral)] transition-shadow hover:shadow-[0_16px_44px_-12px_var(--coral)]"
             >
               {actionLabel}
               <span aria-hidden="true">→</span>
@@ -81,7 +73,7 @@ export function CtaBand({
             {secondary ? (
               <a
                 href={secondary.href}
-                className="inline-flex h-14 items-center justify-center rounded-full border border-border px-8 font-mono text-sm tracking-[0.2em] uppercase transition-colors hover:border-foreground/25"
+                className="inline-flex h-14 items-center justify-center rounded-full border border-border-strong px-8 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:border-coral hover:text-coral"
               >
                 {secondary.label}
               </a>

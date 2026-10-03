@@ -4,20 +4,21 @@ import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-mono text-xs tracking-[0.2em] uppercase transition-[transform,background-color,color,box-shadow] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
+  'inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
   {
     variants: {
       variant: {
         primary:
-          'bg-coral text-white shadow-[0_10px_30px_-12px_var(--coral)] hover:shadow-[0_16px_40px_-10px_var(--coral)]',
+          'bg-coral text-coral-foreground shadow-[0_10px_30px_-12px_var(--coral)] hover:shadow-[0_16px_44px_-12px_var(--coral)]',
+        secondary: 'bg-primary text-primary-foreground hover:brightness-110',
         outline:
-          'border border-border bg-transparent text-foreground hover:border-foreground/25 hover:bg-foreground/[0.03]',
-        ghost: 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground',
+          'border border-border-strong bg-transparent text-foreground hover:border-coral hover:text-coral',
+        ghost: 'text-muted-foreground hover:bg-accent hover:text-foreground',
       },
       size: {
         sm: 'h-9 px-4',
         md: 'h-11 px-6',
-        lg: 'h-14 px-8 text-sm',
+        lg: 'h-14 px-8 text-xs',
         icon: 'size-10',
       },
     },

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { DM_Sans, JetBrains_Mono, Syne } from 'next/font/google'
+import { Geist_Mono, JetBrains_Mono } from 'next/font/google'
 import { cookies } from 'next/headers'
 
 import { Header } from '@/components/layout/header'
@@ -12,22 +12,22 @@ import { parseTheme, THEME_COOKIE } from '@/lib/theme'
 
 import './globals.css'
 
-const dmSans = DM_Sans({
+/*
+ * Monospace throughout. Geist Mono carries display and body copy; JetBrains Mono
+ * handles the tracked micro-labels, where its slightly wider glyphs keep small
+ * uppercase text legible. Both are self-hosted by next/font — no runtime request
+ * to a third party.
+ */
+const geistMono = Geist_Mono({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-dm-sans',
-})
-
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  display: 'swap',
-  variable: '--font-syne',
+  variable: '--font-geist-mono',
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['400', '500', '600'],
   display: 'swap',
   variable: '--font-jetbrains-mono',
 })
@@ -85,8 +85,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fbfbfa' },
-    { media: '(prefers-color-scheme: dark)', color: '#0e0e14' },
+    { media: '(prefers-color-scheme: light)', color: '#faf7f2' },
+    { media: '(prefers-color-scheme: dark)', color: '#171717' },
   ],
   colorScheme: 'light dark',
   width: 'device-width',
@@ -127,7 +127,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     // agree and no suppressHydrationWarning is needed.
     <html lang="en-GB" className={theme} style={{ colorScheme: theme }}>
       <body
-        className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${geistMono.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <ThemeProvider initialTheme={theme}>
           <a

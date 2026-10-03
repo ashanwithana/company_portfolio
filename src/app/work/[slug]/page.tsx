@@ -8,7 +8,7 @@ import { Tag } from '@/components/ui/badge'
 import { Prose } from '@/components/ui/prose'
 import { caseStudies, getCaseStudy, publishedCaseStudies } from '@/content/case-studies'
 import { siteConfig } from '@/content/site'
-import { ACCENT_TEXT } from '@/components/ui/cta-band'
+import { ACCENT_TEXT } from '@/lib/accent'
 import { cn } from '@/lib/utils'
 
 /**

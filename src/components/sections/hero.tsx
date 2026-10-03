@@ -9,10 +9,10 @@ import { contactContent, siteConfig } from '@/content/site'
 const headline = ['Software that', 'earns its', 'place.']
 
 const rotatingPhrases = [
-  'product engineering',
+  'Odoo & ERP',
+  'RAG pipelines',
   'interface design',
-  'platform modernisation',
-  'AI that actually works',
+  'platform migration',
 ]
 
 export function Hero() {
@@ -20,24 +20,38 @@ export function Hero() {
     <section
       id="top"
       aria-label="Introduction"
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-28 pb-20"
+      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24"
     >
       <div
-        className="pointer-events-none absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)] opacity-60"
+        className="pointer-events-none absolute inset-0 dot-grid opacity-70 mask-fade-radial"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -top-40 left-1/2 h-[34rem] w-[70rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-50 blur-3xl"
+        className="pointer-events-none absolute -top-48 left-1/2 h-[34rem] w-[70rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-40 blur-3xl"
+        aria-hidden="true"
+      />
+      {/*
+        Reading scrim. On narrow screens the globe sits behind the copy, so this
+        gradient guarantees headline and body contrast regardless of what the
+        globe is doing underneath. Fades out once the globe moves to the gutter.
+      */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent lg:hidden"
         aria-hidden="true"
       />
 
       {/*
-        WebGL hero visual. Absolutely positioned so it sits behind the copy on
-        narrow screens and beside it from `lg` up.
+        Dotted globe. Absolutely positioned so it sits behind the copy on narrow
+        screens and beside it from `xl` up.
       */}
-      <HeroVisual className="pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(88vw,38rem)] -translate-x-1/2 -translate-y-1/2 lg:right-[3%] lg:left-auto lg:w-[min(42vw,34rem)] lg:translate-x-0 lg:-translate-y-1/2" />
+      {/*
+        Dotted globe. Centred behind the copy on small screens, where the
+        headline is short enough to clear it; from `lg` up it moves to the right
+        gutter so the two never compete for the same space.
+      */}
+      <HeroVisual className="pointer-events-none absolute top-[42%] left-1/2 aspect-square w-[min(78vw,24rem)] -translate-x-1/2 -translate-y-1/2 opacity-80 lg:top-1/2 lg:right-[3%] lg:left-auto lg:w-[min(38vw,30rem)] lg:translate-x-0 lg:-translate-y-1/2 lg:opacity-100" />
 
-      {/* Copy paints above the visual so the orb never washes out the headline. */}
+      {/* Copy paints above the globe so it never washes out the headline. */}
       <div className="relative z-10 container-page">
         <div className="max-w-3xl">
           <StatusBadge className="animate-fade-up">{contactContent.availability.badge}</StatusBadge>
@@ -47,7 +61,7 @@ export function Hero() {
             space keeps the accessible name readable rather than
             "Software thatearns itsplace."
           */}
-          <h1 className="mt-8 text-5xl leading-[0.95] sm:text-6xl lg:text-7xl">
+          <h1 className="mt-9 display-xl">
             {headline.map((line, index) => (
               <span
                 key={line}
@@ -60,7 +74,7 @@ export function Hero() {
           </h1>
 
           <p
-            className="mt-8 font-mono text-lg tracking-[0.12em] text-foreground sm:text-xl"
+            className="mt-8 max-w-xl text-lg tracking-[0.06em] text-foreground md:text-xl"
             style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 280ms both' }}
           >
             <span className="text-coral" aria-hidden="true">
@@ -70,7 +84,7 @@ export function Hero() {
           </p>
 
           <p
-            className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg"
+            className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg"
             style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 360ms both' }}
           >
             {siteConfig.description}
@@ -90,23 +104,21 @@ export function Hero() {
           </div>
 
           {/* Track record, stated plainly. */}
-          <Reveal delay={440} className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <Reveal delay={440} className="mt-12 flex flex-wrap items-center gap-2">
             {[
               'Odoo partner',
               'Dynamics 365',
               'SAP Business One',
               'Salesforce',
               'RAG pipelines',
-            ].map((item, index) => (
+            ].map((item) => (
               <span
                 key={item}
-                className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase"
+                className="inline-flex items-center rounded-full border border-border px-3.5 py-2 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
               >
-                {index > 0 ? (
-                  <span aria-hidden="true" className="mr-3 text-coral">
-                    /
-                  </span>
-                ) : null}
+                <span aria-hidden="true" className="mr-2 text-coral">
+                  ✦
+                </span>
                 {item}
               </span>
             ))}
@@ -119,11 +131,11 @@ export function Hero() {
           >
             {studioStats.map((stat) => (
               <div key={stat.label}>
-                <p className="font-display text-3xl font-semibold tabular-nums">
+                <p className="display-md tabular-nums">
                   {stat.value}
                   <span className="text-coral">{stat.suffix}</span>
                 </p>
-                <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+                <p className="mt-1.5 font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
                   {stat.label}
                 </p>
               </div>
@@ -134,13 +146,10 @@ export function Hero() {
 
       <a
         href="#services"
-        className="no-print absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+        className="no-print absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2.5 font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-coral"
       >
-        <span>↓ Scroll</span>
-        <span
-          className="h-8 w-px bg-gradient-to-b from-foreground/50 to-transparent"
-          aria-hidden="true"
-        />
+        <span>scroll</span>
+        <span className="h-10 w-px bg-gradient-to-b from-coral to-transparent" aria-hidden="true" />
       </a>
     </section>
   )
