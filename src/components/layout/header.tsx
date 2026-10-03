@@ -8,7 +8,6 @@ import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { siteConfig } from '@/content/site'
 import { services } from '@/content/services'
-import { publishedCaseStudies } from '@/content/case-studies'
 import { cn } from '@/lib/utils'
 
 type NavChild = { href: string; label: string; hint?: string }
@@ -33,21 +32,10 @@ const navEntries: readonly NavEntry[] = [
     ],
   },
   { href: '/method', label: 'Method' },
-  {
-    href: '/work',
-    label: 'Work',
-    children: [
-      { href: '/work', label: 'All case studies', hint: 'Every engagement, with the numbers.' },
-      ...publishedCaseStudies()
-        .filter((study) => study.featured)
-        .slice(0, 3)
-        .map((study) => ({
-          href: `/work/${study.slug}`,
-          label: study.title,
-          hint: `${study.client} · ${study.year}`,
-        })),
-    ],
-  },
+  // No dropdown here by design: the work index lists every case study, and a
+  // dropdown would duplicate it while growing without bound as studies are
+  // added. One link, one page.
+  { href: '/work', label: 'Work' },
   {
     href: '/about',
     label: 'More',
