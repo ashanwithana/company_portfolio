@@ -1,5 +1,6 @@
 import { PageHeader } from '@/components/layout/page'
 import { CtaBand } from '@/components/ui/cta-band'
+import { MethodVisual } from '@/components/ui/method-visual'
 import { Method } from '@/components/sections/method'
 import { methodSteps } from '@/content/method'
 
@@ -23,6 +24,10 @@ export default function MethodPage() {
         ghost="Method"
         lede="Discover the shape of every engagement we run: five phases, a fixed number at the end of the second, and numbers — not adjectives — at handover."
       />
+
+      <div className="container-page pb-4">
+        <MethodVisual className="mx-auto aspect-square h-[300px] md:h-[360px]" />
+      </div>
 
       <section aria-label="The five phases">
         <Method steps={methodSteps} showIntro={false} />
