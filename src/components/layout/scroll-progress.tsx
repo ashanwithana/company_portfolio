@@ -74,7 +74,7 @@ export function ScrollProgress() {
         />
         <span
           ref={knobRef}
-          className="absolute top-0 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-coral will-change-transform"
+          className="absolute top-0 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground will-change-transform"
           style={{ transform: 'translateY(0)' }}
         />
       </span>

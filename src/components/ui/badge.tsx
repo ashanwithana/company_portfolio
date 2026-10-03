@@ -53,11 +53,14 @@ export function Eyebrow({
   children,
   className,
   accent = false,
+  soft = false,
   leading,
 }: {
   children: ReactNode
   className?: string
   accent?: boolean
+  /** Muted text instead of foreground — for eyebrows on dark grounds. */
+  soft?: boolean
   /** Optional leading element, e.g. a section ordinal. */
   leading?: ReactNode
 }) {
@@ -71,7 +74,7 @@ export function Eyebrow({
     >
       {leading}
       <span aria-hidden="true">[</span>
-      <span className={accent ? undefined : 'text-foreground'}>{children}</span>
+      <span className={!accent && !soft ? 'text-foreground' : undefined}>{children}</span>
       <span aria-hidden="true">]</span>
     </p>
   )

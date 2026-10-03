@@ -1,8 +1,7 @@
-import { CtaBand } from '@/components/ui/cta-band'
 import { Hero } from '@/components/sections/hero'
 import { Method, type MethodStep } from '@/components/sections/method'
 import { PainPoints } from '@/components/sections/pain-points'
-import { contactContent } from '@/content/site'
+import { TalkToUs, CureBand } from '@/components/sections/talk-to-us'
 
 /**
  * Home page composition, mirroring the reference section for section:
@@ -80,14 +79,9 @@ export default function HomePage() {
 
       <PainPoints />
 
-      <CtaBand
-        eyebrow="Start a conversation"
-        title="And every business deserves to evolve."
-        ghost="Evolve"
-        body={`${contactContent.availability.body} ${contactContent.responseTime}`}
-        actionLabel="Start a project"
-        secondary={{ href: '/work', label: 'See our work' }}
-      />
+      <TalkToUs />
+
+      <CureBand />
     </>
   )
 }

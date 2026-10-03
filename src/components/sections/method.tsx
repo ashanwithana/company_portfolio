@@ -104,9 +104,7 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
     <div ref={wrapRef} className="method-wrap tone-paper relative md:h-[520vh]">
       <div className="method-viewport md:sticky md:top-0 md:flex md:h-screen md:flex-col md:justify-center md:overflow-hidden">
         <div className="container-page">
-          <Eyebrow accent className="justify-center">
-            The method
-          </Eyebrow>
+          <Eyebrow className="justify-center">The method</Eyebrow>
           <h2 className="mx-auto mt-5 max-w-3xl text-center display-lg">
             Five phases, one number.
           </h2>
@@ -136,6 +134,9 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
               <div className="relative">
                 <h3 className="font-display text-[clamp(3rem,14.5vw,8rem)] leading-[1] font-bold tracking-normal text-balance">
                   {step.word}
+                  <span aria-hidden="true" className="text-coral">
+                    .
+                  </span>
                 </h3>
 
                 <p className="mt-6 max-w-md text-[15px] leading-[1.7] font-light text-foreground/90">
@@ -146,8 +147,11 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
                   {step.points.map((point) => (
                     <li
                       key={point}
-                      className="text-[12px] leading-relaxed font-light text-muted-foreground"
+                      className="relative pl-7 text-[12px] leading-relaxed font-light text-muted-foreground"
                     >
+                      <span aria-hidden="true" className="absolute top-0 left-0">
+                        —
+                      </span>
                       {point}
                     </li>
                   ))}
@@ -160,31 +164,39 @@ export function Method({ steps }: { steps: readonly MethodStep[] }) {
           <div aria-hidden="true" className="hidden shrink-0 md:block md:w-[12vw]" />
         </div>
 
-        {/* Progress rail: phase letters with the active phase as a pink dot. */}
+        {/* Progress rail: reached phases as bold letters joined by long rules,
+            upcoming phases as dots, the final node a pink destination dot.
+            Only the active phase carries its label beneath. */}
         <div className="container-page mt-12 hidden md:block" aria-hidden="true">
-          <div className="flex max-w-xl items-center gap-0">
+          <div className="flex max-w-xl items-start">
             {steps.map((step, i) => (
               <React.Fragment key={step.word}>
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-2.5">
                   <span
                     className={cn(
-                      'flex size-5 items-center justify-center rounded-full font-mono text-[11px] transition-colors duration-500',
-                      i === active ? 'bg-coral text-coral-foreground' : 'text-foreground',
+                      'font-display leading-none font-bold transition-colors duration-500',
+                      i <= active
+                        ? 'text-[28px] text-foreground'
+                        : 'text-[10px] leading-[2.8] text-foreground',
+                      i === steps.length - 1 && i > active && 'text-coral',
                     )}
                   >
-                    {i === active ? '●' : step.word.charAt(0)}
+                    {i <= active ? step.word.charAt(0) : '●'}
                   </span>
                   <span
                     className={cn(
-                      'font-mono text-[9px] tracking-[0.14em] uppercase transition-colors duration-500',
-                      i === active ? 'text-coral' : 'text-muted-foreground',
+                      'font-mono text-[9px] tracking-[0.14em] uppercase',
+                      i === active ? 'text-muted-foreground' : 'invisible',
                     )}
                   >
                     {step.label}
                   </span>
                 </div>
                 {i < steps.length - 1 ? (
-                  <span className="mx-2 mb-6 h-px flex-1 bg-border-strong" aria-hidden="true" />
+                  <span
+                    aria-hidden="true"
+                    className="mx-1 mt-[13px] h-px flex-1 bg-border-strong"
+                  />
                 ) : null}
               </React.Fragment>
             ))}

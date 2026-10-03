@@ -62,7 +62,7 @@ void main() {
   // degenerate into sub-pixel dust and the sphere reads as a solid figure.
   // Accent nodes are drawn larger — they are meant to read as signal, not noise.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
-  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 3.2 * aAccent);
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 1.5 * aAccent);
 }
 `
 
@@ -91,23 +91,27 @@ void main() {
 
   // Points at the edge of the disc are the ones near the limb: fade them so the
   // sphere silhouette stays circular.
-  float limb = smoothstep(0.0, 0.16, vDepth);
+  float limb = smoothstep(0.0, 0.08, vDepth);
 
   // Depth: near points brighter, far points dimmed toward the background.
-  float depthGain = 0.34 + 0.66 * vDepth;
+  // The floor stays high — the reference globe reads as luminous white
+  // landmasses, not a dim dust field.
+  float depthGain = 0.55 + 0.45 * vDepth;
 
   /*
    * Theme-aware ink. On the near-black ground the landmass is white and the sea
-   * a cool grey; on the cream ground those same values wash out completely, so
-   * light mode inverts them to a dark ink. Without this the globe effectively
+   * a faint dusting; on the cream ground those same values wash out completely,
+   * so light mode inverts them to a dark ink. Without this the globe effectively
    * disappears when the light theme is active.
    */
-  vec3 land = mix(vec3(1.0, 0.99, 1.0), vec3(0.10, 0.09, 0.11), uTheme);
+  vec3 land = mix(vec3(1.0, 1.0, 1.0), vec3(0.10, 0.09, 0.11), uTheme);
   vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.42, 0.40, 0.46), uTheme);
 
   vec3 col = mix(sea, land, vMask) * depthGain;
-  float alpha = vMask * limb * (0.55 + 0.45 * vDepth)
-              + (1.0 - vMask) * limb * 0.17 * vDepth;
+  // Land renders nearly solid; the sea is a whisper so the continents carry
+  // the figure against the ground.
+  float alpha = vMask * limb * (0.75 + 0.25 * vDepth)
+              + (1.0 - vMask) * limb * 0.06 * vDepth;
 
   // A small number of accent nodes pulse in the site's pink. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
@@ -150,10 +154,12 @@ varying float vDepth;
 void main() {
   // Kept faint: the rings are a frame of reference for the sphere, not a
   // competing graphic. The limb ring in particular must not out-read the dots.
-  float a = vKind > 0.5 ? 0.26 : 0.34;
+  // Kind 2 is the pink arc sweeping over the top, like the reference's.
+  float isArc = step(1.5, vKind);
+  float a = mix(vKind > 0.5 ? 0.26 : 0.34, 0.55, isArc);
   // Orbits fade toward their far arc so they read as passing behind the globe.
   float depth = mix(0.25, 1.0, vDepth);
-  vec3 col = mix(uColorLine, uColorAccent, vKind * 0.45);
+  vec3 col = mix(mix(uColorLine, uColorAccent, vKind * 0.45), uColorAccent, isArc);
   gl_FragColor = vec4(col, a * depth * mix(1.0, 0.55, uTheme));
 }
 `
@@ -237,7 +243,7 @@ const LAND_LOBES: readonly (readonly [number, number, number, number])[] = [
   [55, -30, 10, 0.6],
 ]
 
-const POINT_COUNT = 11000
+const POINT_COUNT = 18000
 const GLOBE_RADIUS = 1
 const RING_SEGMENTS = 180
 const ORBIT_SEGMENTS = 200
@@ -422,9 +428,9 @@ export function HeroVisual({ className }: { className?: string }) {
       const lon = (Math.atan2(z, x) * 180) / Math.PI
       const lat = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
 
-      const isLand = landAt(lon, lat) > 0.27
+      const isLand = landAt(lon, lat) > 0.24
       // Keep the sea sparse so land reads as the figure and sea as ground.
-      if (!isLand && random() > 0.2) continue
+      if (!isLand && random() > 0.15) continue
 
       // Roughly one accent node per 150 land points, capped, so the pink reads
       // as scattered signal rather than a second landmass.
@@ -461,15 +467,17 @@ export function HeroVisual({ className }: { className?: string }) {
     }
 
     // Orbits: circles of varying radius and inclination, so they cross in front
-    // of and behind the globe.
-    const orbits: readonly (readonly [number, number, number, number])[] = [
-      // [radius, x-tilt, z-tilt, y-offset]
-      [1.28, 0.42, 0.18, 0],
-      [1.44, -0.3, 0.55, 0.06],
-      [1.16, 0.9, -0.2, -0.04],
+    // of and behind the globe. The last one is the pink arc sweeping over the
+    // top, like the reference's.
+    const orbits: readonly (readonly [number, number, number, number, number])[] = [
+      // [radius, x-tilt, z-tilt, y-offset, kind]
+      [1.28, 0.42, 0.18, 0, 1],
+      [1.44, -0.3, 0.55, 0.06, 1],
+      [1.16, 0.9, -0.2, -0.04, 1],
+      [1.66, 0.5, 0.12, 0.1, 2],
     ]
     const orbitOffsets: number[] = []
-    for (const [r, tx, tz, yo] of orbits) {
+    for (const [r, tx, tz, yo, kind] of orbits) {
       const seg = ORBIT_SEGMENTS
       orbitOffsets.push(linePositions.length / 3)
       const cx = Math.cos(tx)
@@ -486,7 +494,7 @@ export function HeroVisual({ className }: { className?: string }) {
         const x2 = y1 * cz - z1 * sz
         const z2 = y1 * sz + z1 * cz
         linePositions.push(x2, y1 * 0 + yo, z2)
-        lineKinds.push(1)
+        lineKinds.push(kind)
       }
     }
 
@@ -640,7 +648,7 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform1f(pTime, t)
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
-      gl.uniform1f(pScale, canvas.height * 0.0038)
+      gl.uniform1f(pScale, canvas.height * 0.0042)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(pTheme, theme)
       gl.drawArrays(gl.POINTS, 0, placed)

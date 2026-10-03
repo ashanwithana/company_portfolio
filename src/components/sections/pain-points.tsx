@@ -82,8 +82,32 @@ export function PainPoints({ items = DEFAULT_PAIN_POINTS }: { items?: readonly P
       />
 
       <div className="relative container-page text-center">
-        <h2 className="mx-auto max-w-3xl display-lg">What&apos;s slowing you down?</h2>
-        <p className="mt-6 label text-muted-foreground">You name it — we&apos;ve fixed it</p>
+        {/*
+          Outline ghost heading, hidden from assistive tech — the sub-line
+          below is the readable heading. The reference renders this line as a
+          giant stroke-only backdrop.
+        */}
+        <p
+          aria-hidden="true"
+          className="font-display text-[clamp(2.75rem,8.5vw,6.9375rem)] leading-[1] font-extrabold tracking-[-0.04em] whitespace-nowrap text-transparent select-none"
+          style={{
+            WebkitTextStroke: '1.5px color-mix(in oklab, var(--foreground) 30%, transparent)',
+          }}
+        >
+          What&apos;s slowing you down?
+        </p>
+        <h2 className="mx-auto mt-6 max-w-2xl font-mono text-xl font-normal tracking-normal md:text-2xl">
+          You name the friction. We map the fix.
+        </h2>
+
+        <p className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase">
+          <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
+            <span className="absolute size-2 animate-pulse-ring rounded-full bg-coral" />
+            <span className="size-1.5 rounded-full bg-coral" />
+          </span>
+          <span className="tabular-nums">{String(items.length).padStart(2, '0')}</span>
+          <span className="text-muted-foreground">· frictions we fix</span>
+        </p>
       </div>
 
       {/* Scattered field (desktop). */}
@@ -136,7 +160,7 @@ export function PainPoints({ items = DEFAULT_PAIN_POINTS }: { items?: readonly P
 
       {/* Tilted ticker closing the section. */}
       <div
-        className="relative mt-20 -rotate-2 overflow-hidden border-y border-border py-4"
+        className="relative mt-20 -rotate-3 overflow-hidden border-y border-border py-4"
         aria-hidden="true"
       >
         <div className="flex w-max animate-marquee gap-8 whitespace-nowrap">

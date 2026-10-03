@@ -43,7 +43,7 @@ export function Hero() {
             className="mx-auto max-w-5xl display-xl"
             style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) both' }}
           >
-            Software that <span className="text-gradient">earns its place.</span>
+            Software that earns its place.
           </h1>
 
           <p
