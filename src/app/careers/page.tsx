@@ -11,7 +11,7 @@ import { allBenefits, rolesByDepartment } from '@/content/roles'
 export const metadata = {
   title: 'Careers',
   description:
-    'Open roles at Northlight — engineering, design, delivery and operations. Async-first, four-day week, fourteen people.',
+    'Open roles at Northlight — full-stack engineering and internships. Async-first, four-day week, seven people.',
 }
 
 export default function CareersPage() {
@@ -26,7 +26,7 @@ export default function CareersPage() {
       <PageHeader
         eyebrow="Careers"
         ghost="Careers"
-        title="Fourteen people, deliberately not fifteen."
+        title="Seven people, deliberately not seventy."
         lede="We stay small enough that everyone knows every project, which means we can hire slowly and well. Everything here is async-first, with two weeks a year in the studio together."
       />
 

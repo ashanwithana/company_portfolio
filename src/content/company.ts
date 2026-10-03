@@ -41,8 +41,14 @@ export const team: readonly TeamMember[] = [
   {
     name: 'Jonas Weber',
     role: 'Delivery Lead',
-    bio: 'Keeps fourteen concurrent engagements coherent. Maintains the only accurate Gantt chart in the building.',
+    bio: 'Keeps every concurrent engagement coherent. Maintains the only accurate Gantt chart in the building.',
     initials: 'JW',
+  },
+  {
+    name: 'Nimal Fernando',
+    role: 'Full-Stack Intern',
+    bio: 'Based in Colombo. Ships real features to production from week two, paired with a senior engineer who reviews everything.',
+    initials: 'NF',
   },
 ] as const
 
@@ -97,7 +103,7 @@ export const milestones: readonly Milestone[] = [
   },
   {
     year: '2023',
-    title: 'Practice grew to fourteen',
+    title: 'Practice grew to seven',
     body: 'We started turning down more work than we accepted, which remains the most useful thing we have done.',
   },
   {
@@ -107,7 +113,7 @@ export const milestones: readonly Milestone[] = [
   },
   {
     year: '2026',
-    title: 'Sixty projects delivered',
+    title: 'Twenty-three projects delivered',
     body: 'Still independent, still deliberately small, still measuring everything twice.',
   },
 ] as const

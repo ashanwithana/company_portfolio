@@ -14,7 +14,7 @@ import { studioStats } from '@/content/services'
 export const metadata = {
   title: 'About',
   description:
-    'Northlight is a fourteen-person product studio in London. We design and build software, and we are deliberately small enough to know every project by name.',
+    'Northlight is a seven-person product studio in London. We design and build software, and we are deliberately small enough to know every project by name.',
 }
 
 export default function AboutPage() {
@@ -23,7 +23,7 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="About"
         ghost="About"
-        title="Fourteen people who would rather be right than fast."
+        title="Seven people who would rather be right than fast."
         lede="Northlight is an independent product studio in London. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
       />
 

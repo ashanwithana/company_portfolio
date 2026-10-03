@@ -54,7 +54,9 @@ export default async function RolePage({ params }: Params) {
         ? 'FULL_TIME'
         : role.employment === 'Part-time'
           ? 'PART_TIME'
-          : 'CONTRACTOR',
+          : role.employment === 'Internship'
+            ? 'INTERN'
+            : 'CONTRACTOR',
     hiringOrganization: {
       '@type': 'Organization',
       name: siteConfig.nameWithSuffix,

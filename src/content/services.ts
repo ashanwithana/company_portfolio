@@ -369,8 +369,8 @@ export function getService(slug: string) {
 
 /** Headline metrics shown on the services page and the home page. */
 export const studioStats = [
-  { value: 7, suffix: '+', label: 'Years shipping' },
-  { value: 60, suffix: '+', label: 'Projects delivered' },
-  { value: 14, suffix: '', label: 'People in the studio' },
+  { value: 6, suffix: '+', label: 'Years shipping' },
+  { value: 23, suffix: '+', label: 'Projects delivered' },
+  { value: 7, suffix: '', label: 'People in the studio' },
   { value: 92, suffix: '%', label: 'Clients return' },
 ] as const
