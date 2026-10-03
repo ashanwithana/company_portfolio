@@ -49,15 +49,16 @@ export default function AccessibilityPage() {
     <>
       <PageHeader
         eyebrow="Legal"
+        ghost="A11y"
         title="Accessibility"
         lede="An inaccessible product is a broken product, so this is a standard we hold our own work to rather than a policy we wrote afterwards."
       />
 
       <PageSection className="pt-0">
-        <dl className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {checks.map((check) => (
             <div key={check.label} className="bg-background p-7">
-              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                 {check.label}
               </dt>
               <dd className="mt-3">
@@ -93,7 +94,7 @@ export default function AccessibilityPage() {
             </p>
             <a
               href="mailto:hello@northlight.example.com?subject=Accessibility%20barrier"
-              className="mt-6 inline-flex h-12 items-center justify-center rounded-full border border-border px-6 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:border-foreground/25"
+              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-strong px-6 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:border-border-strong"
             >
               Report a barrier
               <span aria-hidden="true" className="ml-2">

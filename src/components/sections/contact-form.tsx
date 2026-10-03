@@ -87,7 +87,7 @@ export function ContactForm() {
       action={action}
       onSubmit={handleSubmit}
       noValidate
-      className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm md:p-10"
+      className="rounded-3xl border border-border bg-card/40 p-7 md:p-10"
     >
       {/* Honeypot: off-screen, unfocusable, rejected by the schema. */}
       <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
@@ -129,10 +129,7 @@ export function ContactForm() {
 
         {/* Service selector — a native select keeps mobile behaviour correct. */}
         <div>
-          <label
-            htmlFor="service"
-            className="mb-2.5 block font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase"
-          >
+          <label htmlFor="service" className="mb-3 block label text-[0.6rem] text-muted-foreground">
             Service <span className="normal-case opacity-60">(optional)</span>
           </label>
           <select
@@ -141,7 +138,7 @@ export function ContactForm() {
             value={values.service}
             onChange={(event) => setValues((prev) => ({ ...prev, service: event.target.value }))}
             className={cn(
-              'w-full rounded-xl border border-border bg-background/60 px-5 py-4 text-base transition-colors outline-none focus:border-primary/60',
+              'w-full rounded-3xl border border-border bg-background/60 px-5 py-4 text-base transition-colors outline-none focus:border-coral',
               !values.service && 'text-muted-foreground/70',
             )}
           >
@@ -160,7 +157,7 @@ export function ContactForm() {
 
       {/* Budget — radio group, since these are mutually exclusive choices. */}
       <fieldset className="mt-6">
-        <legend className="mb-3 font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
+        <legend className="mb-3 label text-[0.6rem] text-muted-foreground">
           Approximate budget <span className="normal-case opacity-60">(optional)</span>
         </legend>
 
@@ -170,11 +167,11 @@ export function ContactForm() {
               key={option.value}
               className={cn(
                 'inline-flex min-h-10 cursor-pointer items-center rounded-full border px-4 font-mono text-[0.65rem] tracking-[0.15em] uppercase transition-colors',
-                'has-checked:border-foreground has-checked:bg-foreground has-checked:text-background',
+                'has-checked:border-coral has-checked:bg-coral has-checked:text-coral-foreground',
                 'has-focus-visible:outline has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring',
                 values.budget === option.value
-                  ? 'border-foreground bg-foreground text-background'
-                  : 'border-border text-muted-foreground hover:border-foreground/25',
+                  ? 'border-coral bg-coral text-coral-foreground'
+                  : 'border-border text-muted-foreground hover:border-border-strong',
               )}
             >
               <input
@@ -216,7 +213,7 @@ export function ContactForm() {
           aria-live="polite"
           className={cn(
             'text-sm outline-none',
-            state?.status === 'success' && 'text-mint',
+            state?.status === 'success' && 'text-coral',
             state?.status === 'error' && 'text-destructive',
           )}
         >
@@ -269,17 +266,14 @@ function Field({
       onChange(event.target.value),
     className: cn(
       'w-full rounded-xl border bg-background/60 px-5 py-4 text-base outline-none transition-colors',
-      'placeholder:text-muted-foreground/60 focus:border-primary/60',
+      'placeholder:text-muted-foreground/60 focus:border-coral',
       error ? 'border-destructive/70' : 'border-border',
     ),
   }
 
   return (
     <div>
-      <label
-        htmlFor={id}
-        className="mb-2.5 block font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase"
-      >
+      <label htmlFor={id} className="mb-3 block label text-[0.6rem] text-muted-foreground">
         {label} {optional ? <span className="normal-case opacity-60">(optional)</span> : null}
       </label>
 

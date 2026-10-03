@@ -9,7 +9,7 @@ export function Testimonials() {
     <ul className="grid gap-5 md:grid-cols-2">
       {testimonials.map((testimonial, index) => (
         <Reveal key={testimonial.name} as="li" delay={index * 60}>
-          <figure className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+          <figure className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
             <span aria-hidden="true" className="font-display text-4xl leading-none text-coral">
               &ldquo;
             </span>
@@ -20,13 +20,13 @@ export function Testimonials() {
               <p className="text-sm font-medium">
                 {testimonial.name} · {testimonial.role}
               </p>
-              <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+              <p className="mt-1 label text-[0.55rem] text-muted-foreground">
                 {testimonial.company}
               </p>
               {testimonial.caseStudySlug ? (
                 <Link
                   href={`/work/${testimonial.caseStudySlug}`}
-                  className="mt-3 inline-flex min-h-8 items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+                  className="mt-3 inline-flex min-h-8 items-center gap-2 label text-[0.6rem] transition-colors hover:text-coral"
                 >
                   Read the case study
                   <span aria-hidden="true">→</span>

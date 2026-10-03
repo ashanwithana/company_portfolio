@@ -23,10 +23,7 @@ export function Footer() {
     },
     {
       heading: 'Practice',
-      links: [
-        ...footerNav.practices,
-        { href: '/careers', label: 'Careers' },
-      ],
+      links: [...footerNav.practices, { href: '/careers', label: 'Careers' }],
     },
     { heading: 'Legal', links: footerNav.legal },
   ]
@@ -34,13 +31,13 @@ export function Footer() {
   return (
     <footer className="no-print relative overflow-hidden border-t border-border">
       <div
-        className="pointer-events-none absolute inset-0 dot-grid opacity-50 mask-fade-radial"
+        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
         aria-hidden="true"
       />
 
       {/* Marquee band — the site's closing rhythm. Duplicated so the loop is seamless. */}
       <div className="relative overflow-hidden border-y border-border py-5">
-        <div className="animate-marquee flex w-max gap-10 whitespace-nowrap">
+        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex gap-10" aria-hidden={copy === 1}>
               {[
@@ -129,13 +126,11 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+          <p className="label text-[0.55rem] text-muted-foreground">
             © {year} {siteConfig.nameWithSuffix}. {footerContent.builtWith}
           </p>
 
-          <p className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
-            {footerContent.hint}
-          </p>
+          <p className="label text-[0.55rem] text-muted-foreground">{footerContent.hint}</p>
         </div>
       </div>
     </footer>

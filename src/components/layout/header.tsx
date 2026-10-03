@@ -76,17 +76,14 @@ export function Header() {
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
-    <header
-      className={cn(
-        'no-print fixed inset-x-0 top-0 z-50 transition-[padding] duration-500',
-        scrolled ? 'pt-3' : 'pt-5',
-      )}
-    >
-      <div className="container-page">
+    <header className="no-print fixed inset-x-0 top-0 z-50">
+      <div className="px-4 pt-3">
         <div
           className={cn(
-            'flex items-center justify-between gap-6 rounded-full border border-border bg-card/70 py-2.5 pr-2.5 pl-5 backdrop-blur-xl transition-shadow duration-500',
-            scrolled && 'border-border-strong shadow-[0_18px_50px_-30px_rgba(0,0,0,0.9)]',
+            // Full-width floating island: 32px inset, 32px radius, near-black at
+            // 70% over a 24px blur so the page reads through it.
+            'flex h-16 items-center justify-between gap-4 rounded-full border border-border bg-[#080808]/70 px-5 backdrop-blur-[24px] transition-shadow duration-500',
+            scrolled && 'border-border-strong shadow-[0_18px_50px_-28px_rgba(0,0,0,0.95)]',
           )}
         >
           <Link
@@ -122,7 +119,9 @@ export function Header() {
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
                       'flex min-h-9 items-center rounded-full px-3.5 font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors',
-                      isActive(item.href) ? 'text-coral' : 'text-muted-foreground hover:text-foreground',
+                      isActive(item.href)
+                        ? 'text-coral'
+                        : 'text-muted-foreground hover:text-foreground',
                     )}
                   >
                     {item.label}
@@ -167,7 +166,7 @@ export function Header() {
       </div>
 
       {/* Mobile sheet */}
-      <div id="mobile-nav" ref={menuPanelRef} hidden={!menuOpen} className="container-page mt-2 xl:hidden">
+      <div id="mobile-nav" ref={menuPanelRef} hidden={!menuOpen} className="px-4 pt-2 xl:hidden">
         <nav
           aria-label="Mobile"
           className="overflow-hidden rounded-3xl border border-border bg-popover p-2 shadow-elegant"

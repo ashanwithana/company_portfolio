@@ -22,19 +22,18 @@ export default function AboutPage() {
     <>
       <PageHeader
         eyebrow="About"
+        ghost="About"
         title="Fourteen people who would rather be right than fast."
         lede="Northlight is an independent product studio in London. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
       />
 
       {/* Platforms and models — concrete capability rather than adjectives. */}
       <PageSection className="pt-0">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          What we work with
-        </h2>
+        <h2 className="label text-muted-foreground">What we work with</h2>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           <Reveal>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">Enterprise platforms</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Accredited or certified, and implementing them weekly rather than once a year.
@@ -48,7 +47,7 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/enterprise"
-                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-coral"
               >
                 Enterprise practice
                 <span aria-hidden="true">→</span>
@@ -57,7 +56,7 @@ export default function AboutPage() {
           </Reveal>
 
           <Reveal delay={60}>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">Models we build against</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Chosen per task against an evaluation set, never by default.
@@ -71,7 +70,7 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/ai"
-                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-coral"
               >
                 AI practice
                 <span aria-hidden="true">→</span>
@@ -80,7 +79,7 @@ export default function AboutPage() {
           </Reveal>
 
           <Reveal delay={120}>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">Everything else</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 Boring, well-understood tools. Novelty is a cost, and we spend it only where it
@@ -105,10 +104,8 @@ export default function AboutPage() {
         <dl className="grid gap-10 border-y border-border py-12 sm:grid-cols-2 lg:grid-cols-4">
           {studioStats.map((stat) => (
             <div key={stat.label}>
-              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                {stat.label}
-              </dt>
-              <dd className="mt-2 font-display text-4xl font-semibold tabular-nums sm:text-5xl">
+              <dt className="label text-[0.55rem] text-muted-foreground">{stat.label}</dt>
+              <dd className="mt-2 display-lg tabular-nums">
                 {stat.value}
                 <span className="text-coral">{stat.suffix}</span>
               </dd>
@@ -119,15 +116,13 @@ export default function AboutPage() {
 
       {/* Process */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          How an engagement runs
-        </h2>
+        <h2 className="label text-muted-foreground">How an engagement runs</h2>
 
         <ol className="mt-10 space-y-8">
           {process.map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 60} y={16}>
               <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="font-mono text-xs tracking-[0.25em] text-mint tabular-nums">
+                <p className="label font-mono text-[0.55rem] text-coral tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </p>
                 <div>
@@ -144,14 +139,12 @@ export default function AboutPage() {
 
       {/* Values */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          What we believe
-        </h2>
+        <h2 className="label text-muted-foreground">What we believe</h2>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {values.map((value, index) => (
             <Reveal key={value.title} delay={index * 60}>
-              <div className="h-full rounded-2xl border border-border bg-card/40 p-7">
+              <div className="h-full rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{value.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{value.body}</p>
               </div>
@@ -162,19 +155,17 @@ export default function AboutPage() {
 
       {/* Team */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          The studio
-        </h2>
+        <h2 className="label text-muted-foreground">The studio</h2>
 
         <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {team.map((member, index) => (
             <Reveal key={member.name} as="li" delay={index * 50}>
-              <div className="flex h-full gap-4 rounded-2xl border border-border bg-background p-6">
+              <div className="flex h-full gap-4 rounded-3xl border border-border bg-background p-6">
                 <InitialsAvatar initials={member.initials} className="size-12 shrink-0" />
 
                 <div>
                   <h3 className="text-lg leading-tight">{member.name}</h3>
-                  <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-mint uppercase">
+                  <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-coral uppercase">
                     {member.role}
                   </p>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
@@ -187,15 +178,13 @@ export default function AboutPage() {
 
       {/* History */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          How we got here
-        </h2>
+        <h2 className="label text-muted-foreground">How we got here</h2>
 
         <ol className="mt-10 space-y-8">
           {milestones.map((milestone, index) => (
             <Reveal key={milestone.year} as="li" delay={index * 60} y={16}>
               <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground tabular-nums">
+                <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
                   {milestone.year}
                 </p>
                 <div>
@@ -211,9 +200,7 @@ export default function AboutPage() {
       </PageSection>
 
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Clients
-        </h2>
+        <h2 className="label text-muted-foreground">Clients</h2>
         <div className="mt-10">
           <ClientLogos />
         </div>

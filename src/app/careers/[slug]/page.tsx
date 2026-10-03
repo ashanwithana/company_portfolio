@@ -84,7 +84,7 @@ export default async function RolePage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">
+        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-coral uppercase">
           {role.department}
         </p>
 
@@ -105,7 +105,7 @@ export default async function RolePage({ params }: Params) {
           </li>
           {role.remote ? (
             <li>
-              <Tag className="text-mint">Remote-first</Tag>
+              <Tag className="text-coral">Remote-first</Tag>
             </li>
           ) : null}
         </ul>
@@ -124,10 +124,7 @@ export default async function RolePage({ params }: Params) {
       <div className="container-page grid gap-12 pb-20 md:pb-28 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-20">
         <div className="space-y-12">
           <section aria-labelledby="about-role">
-            <h2
-              id="about-role"
-              className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-            >
+            <h2 id="about-role" className="mb-4 label text-muted-foreground">
               About the role
             </h2>
             <Prose>
@@ -138,10 +135,7 @@ export default async function RolePage({ params }: Params) {
           </section>
 
           <section aria-labelledby="responsibilities">
-            <h2
-              id="responsibilities"
-              className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-            >
+            <h2 id="responsibilities" className="mb-4 label text-muted-foreground">
               What you will do
             </h2>
             <Prose>
@@ -154,10 +148,7 @@ export default async function RolePage({ params }: Params) {
           </section>
 
           <section aria-labelledby="requirements">
-            <h2
-              id="requirements"
-              className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-            >
+            <h2 id="requirements" className="mb-4 label text-muted-foreground">
               What we are looking for
             </h2>
             <Prose>
@@ -182,9 +173,7 @@ export default async function RolePage({ params }: Params) {
               { term: 'Working style', detail: role.remote ? 'Async-first, remote' : 'Hybrid' },
             ].map((item) => (
               <div key={item.term}>
-                <dt className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
-                  {item.term}
-                </dt>
+                <dt className="label text-[0.55rem] text-muted-foreground">{item.term}</dt>
                 <dd className="mt-1">{item.detail}</dd>
               </div>
             ))}
@@ -195,10 +184,7 @@ export default async function RolePage({ params }: Params) {
       {role.benefits ? (
         <section aria-labelledby="benefits" className="border-t border-border bg-muted/20">
           <div className="container-page py-14">
-            <h2
-              id="benefits"
-              className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-            >
+            <h2 id="benefits" className="label text-muted-foreground">
               What we offer
             </h2>
             <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -207,7 +193,7 @@ export default async function RolePage({ params }: Params) {
                   key={benefit}
                   className="flex gap-3 rounded-xl border border-border bg-background p-5 text-sm leading-relaxed"
                 >
-                  <span aria-hidden="true" className="text-mint">
+                  <span aria-hidden="true" className="text-coral">
                     →
                   </span>
                   {benefit}
@@ -221,20 +207,18 @@ export default async function RolePage({ params }: Params) {
       {/* Other roles */}
       <nav aria-label="Other roles" className="border-t border-border">
         <div className="container-page py-14">
-          <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-            Other open roles
-          </h2>
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
+          <h2 className="label text-muted-foreground">Other open roles</h2>
+          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2">
             {others.map((other) => (
               <li key={other.slug}>
                 <Link
                   href={`/careers/${other.slug}`}
                   className="group flex h-full flex-col gap-2 bg-background p-6 transition-colors hover:bg-muted/40"
                 >
-                  <span className="text-lg leading-snug transition-colors group-hover:text-mint">
+                  <span className="text-lg leading-snug transition-colors group-hover:text-coral">
                     {other.title}
                   </span>
-                  <span className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+                  <span className="label text-[0.55rem] text-muted-foreground">
                     {other.department} · {other.employment}
                   </span>
                 </Link>

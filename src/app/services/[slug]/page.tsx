@@ -83,7 +83,7 @@ export default async function ServiceDetailPage({ params }: Params) {
           <ul className="mt-4 space-y-3">
             {service.deliverables.map((item) => (
               <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                <span aria-hidden="true" className="text-mint">
+                <span aria-hidden="true" className="text-coral">
                   →
                 </span>
                 {item}
@@ -104,11 +104,9 @@ export default async function ServiceDetailPage({ params }: Params) {
       {/* Other services */}
       <nav aria-label="Other services" className="border-t border-border bg-muted/20">
         <div className="container-page py-14">
-          <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-            Other services
-          </h2>
+          <h2 className="label text-muted-foreground">Other services</h2>
 
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
             {others.map((other, index) => (
               <li key={other.slug}>
                 <Reveal delay={index * 50} y={12}>
@@ -116,12 +114,10 @@ export default async function ServiceDetailPage({ params }: Params) {
                     href={other.canonicalHref ?? `/services/${other.slug}`}
                     className="group flex h-full flex-col justify-between gap-3 bg-background p-6 transition-colors hover:bg-muted/40"
                   >
-                    <span className="text-lg leading-snug transition-colors group-hover:text-mint">
+                    <span className="text-lg leading-snug transition-colors group-hover:text-coral">
                       {other.title}
                     </span>
-                    <span className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
-                      Explore
-                    </span>
+                    <span className="label text-[0.55rem] text-muted-foreground">Explore</span>
                   </Link>
                 </Reveal>
               </li>

@@ -18,6 +18,7 @@ export default function ServicesPage() {
     <>
       <PageHeader
         eyebrow="Services"
+        ghost="Services"
         title="A deliberately narrow practice."
         lede="We could offer everything. We do not, because the value of working with us is that everyone here has done the specific thing you need before. Each service below has been delivered dozens of times, not once."
       />
@@ -32,10 +33,10 @@ export default function ServicesPage() {
                 className="group grid gap-6 py-10 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:gap-12"
               >
                 <div>
-                  <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground tabular-nums">
+                  <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
                     {(index + 1).toString().padStart(2, '0')}
                   </p>
-                  <h2 className="mt-3 text-2xl transition-colors group-hover:text-mint sm:text-3xl">
+                  <h2 className="mt-3 text-2xl transition-colors group-hover:text-coral sm:text-3xl">
                     {service.title}
                   </h2>
                 </div>
@@ -71,10 +72,8 @@ export default function ServicesPage() {
         <dl className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {studioStats.map((stat) => (
             <div key={stat.label}>
-              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                {stat.label}
-              </dt>
-              <dd className="mt-2 font-display text-4xl font-semibold tabular-nums sm:text-5xl">
+              <dt className="label text-[0.55rem] text-muted-foreground">{stat.label}</dt>
+              <dd className="mt-2 display-lg tabular-nums">
                 {stat.value}
                 <span className="text-coral">{stat.suffix}</span>
               </dd>
@@ -85,9 +84,7 @@ export default function ServicesPage() {
 
       {/* Engagement models — sets expectations before the first call. */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          How we engage
-        </h2>
+        <h2 className="label text-muted-foreground">How we engage</h2>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {[
@@ -108,11 +105,9 @@ export default function ServicesPage() {
             },
           ].map((model, index) => (
             <Reveal key={model.title} delay={index * 70}>
-              <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl">{model.title}</h3>
-                <p className="mt-2 font-mono text-[0.65rem] tracking-[0.2em] text-coral uppercase">
-                  {model.price}
-                </p>
+                <p className="mt-2 label text-[0.6rem] text-coral">{model.price}</p>
                 <p className="mt-4 leading-relaxed text-muted-foreground">{model.body}</p>
               </div>
             </Reveal>

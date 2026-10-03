@@ -25,6 +25,7 @@ export default function CareersPage() {
 
       <PageHeader
         eyebrow="Careers"
+        ghost="Careers"
         title="Fourteen people, deliberately not fifteen."
         lede="We stay small enough that everyone knows every project, which means we can hire slowly and well. Everything here is async-first, with two weeks a year in the studio together."
       />
@@ -33,9 +34,7 @@ export default function CareersPage() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-20">
           {/* Roles by department */}
           <div>
-            <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-              {totalRoles} open roles
-            </h2>
+            <h2 className="label text-muted-foreground">{totalRoles} open roles</h2>
 
             {groups.map((group) => (
               <section key={group.department} className="mt-12 first:mt-10">
@@ -49,7 +48,7 @@ export default function CareersPage() {
                         className="group flex flex-col gap-4 py-7 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div className="max-w-2xl">
-                          <h4 className="text-xl transition-colors group-hover:text-mint">
+                          <h4 className="text-xl transition-colors group-hover:text-coral">
                             {role.title}
                           </h4>
                           <p className="mt-2 leading-relaxed text-muted-foreground">
@@ -65,7 +64,7 @@ export default function CareersPage() {
                             </li>
                             {role.remote ? (
                               <li>
-                                <Tag className="text-mint">Remote</Tag>
+                                <Tag className="text-coral">Remote</Tag>
                               </li>
                             ) : null}
                           </ul>
@@ -88,7 +87,7 @@ export default function CareersPage() {
           {/* Benefits + speculative applications */}
           <aside className="space-y-8 lg:sticky lg:top-28 lg:self-start">
             <Reveal>
-              <div className="rounded-2xl border border-border bg-card/40 p-7">
+              <div className="rounded-3xl border border-border bg-card/40 p-7">
                 <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
                   What we offer
                 </h2>
@@ -98,7 +97,7 @@ export default function CareersPage() {
                       key={benefit}
                       className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
                     >
-                      <span aria-hidden="true" className="text-mint">
+                      <span aria-hidden="true" className="text-coral">
                         →
                       </span>
                       {benefit}
@@ -109,7 +108,7 @@ export default function CareersPage() {
             </Reveal>
 
             <Reveal delay={60}>
-              <div className="rounded-2xl border border-border bg-muted/30 p-7">
+              <div className="rounded-3xl border border-border bg-muted/30 p-7">
                 <h2 className="text-lg">Nothing that fits?</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   We keep a shortlist of people we would like to work with when the right role

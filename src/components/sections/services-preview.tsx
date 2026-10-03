@@ -15,13 +15,13 @@ export function ServicesPreview() {
           <Link
             href={service.canonicalHref ?? `/services/${service.slug}`}
             className={cn(
-              'group flex h-full flex-col justify-between gap-8 rounded-2xl border border-border bg-gradient-to-br p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1',
+              'group flex h-full flex-col justify-between gap-8 rounded-3xl border border-border bg-gradient-to-br p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1',
               ACCENT_WASH[service.tint],
               ACCENT_BORDER[service.tint],
             )}
           >
             <div>
-              <h3 className="text-2xl leading-tight">{service.title}</h3>
+              <h3 className="display-sm">{service.title}</h3>
               <p className="mt-3 leading-relaxed text-muted-foreground">{service.summary}</p>
             </div>
 

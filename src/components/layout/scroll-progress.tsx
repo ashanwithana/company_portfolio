@@ -62,7 +62,7 @@ export function ScrollProgress() {
       className="no-print pointer-events-none fixed top-1/2 right-5 z-[60] hidden -translate-y-1/2 flex-col items-center gap-3 md:flex"
       aria-hidden="true"
     >
-      <span className="label rotate-180 text-[0.6rem] text-muted-foreground [writing-mode:vertical-rl]">
+      <span className="rotate-180 label text-[0.6rem] text-muted-foreground [writing-mode:vertical-rl]">
         scroll
       </span>
 

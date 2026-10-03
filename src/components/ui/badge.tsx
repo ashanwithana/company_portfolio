@@ -20,7 +20,7 @@ export function StatusBadge({
   const toneClass = {
     coral: 'text-coral',
     primary: 'text-primary',
-    mint: 'text-mint',
+    mint: 'text-coral',
   }[tone]
 
   return (
@@ -53,7 +53,7 @@ export function Tag({ children, className, ...props }: ComponentProps<'span'>) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-border px-3 py-1.5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:border-border-strong hover:text-foreground',
+        'inline-flex items-center rounded-full border border-border px-3 py-1.5 label text-[0.55rem] text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground',
         className,
       )}
       {...props}

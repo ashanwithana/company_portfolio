@@ -12,28 +12,37 @@ import { differentiators } from '@/content/company'
 import { getAllPosts } from '@/content/posts-index'
 import { Testimonials } from '@/components/sections/testimonials'
 
+/**
+ * Home page composition.
+ *
+ * Sections alternate dark and paper to give the page a rhythm rather than one
+ * continuous wall of dark — `tone="paper"` inverts whichever ground the current
+ * theme is on, so the contrast holds in both themes.
+ */
 export default function HomePage() {
   return (
     <>
       <Hero />
 
       {/* Services */}
-      <Section id="services" label="What we do">
+      <Section id="services" label="What we do" dotGrid>
         <SectionHeading
           index="01"
           label="What we do"
           title="Six things we are genuinely good at."
+          ghost="Services"
           description="We keep the practice deliberately narrow. Every service below is one we have delivered repeatedly, with a team that has done it before."
         />
         <ServicesPreview />
       </Section>
 
       {/* Specialist practice tracks */}
-      <Section id="practices" label="Practice tracks" tone="muted">
+      <Section id="practices" label="Practice tracks" tone="paper">
         <SectionHeading
           index="02"
           label="Practice tracks"
           title="Two areas we have gone deep on."
+          ghost="Practices"
           description="Most of our work sits in these two tracks, so they get their own pages, their own case studies and their own standards."
         />
 
@@ -41,13 +50,11 @@ export default function HomePage() {
           <Reveal>
             <Link
               href="/enterprise"
-              className="group flex h-full flex-col rounded-2xl border border-border bg-background p-8 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-primary/35"
+              className="group flex h-full flex-col rounded-3xl border border-border bg-background p-8 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-primary/40"
             >
-              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-primary uppercase">
-                Practice track 01
-              </p>
+              <p className="label text-[0.55rem] text-primary">Practice track 01</p>
 
-              <h3 className="mt-4 text-2xl transition-colors group-hover:text-primary sm:text-3xl">
+              <h3 className="mt-4 display-sm transition-colors group-hover:text-primary">
                 Enterprise systems
               </h3>
 
@@ -64,7 +71,7 @@ export default function HomePage() {
                 ))}
               </ul>
 
-              <span className="mt-7 inline-flex min-h-8 items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] uppercase">
+              <span className="mt-7 inline-flex min-h-8 items-center gap-2 label text-[0.6rem]">
                 Explore
                 <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
                   →
@@ -76,13 +83,11 @@ export default function HomePage() {
           <Reveal delay={70}>
             <Link
               href="/ai"
-              className="group flex h-full flex-col rounded-2xl border border-border bg-background p-8 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-coral/35"
+              className="group flex h-full flex-col rounded-3xl border border-border bg-background p-8 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-coral/40"
             >
-              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                Practice track 02
-              </p>
+              <p className="label text-[0.55rem] text-coral">Practice track 02</p>
 
-              <h3 className="mt-4 text-2xl transition-colors group-hover:text-coral sm:text-3xl">
+              <h3 className="mt-4 display-sm transition-colors group-hover:text-coral">
                 AI engineering
               </h3>
 
@@ -99,7 +104,7 @@ export default function HomePage() {
                 ))}
               </ul>
 
-              <span className="mt-7 inline-flex min-h-8 items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] uppercase">
+              <span className="mt-7 inline-flex min-h-8 items-center gap-2 label text-[0.6rem]">
                 Explore
                 <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
                   →
@@ -111,11 +116,12 @@ export default function HomePage() {
       </Section>
 
       {/* Work */}
-      <Section id="work" label="Selected work">
+      <Section id="work" label="Selected work" dotGrid>
         <SectionHeading
           index="03"
           label="Selected work"
           title="Work we can show you the numbers for."
+          ghost="Work"
           description="Every engagement below lists what changed, measured against the baseline we captured before we started."
         />
         <WorkPreview />
@@ -123,22 +129,21 @@ export default function HomePage() {
         <div className="mt-12">
           <Link
             href="/work"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-border px-6 font-mono text-xs tracking-[0.2em] uppercase transition-colors hover:border-foreground/25"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-strong px-6 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:border-coral hover:text-coral"
           >
             All case studies
-            <span aria-hidden="true" className="ml-2">
-              →
-            </span>
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       </Section>
 
       {/* Clients */}
-      <Section id="clients" label="Who we work with" tone="muted">
+      <Section id="clients" label="Who we work with" tone="paper">
         <SectionHeading
           index="04"
           label="Who we work with"
           title="Trusted by teams who cannot afford surprises."
+          ghost="Clients"
         />
         <ClientLogos />
 
@@ -146,11 +151,11 @@ export default function HomePage() {
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           {differentiators.map((item, i) => (
             <Reveal key={item.title} delay={i * 60}>
-              <div className="h-full rounded-2xl border border-border bg-background p-7">
-                <p className="font-mono text-xs text-mint tabular-nums">
+              <div className="h-full rounded-3xl border border-border bg-background p-7">
+                <p className="label text-[0.55rem] text-coral tabular-nums">
                   {(i + 1).toString().padStart(2, '0')}
                 </p>
-                <h3 className="mt-3 text-xl leading-snug">{item.title}</h3>
+                <h3 className="mt-3 text-lg leading-snug">{item.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
             </Reveal>
@@ -164,22 +169,24 @@ export default function HomePage() {
           index="05"
           label="What clients say"
           title="In their words, with the numbers attached."
+          ghost="Reviews"
           description="Every quote links to the case study behind it — so you can check the claim rather than take our word for it."
         />
         <Testimonials />
       </Section>
 
       {/* Approach */}
-      <Section id="approach" label="How we work">
+      <Section id="approach" label="How we work" tone="paper">
         <SectionHeading
           index="06"
           label="How we work"
           title="Five steps, and a fixed number at the end of the second."
+          ghost="Method"
           description="No discovery phase that quietly becomes the project. Here is the shape of every engagement we run."
         />
 
         <Reveal>
-          <ol className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-5">
+          <ol className="grid gap-px overflow-hidden rounded-3xl border border-border bg-border md:grid-cols-5">
             {[
               {
                 step: '01',
@@ -208,8 +215,8 @@ export default function HomePage() {
               },
             ].map((item) => (
               <li key={item.step} className="flex flex-col gap-3 bg-background p-7">
-                <span className="font-mono text-xs tracking-[0.2em] text-mint">{item.step}</span>
-                <h3 className="text-xl">{item.title}</h3>
+                <span className="label text-[0.55rem] text-coral">{item.step}</span>
+                <h3 className="text-lg">{item.title}</h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </li>
             ))}
@@ -223,6 +230,7 @@ export default function HomePage() {
           index="07"
           label="Latest insight"
           title="What we have been thinking about."
+          ghost="Insights"
           description="Notes from the work — written when we learn something, not on a content schedule."
         />
         <LatestInsight />
@@ -231,6 +239,7 @@ export default function HomePage() {
       <CtaBand
         eyebrow="Start a conversation"
         title="Tell us what you are building."
+        ghost="Let's talk"
         body={`${contactContent.availability.body} ${contactContent.responseTime}`}
         secondary={{ href: '/careers', label: 'Join the studio' }}
       />
@@ -238,7 +247,7 @@ export default function HomePage() {
   )
 }
 
-/** Latest post teaser, resolved from the same registry the blog index uses. */
+/** Latest post teaser, resolved from the same registry the insights index uses. */
 function LatestInsight() {
   const [latest] = getAllPosts().slice(0, 1)
 
@@ -248,19 +257,19 @@ function LatestInsight() {
     <Reveal>
       <Link
         href={`/insights/${latest.slug}`}
-        className="group flex flex-col gap-4 rounded-2xl border border-border bg-card/40 p-7 transition-colors hover:border-foreground/25 md:flex-row md:items-center md:justify-between md:gap-10"
+        className="group flex flex-col gap-4 rounded-3xl border border-border bg-card/40 p-7 transition-colors hover:border-border-strong md:flex-row md:items-center md:justify-between md:gap-10"
       >
         <div className="max-w-2xl">
-          <p className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+          <p className="label text-[0.55rem] text-muted-foreground">
             {latest.tags.join(' · ')} · {latest.readingTimeMinutes} min read
           </p>
-          <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-mint sm:text-3xl">
+          <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-coral sm:text-3xl">
             {latest.title}
           </h3>
           <p className="mt-3 leading-relaxed text-muted-foreground">{latest.summary}</p>
         </div>
 
-        <span className="inline-flex min-h-11 shrink-0 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase">
+        <span className="inline-flex min-h-11 shrink-0 items-center gap-2 label text-[0.65rem]">
           Read
           <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">
             →

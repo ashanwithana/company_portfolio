@@ -14,6 +14,7 @@ export default function WorkPage() {
     <>
       <PageHeader
         eyebrow="Selected work"
+        ghost="Work"
         title="Every engagement listed here comes with the numbers."
         lede="We capture a baseline in week one and report against it at the end. If a metric did not move, the case study says so and explains why."
       />

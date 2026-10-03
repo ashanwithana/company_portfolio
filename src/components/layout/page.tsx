@@ -19,7 +19,7 @@ export type Crumb = {
 export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   return (
     <nav aria-label="Breadcrumb" className={cn('min-w-0', className)}>
-      <ol className="label flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.6rem] text-muted-foreground">
+      <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-1 label text-[0.6rem] text-muted-foreground">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
 
@@ -97,21 +97,26 @@ export function PageHeader({
   return (
     <header className={cn('relative overflow-hidden pt-36 pb-16 md:pt-44 md:pb-24', className)}>
       <div
-        className="pointer-events-none absolute inset-0 dot-grid opacity-50 mask-fade-radial"
+        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
         aria-hidden="true"
       />
 
-      {ghost ? (
-        <span
-          aria-hidden="true"
-          className="text-ghost pointer-events-none absolute -top-[0.14em] left-0 font-display text-[clamp(4rem,15vw,13rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
-        >
-          {ghost}
-        </span>
-      ) : null}
-
       <div className="relative container-page">
-        <p className="label flex items-center gap-3 text-muted-foreground">
+        {/*
+          Ghost word sits behind the title rather than behind the section's top
+          padding — anchored to the content box so it lands on the headline at
+          every viewport width instead of bleeding off the top of the document.
+        */}
+        {ghost ? (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-[0.1em] left-0 font-display text-[clamp(8rem,48vh,28rem)] text-ghost"
+          >
+            {ghost}
+          </span>
+        ) : null}
+
+        <p className="relative flex items-center gap-3 label text-muted-foreground">
           <span aria-hidden="true">[</span>
           <span className="text-coral">{eyebrow}</span>
           <span aria-hidden="true">]</span>
@@ -154,7 +159,7 @@ export function PageSection({
     >
       {dotGrid ? (
         <div
-          className="pointer-events-none absolute inset-0 dot-grid opacity-60 mask-fade-radial"
+          className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
           aria-hidden="true"
         />
       ) : null}

@@ -36,7 +36,7 @@ export function Section({
     >
       {dotGrid ? (
         <div
-          className="pointer-events-none absolute inset-0 dot-grid opacity-60 mask-fade-radial"
+          className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
           aria-hidden="true"
         />
       ) : null}
@@ -80,14 +80,14 @@ export function SectionHeading({
       {ghost ? (
         <span
           aria-hidden="true"
-          className="text-ghost pointer-events-none absolute -top-[0.18em] -left-[0.04em] font-display text-[clamp(5rem,17vw,15rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
+          className="pointer-events-none absolute -top-[0.12em] -left-[0.03em] font-display text-[clamp(9rem,54vh,32rem)] text-ghost"
         >
           {ghost}
         </span>
       ) : null}
 
       <div className="relative">
-        <p className="label flex items-center gap-3 text-muted-foreground">
+        <p className="flex items-center gap-3 label text-muted-foreground">
           <span className="text-coral tabular-nums">{index}</span>
           <span aria-hidden="true">[</span>
           <span className="text-foreground">{label}</span>

@@ -36,6 +36,7 @@ export default function InsightsPage() {
     <>
       <PageHeader
         eyebrow="Insights"
+        ghost="Insights"
         title="Notes from the work."
         lede="Written when we learn something worth passing on. No drip sequences, no content calendar — if there is nothing interesting, we do not write."
       />
@@ -47,7 +48,7 @@ export default function InsightsPage() {
             <li key={tag}>
               <Link
                 href={`/insights?tag=${encodeURIComponent(tag)}`}
-                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:border-foreground/25 hover:text-foreground"
+                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:border-border-strong hover:text-foreground"
               >
                 {tag}
               </Link>
@@ -61,14 +62,14 @@ export default function InsightsPage() {
         <section aria-label="Featured article" className="container-page py-12">
           <Link
             href={`/insights/${featured.slug}`}
-            className="group grid gap-8 rounded-2xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-foreground/25 md:grid-cols-[minmax(0,1fr)_22rem] md:p-10"
+            className="group grid gap-8 rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong md:grid-cols-[minmax(0,1fr)_22rem] md:p-10"
           >
             <div>
-              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                 Latest · {formatPostDate(featured.date)} · {featured.readingTimeMinutes} min read
               </p>
 
-              <h2 className="mt-4 text-3xl leading-tight transition-colors group-hover:text-mint sm:text-4xl">
+              <h2 className="mt-4 text-3xl leading-tight transition-colors group-hover:text-coral sm:text-4xl">
                 {featured.title}
               </h2>
 
@@ -76,9 +77,7 @@ export default function InsightsPage() {
                 {featured.summary}
               </p>
 
-              <p className="mt-6 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
-                By {featured.author}
-              </p>
+              <p className="mt-6 label text-[0.6rem] text-muted-foreground">By {featured.author}</p>
             </div>
 
             <BlockArt seed={featured.slug} ratio="portrait" className="hidden md:block" />
@@ -88,10 +87,7 @@ export default function InsightsPage() {
 
       {/* Technical notes */}
       <section aria-labelledby="notes-heading" className="container-page py-12">
-        <h2
-          id="notes-heading"
-          className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-        >
+        <h2 id="notes-heading" className="label text-muted-foreground">
           Technical notes
         </h2>
 
@@ -104,17 +100,17 @@ export default function InsightsPage() {
                   className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
                 >
                   <div className="max-w-2xl">
-                    <p className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+                    <p className="label text-[0.55rem] text-muted-foreground">
                       {formatPostDate(post.date)} · {post.readingTimeMinutes} min read
                     </p>
 
-                    <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-mint">
+                    <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-coral">
                       {post.title}
                     </h3>
 
                     <p className="mt-3 leading-relaxed text-muted-foreground">{post.summary}</p>
 
-                    <p className="mt-4 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+                    <p className="mt-4 label text-[0.55rem] text-muted-foreground">
                       By {post.author}
                     </p>
                   </div>
@@ -135,10 +131,7 @@ export default function InsightsPage() {
 
       {/* AI practice notes — grouped because they answer specific questions. */}
       <section aria-labelledby="ai-heading" className="container-page py-20">
-        <h2
-          id="ai-heading"
-          className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-        >
+        <h2 id="ai-heading" className="label text-muted-foreground">
           How we build AI systems
         </h2>
 
@@ -150,7 +143,7 @@ export default function InsightsPage() {
         <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {aiPrinciples.map((principle, index) => (
             <Reveal key={principle.title} as="li" delay={index * 40}>
-              <div className="h-full rounded-2xl border border-border bg-card/40 p-6">
+              <div className="h-full rounded-3xl border border-border bg-card/40 p-6">
                 <h3 className="text-lg leading-snug">{principle.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {principle.body}
@@ -162,18 +155,16 @@ export default function InsightsPage() {
 
         {/* Retrieval patterns, condensed for the index. */}
         <div className="mt-16">
-          <h3 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-            Retrieval architectures
-          </h3>
+          <h3 className="label text-muted-foreground">Retrieval architectures</h3>
 
           <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {ragPatterns.map((pattern, index) => (
               <Reveal key={pattern.slug} as="li" delay={index * 40}>
                 <Link
                   href="/ai"
-                  className="group flex h-full flex-col rounded-2xl border border-border bg-card/40 p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-foreground/25"
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card/40 p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
                 >
-                  <h4 className="text-lg transition-colors group-hover:text-mint">
+                  <h4 className="text-lg transition-colors group-hover:text-coral">
                     {pattern.name}
                   </h4>
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -195,10 +186,7 @@ export default function InsightsPage() {
         className="border-y border-border bg-muted/20 py-20"
       >
         <div className="container-page">
-          <h2
-            id="models-heading"
-            className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-          >
+          <h2 id="models-heading" className="label text-muted-foreground">
             Model selection, in brief
           </h2>
 
@@ -210,7 +198,7 @@ export default function InsightsPage() {
           <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {modelProviders.map((provider, index) => (
               <Reveal key={provider.vendor} as="li" delay={index * 40}>
-                <div className="h-full rounded-2xl border border-border bg-background p-6">
+                <div className="h-full rounded-3xl border border-border bg-background p-6">
                   <h3 className="text-lg">{provider.vendor}</h3>
                   <ul className="mt-3 flex flex-wrap gap-1.5">
                     {provider.models.slice(0, 2).map((model) => (
@@ -231,10 +219,7 @@ export default function InsightsPage() {
 
       {/* Everything we have measured */}
       <section aria-labelledby="evidence-heading" className="container-page py-20">
-        <h2
-          id="evidence-heading"
-          className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-        >
+        <h2 id="evidence-heading" className="label text-muted-foreground">
           Measured outcomes
         </h2>
 
@@ -245,7 +230,7 @@ export default function InsightsPage() {
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
           <Reveal>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">Case studies</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Product and platform work, reported against a baseline we captured in week one.
@@ -273,7 +258,7 @@ export default function InsightsPage() {
           </Reveal>
 
           <Reveal delay={60}>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">AI systems</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Retrieval and extraction work, each gated behind an accuracy number before launch.
@@ -298,7 +283,7 @@ export default function InsightsPage() {
           </Reveal>
 
           <Reveal delay={120}>
-            <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
               <h3 className="text-lg">Enterprise systems</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 ERP and automation implementations, reported the same way.
@@ -325,9 +310,7 @@ export default function InsightsPage() {
 
         {/* Platform reference */}
         <div className="mt-16">
-          <h3 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-            Platforms we implement
-          </h3>
+          <h3 className="label text-muted-foreground">Platforms we implement</h3>
           <ul className="mt-6 flex flex-wrap gap-2">
             {platforms.map((platform) => (
               <li key={platform.name}>

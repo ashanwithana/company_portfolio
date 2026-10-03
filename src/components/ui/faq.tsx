@@ -18,20 +18,20 @@ export function FaqList({
   className?: string
 }) {
   return (
-    <div className={cn('divide-y divide-border border-y border-border', className)}>
+    <div className={cn('border-t border-border', className)}>
       {items.map((item, index) => (
         <Reveal key={item.question} as="div" delay={index * 40} y={12}>
-          <details className="group py-6">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-lg transition-colors hover:text-mint">
-              {item.question}
+          <details className="group border-b border-border">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-8 py-6 text-lg leading-snug transition-colors hover:text-coral">
+              <span className="max-w-2xl">{item.question}</span>
               <span
                 aria-hidden="true"
-                className="mt-1 shrink-0 text-muted-foreground transition-transform group-open:rotate-45"
+                className="mt-1 shrink-0 font-mono text-xl leading-none text-coral transition-transform duration-300 group-open:rotate-45"
               >
                 +
               </span>
             </summary>
-            <div className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
+            <div className="max-w-2xl pb-7 leading-relaxed text-muted-foreground">
               {item.answer}
             </div>
           </details>
@@ -54,16 +54,24 @@ export function FaqSection({
   children?: ReactNode
 }) {
   return (
-    <section
-      aria-labelledby="faq-heading"
-      className="border-t border-border bg-muted/20 py-20 md:py-28"
-    >
-      <div className="container-page grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20">
+    <section aria-labelledby="faq-heading" className="relative overflow-hidden py-24 md:py-28">
+      <div
+        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
+        aria-hidden="true"
+      />
+
+      <div className="relative container-page grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
         <div>
-          <p className="font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">{eyebrow}</p>
-          <h2 id="faq-heading" className="mt-6 text-3xl leading-tight sm:text-4xl">
+          <p className="flex items-center gap-3 label text-muted-foreground">
+            <span aria-hidden="true">[</span>
+            <span className="text-coral">{eyebrow}</span>
+            <span aria-hidden="true">]</span>
+          </p>
+
+          <h2 id="faq-heading" className="mt-6 display-md">
             {title}
           </h2>
+
           {children ? <div className="mt-6">{children}</div> : null}
         </div>
 

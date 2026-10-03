@@ -272,8 +272,9 @@
   }
 
   /*
-   * Headings are monospace and tightly tracked. `text-wrap: balance` keeps the
-   * enormous display sizes from leaving a single orphan word on the last line.
+   * Headings are monospace, heavy and tightly tracked. `text-wrap: balance`
+   * keeps the enormous display sizes from leaving a single orphan word on the
+   * last line.
    */
   h1,
   h2,
@@ -281,7 +282,7 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.04em;
-    font-weight: 700;
+    font-weight: 800;
     text-wrap: balance;
   }
 
@@ -374,40 +375,53 @@
 }
 
 /*
- * Oversized display scale. Defined as utilities rather than arbitrary values so
- * the ramp stays consistent as pages are restyled.
+ * Oversized display scale.
+ *
+ * The two top steps are deliberately the same size: section titles and the hero
+ * headline share one scale, which is what makes the page read as a single
+ * system rather than a hero with smaller content below it.
  */
 @utility display-xl {
-  font-size: clamp(2.75rem, 7.5vw, 7.25rem);
-  line-height: 0.92;
-  letter-spacing: -0.05em;
+  font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 800;
 }
 
 @utility display-lg {
-  font-size: clamp(2.25rem, 5.4vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: -0.045em;
+  font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 800;
 }
 
 @utility display-md {
-  font-size: clamp(1.75rem, 3.4vw, 3rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 700;
 }
 
 @utility display-sm {
-  font-size: clamp(1.25rem, 2vw, 1.75rem);
-  line-height: 1.15;
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  line-height: 1.2;
   letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
 /*
- * Ghost display type. Sits behind section content at huge scale, bleeding off
- * the edges — decorative only, so it is hidden from assistive tech by the
- * callers that use it.
+ * Ghost display type: an oversized word sitting behind section content, sized
+ * against viewport *height* so it dominates a short window and still fits a
+ * tall one. Solid fill at low alpha rather than an outline — at this size a
+ * stroke reads as noise.
  */
 @utility text-ghost {
-  color: color-mix(in oklab, var(--foreground) 7%, transparent);
+  color: color-mix(in oklab, var(--foreground) 6%, transparent);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  user-select: none;
 }
 
 @utility text-outline {

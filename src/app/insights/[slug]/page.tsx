@@ -88,7 +88,7 @@ export default async function BlogPostPage({ params }: Params) {
           {post.summary}
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 label text-[0.6rem] text-muted-foreground">
           <span>
             <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           </span>
@@ -121,10 +121,8 @@ export default async function BlogPostPage({ params }: Params) {
               href={`/insights/${newer.slug}`}
               className="group flex flex-col gap-2 py-10 pr-6 sm:border-r sm:border-border"
             >
-              <span className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                Newer
-              </span>
-              <span className="text-lg leading-snug transition-colors group-hover:text-mint">
+              <span className="label text-[0.55rem] text-muted-foreground">Newer</span>
+              <span className="text-lg leading-snug transition-colors group-hover:text-coral">
                 {newer.title}
               </span>
             </Link>
@@ -137,10 +135,8 @@ export default async function BlogPostPage({ params }: Params) {
               href={`/insights/${older.slug}`}
               className="group flex flex-col gap-2 py-10 sm:items-end sm:pl-6 sm:text-right"
             >
-              <span className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                Older
-              </span>
-              <span className="text-lg leading-snug transition-colors group-hover:text-mint">
+              <span className="label text-[0.55rem] text-muted-foreground">Older</span>
+              <span className="text-lg leading-snug transition-colors group-hover:text-coral">
                 {older.title}
               </span>
             </Link>

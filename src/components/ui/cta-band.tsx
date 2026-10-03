@@ -30,7 +30,7 @@ export function CtaBand({
       className={cn('relative overflow-hidden border-t border-border py-28 md:py-36', className)}
     >
       <div
-        className="pointer-events-none absolute inset-0 dot-grid opacity-70 mask-fade-radial"
+        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
         aria-hidden="true"
       />
       <div
@@ -41,7 +41,7 @@ export function CtaBand({
       {ghost ? (
         <span
           aria-hidden="true"
-          className="text-ghost pointer-events-none absolute -bottom-[0.12em] left-1/2 -translate-x-1/2 font-display text-[clamp(5rem,19vw,17rem)] leading-[0.8] font-bold tracking-[-0.06em] whitespace-nowrap select-none"
+          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,58vh,34rem)] text-ghost"
         >
           {ghost}
         </span>
@@ -49,7 +49,7 @@ export function CtaBand({
 
       <div className="relative container-page">
         <div className="max-w-3xl">
-          <p className="label flex items-center gap-3 text-muted-foreground">
+          <p className="flex items-center gap-3 label text-muted-foreground">
             <span aria-hidden="true">[</span>
             <span className="text-coral">{eyebrow}</span>
             <span aria-hidden="true">]</span>

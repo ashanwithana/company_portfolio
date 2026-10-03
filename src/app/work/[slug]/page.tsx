@@ -83,7 +83,7 @@ export default async function CaseStudyPage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-mint uppercase">
+        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-coral uppercase">
           {study.categoryLabel} · {study.year}
         </p>
 
@@ -113,12 +113,8 @@ export default async function CaseStudyPage({ params }: Params) {
         <dl className="grid gap-8 border-y border-border py-10 sm:grid-cols-2 lg:grid-cols-4">
           {study.metrics.map((metric) => (
             <div key={metric.label}>
-              <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                {metric.label}
-              </dt>
-              <dd className="mt-2 font-display text-3xl font-semibold tabular-nums sm:text-4xl">
-                {metric.value}
-              </dd>
+              <dt className="label text-[0.55rem] text-muted-foreground">{metric.label}</dt>
+              <dd className="mt-2 display-md tabular-nums">{metric.value}</dd>
             </div>
           ))}
         </dl>
@@ -128,20 +124,14 @@ export default async function CaseStudyPage({ params }: Params) {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-20">
           <div className="space-y-12">
             <section aria-labelledby="challenge-heading">
-              <h2
-                id="challenge-heading"
-                className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-              >
+              <h2 id="challenge-heading" className="mb-4 label text-muted-foreground">
                 The challenge
               </h2>
               <Prose>{<p>{study.challenge}</p>}</Prose>
             </section>
 
             <section aria-labelledby="approach-heading">
-              <h2
-                id="approach-heading"
-                className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-              >
+              <h2 id="approach-heading" className="mb-4 label text-muted-foreground">
                 What we did
               </h2>
               <Prose>
@@ -154,10 +144,7 @@ export default async function CaseStudyPage({ params }: Params) {
             </section>
 
             <section aria-labelledby="outcome-heading">
-              <h2
-                id="outcome-heading"
-                className="mb-4 font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase"
-              >
+              <h2 id="outcome-heading" className="mb-4 label text-muted-foreground">
                 Outcome
               </h2>
               <Prose>{<p>{study.outcome}</p>}</Prose>
@@ -201,10 +188,8 @@ export default async function CaseStudyPage({ params }: Params) {
             className="group container-page flex flex-col gap-4 py-14 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
-              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                Next case study
-              </p>
-              <p className="mt-2 text-2xl transition-colors group-hover:text-mint sm:text-3xl">
+              <p className="label text-[0.55rem] text-muted-foreground">Next case study</p>
+              <p className="mt-2 text-2xl transition-colors group-hover:text-coral sm:text-3xl">
                 {next.title}
               </p>
             </div>

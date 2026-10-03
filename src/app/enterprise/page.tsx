@@ -20,7 +20,7 @@ export const metadata = {
 }
 
 const DEPTH_TONE: Record<Platform['depth'], string> = {
-  partner: 'text-mint',
+  partner: 'text-coral',
   certified: 'text-primary',
   'hands-on': 'text-coral',
 }
@@ -32,6 +32,7 @@ export default function EnterprisePage() {
 
       <PageHeader
         eyebrow="Enterprise systems"
+        ghost="Enterprise"
         title="Start with the data, not the configuration."
         lede={enterpriseService.summary}
       />
@@ -45,14 +46,14 @@ export default function EnterprisePage() {
             ))}
           </div>
 
-          <aside className="rounded-2xl border border-border bg-card/40 p-7">
+          <aside className="rounded-3xl border border-border bg-card/40 p-7">
             <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
               What you get
             </h2>
             <ul className="mt-4 space-y-3">
               {enterpriseService.deliverables.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                  <span aria-hidden="true" className="text-mint">
+                  <span aria-hidden="true" className="text-coral">
                     →
                   </span>
                   {item}
@@ -65,9 +66,7 @@ export default function EnterprisePage() {
 
       {/* Platforms */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Platforms we implement
-        </h2>
+        <h2 className="label text-muted-foreground">Platforms we implement</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           We are listed by depth rather than by logo wall. If a platform is not here, it is because
@@ -77,7 +76,7 @@ export default function EnterprisePage() {
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {platforms.map((platform, index) => (
             <Reveal key={platform.name} delay={index * 40}>
-              <div className="flex h-full flex-col rounded-2xl border border-border bg-background p-6">
+              <div className="flex h-full flex-col rounded-3xl border border-border bg-background p-6">
                 <h3 className="text-lg leading-tight">{platform.name}</h3>
 
                 <p
@@ -105,44 +104,30 @@ export default function EnterprisePage() {
 
       {/* Platform comparison — the question every buyer actually asks. */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Which platform fits
-        </h2>
+        <h2 className="label text-muted-foreground">Which platform fits</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           The honest version of the comparison competitors bury in PDFs. There is no best platform —
           there is the one whose trade-offs match your situation.
         </p>
 
-        <div className="mt-10 overflow-x-auto rounded-2xl border border-border">
+        <div className="mt-10 overflow-x-auto rounded-3xl border border-border">
           <table className="w-full min-w-[42rem] border-collapse text-left text-sm">
             <caption className="sr-only">
               Comparison of Odoo, Dynamics 365, SAP Business One and Salesforce
             </caption>
             <thead>
               <tr className="border-b border-border bg-background">
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Platform
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Best when
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Watch out for
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Typical range
                 </th>
               </tr>
@@ -197,9 +182,7 @@ export default function EnterprisePage() {
 
       {/* Migration checklist */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          The migration checklist
-        </h2>
+        <h2 className="label text-muted-foreground">The migration checklist</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           The same seven steps, in the same order, on every implementation. Skipping one is always
@@ -238,8 +221,8 @@ export default function EnterprisePage() {
             },
           ].map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 40}>
-              <div className="flex h-full gap-4 rounded-2xl border border-border bg-card/40 p-6">
-                <span className="font-mono text-xs text-mint tabular-nums">
+              <div className="flex h-full gap-4 rounded-3xl border border-border bg-card/40 p-6">
+                <span className="font-mono text-xs text-coral tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>
                 <div>
@@ -254,16 +237,14 @@ export default function EnterprisePage() {
 
       {/* Enterprise case studies */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Implementation case studies
-        </h2>
+        <h2 className="label text-muted-foreground">Implementation case studies</h2>
 
         <div className="mt-12 space-y-20">
           {enterpriseCases.map((study) => (
             <article key={study.slug}>
               <div className="grid gap-8 border-b border-border pb-16 last:border-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
                 <div>
-                  <p className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+                  <p className="label text-[0.55rem] text-muted-foreground">
                     {study.client} · {study.year}
                   </p>
 
@@ -282,7 +263,7 @@ export default function EnterprisePage() {
 
                 <div className="flex flex-col gap-6">
                   <div>
-                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                       Outcome
                     </h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{study.outcome}</p>
@@ -294,9 +275,7 @@ export default function EnterprisePage() {
                         <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
                           {metric.label}
                         </dt>
-                        <dd className="mt-1 font-display text-2xl font-semibold tabular-nums">
-                          {metric.value}
-                        </dd>
+                        <dd className="mt-1 display-sm tabular-nums">{metric.value}</dd>
                       </div>
                     ))}
                   </dl>

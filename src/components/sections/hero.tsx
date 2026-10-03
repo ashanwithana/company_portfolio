@@ -8,60 +8,37 @@ import { contactContent, siteConfig } from '@/content/site'
 
 const headline = ['Software that', 'earns its', 'place.']
 
-const rotatingPhrases = [
-  'Odoo & ERP',
-  'RAG pipelines',
-  'interface design',
-  'platform migration',
-]
+const rotatingPhrases = ['Odoo & ERP', 'RAG pipelines', 'interface design', 'platform migration']
 
+/**
+ * Home hero.
+ *
+ * Composition mirrors the reference: the globe is full-bleed and centred in the
+ * upper two-thirds of the viewport, and the headline sits low, overlapping the
+ * globe's lower edge. Stacking the type over the globe rather than beside it is
+ * what keeps the hero reading as one image instead of two columns.
+ */
 export function Hero() {
   return (
-    <section
-      id="top"
-      aria-label="Introduction"
-      className="relative flex min-h-[100svh] items-center overflow-hidden pt-32 pb-24"
-    >
+    <section id="top" aria-label="Introduction" className="relative overflow-hidden pt-32 pb-20">
       <div
-        className="pointer-events-none absolute inset-0 dot-grid opacity-70 mask-fade-radial"
+        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
         aria-hidden="true"
       />
       <div
         className="pointer-events-none absolute -top-48 left-1/2 h-[34rem] w-[70rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-40 blur-3xl"
         aria-hidden="true"
       />
-      {/*
-        Reading scrim. On narrow screens the globe sits behind the copy, so this
-        gradient guarantees headline and body contrast regardless of what the
-        globe is doing underneath. Fades out once the globe moves to the gutter.
-      */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent lg:hidden"
-        aria-hidden="true"
-      />
 
-      {/*
-        Dotted globe. Absolutely positioned so it sits behind the copy on narrow
-        screens and beside it from `xl` up.
-      */}
-      {/*
-        Dotted globe. Centred behind the copy on small screens, where the
-        headline is short enough to clear it; from `lg` up it moves to the right
-        gutter so the two never compete for the same space.
-      */}
-      <HeroVisual className="pointer-events-none absolute top-[42%] left-1/2 aspect-square w-[min(78vw,24rem)] -translate-x-1/2 -translate-y-1/2 opacity-80 lg:top-1/2 lg:right-[3%] lg:left-auto lg:w-[min(38vw,30rem)] lg:translate-x-0 lg:-translate-y-1/2 lg:opacity-100" />
+      {/* Globe: centred, larger than the viewport height, cropped by the fold. */}
+      <HeroVisual className="pointer-events-none absolute top-0 left-1/2 aspect-square w-[min(150vw,64rem)] -translate-x-1/2 -translate-y-[18%]" />
 
-      {/* Copy paints above the globe so it never washes out the headline. */}
       <div className="relative z-10 container-page">
-        <div className="max-w-3xl">
-          <StatusBadge className="animate-fade-up">{contactContent.availability.badge}</StatusBadge>
+        {/* Status pill sits above the globe's upper limb. */}
+        <StatusBadge className="animate-fade-up">{contactContent.availability.badge}</StatusBadge>
 
-          {/*
-            Each line is a block so the gradient sits on one line. The trailing
-            space keeps the accessible name readable rather than
-            "Software thatearns itsplace."
-          */}
-          <h1 className="mt-9 display-xl">
+        <div className="mt-[38svh]">
+          <h1 className="max-w-4xl display-xl">
             {headline.map((line, index) => (
               <span
                 key={line}
@@ -135,22 +112,12 @@ export function Hero() {
                   {stat.value}
                   <span className="text-coral">{stat.suffix}</span>
                 </p>
-                <p className="mt-1.5 font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
-                  {stat.label}
-                </p>
+                <p className="mt-1.5 label text-[0.55rem] text-muted-foreground">{stat.label}</p>
               </div>
             ))}
           </Reveal>
         </div>
       </div>
-
-      <a
-        href="#services"
-        className="no-print absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2.5 font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase transition-colors hover:text-coral"
-      >
-        <span>scroll</span>
-        <span className="h-10 w-px bg-gradient-to-b from-coral to-transparent" aria-hidden="true" />
-      </a>
     </section>
   )
 }

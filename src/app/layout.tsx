@@ -20,7 +20,7 @@ import './globals.css'
  */
 const geistMono = Geist_Mono({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
   variable: '--font-geist-mono',
 })
@@ -126,9 +126,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     // The class comes from the theme cookie above, so server and client markup
     // agree and no suppressHydrationWarning is needed.
     <html lang="en-GB" className={theme} style={{ colorScheme: theme }}>
-      <body
-        className={`${geistMono.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
+      <body className={`${geistMono.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
           <a
             href="#main"

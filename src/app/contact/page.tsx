@@ -21,6 +21,7 @@ export default function ContactPage() {
 
       <PageHeader
         eyebrow="Contact"
+        ghost="Contact"
         title="Tell us what you are building."
         lede="The more specific you are about the problem, the more useful our first reply will be. We will tell you honestly whether we are the right studio for it."
       />
@@ -33,7 +34,7 @@ export default function ContactPage() {
           {/* Direct details */}
           <aside className="space-y-8 lg:pt-2">
             <Reveal>
-              <div className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm">
+              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
                 <StatusBadge tone="mint">{contactContent.availability.badge}</StatusBadge>
                 <p className="mt-5 leading-relaxed text-muted-foreground">
                   {contactContent.availability.body}
@@ -42,7 +43,7 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={60}>
-              <div className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm">
+              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
                 <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
                   {contactContent.directLabel}
                 </h2>
@@ -62,7 +63,7 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="rounded-2xl border border-border bg-card/40 p-7 backdrop-blur-sm">
+              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
                 <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
                   Studio
                 </h2>

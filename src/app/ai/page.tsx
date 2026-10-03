@@ -21,23 +21,22 @@ export default function AiPage() {
 
       <PageHeader
         eyebrow="AI engineering"
+        ghost="AI"
         title="We build the evaluation harness first."
         lede="Most AI projects fail quietly. A retrieval system produces a confident, fluent, wrong answer and nobody notices until a customer does. Our approach is to make that impossible: measure before you ship, keep every answer traceable, and let the system say it does not know."
       />
 
       {/* Principles */}
       <PageSection className="pt-0">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Our commitments
-        </h2>
+        <h2 className="label text-muted-foreground">Our commitments</h2>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {aiPrinciples.map((principle, index) => (
             <Reveal key={principle.title} delay={index * 50}>
-              <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{principle.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{principle.body}</p>
-                <p className="mt-5 border-t border-border pt-4 font-mono text-[0.65rem] leading-relaxed tracking-[0.05em] text-mint">
+                <p className="mt-5 border-t border-border pt-4 font-mono text-[0.65rem] leading-relaxed tracking-[0.05em] text-coral">
                   {principle.evidence}
                 </p>
               </div>
@@ -48,9 +47,7 @@ export default function AiPage() {
 
       {/* RAG patterns */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Retrieval architectures
-        </h2>
+        <h2 className="label text-muted-foreground">Retrieval architectures</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           &quot;RAG&quot; covers a lot of ground, and the honest answer to &quot;which one do I
@@ -63,7 +60,7 @@ export default function AiPage() {
             <Reveal key={pattern.slug} as="li" delay={index * 50} y={16}>
               <div className="grid gap-5 py-10 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-14">
                 <div>
-                  <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground tabular-nums">
+                  <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
                     {(index + 1).toString().padStart(2, '0')}
                   </p>
                   <h3 className="mt-3 text-2xl leading-tight sm:text-3xl">{pattern.name}</h3>
@@ -72,7 +69,7 @@ export default function AiPage() {
 
                 <div className="space-y-5">
                   <div>
-                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                       Use it when
                     </h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{pattern.useWhen}</p>
@@ -101,9 +98,7 @@ export default function AiPage() {
 
       {/* Models */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Models we build against
-        </h2>
+        <h2 className="label text-muted-foreground">Models we build against</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           We are deliberately not model-agnostic in the unhelpful sense — we have opinions backed by
@@ -114,7 +109,7 @@ export default function AiPage() {
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {modelProviders.map((provider, index) => (
             <Reveal key={provider.vendor} delay={index * 50}>
-              <div className="flex h-full flex-col rounded-2xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl">{provider.vendor}</h3>
 
                 <ul className="mt-4 flex flex-wrap gap-1.5">
@@ -127,7 +122,7 @@ export default function AiPage() {
 
                 <dl className="mt-6 space-y-4 border-t border-border pt-5 text-sm">
                   <div>
-                    <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+                    <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                       Best for
                     </dt>
                     <dd className="mt-1.5 leading-relaxed text-muted-foreground">
@@ -151,9 +146,7 @@ export default function AiPage() {
 
       {/* Cost model — the table competitors avoid publishing. */}
       <PageSection>
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          What it actually costs to run
-        </h2>
+        <h2 className="label text-muted-foreground">What it actually costs to run</h2>
 
         <p className="mt-6 max-w-3xl leading-relaxed text-muted-foreground">
           Retrieval cost scales with usage in ways that are easy to miss during a demo. These are
@@ -161,33 +154,21 @@ export default function AiPage() {
           why we track cost per resolved task from week one.
         </p>
 
-        <div className="mt-10 overflow-x-auto rounded-2xl border border-border">
+        <div className="mt-10 overflow-x-auto rounded-3xl border border-border">
           <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
             <caption className="sr-only">Indicative monthly cost by retrieval pattern</caption>
             <thead>
               <tr className="border-b border-border bg-background">
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Pattern
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   At 10k queries/mo
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   At 500k queries/mo
                 </th>
-                <th
-                  scope="col"
-                  className="p-5 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
-                >
+                <th scope="col" className="p-5 label text-[0.55rem] text-muted-foreground">
                   Dominant cost
                 </th>
               </tr>
@@ -244,9 +225,7 @@ export default function AiPage() {
 
       {/* When RAG is wrong — the honest section competitors skip. */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          When RAG is the wrong answer
-        </h2>
+        <h2 className="label text-muted-foreground">When RAG is the wrong answer</h2>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {[
@@ -264,7 +243,7 @@ export default function AiPage() {
             },
           ].map((item, index) => (
             <Reveal key={item.title} delay={index * 50}>
-              <div className="h-full rounded-2xl border border-border bg-background p-7">
+              <div className="h-full rounded-3xl border border-border bg-background p-7">
                 <h3 className="text-xl leading-snug">{item.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
@@ -275,16 +254,14 @@ export default function AiPage() {
 
       {/* AI case studies */}
       <PageSection tone="muted">
-        <h2 className="font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground uppercase">
-          AI case studies
-        </h2>
+        <h2 className="label text-muted-foreground">AI case studies</h2>
 
         <div className="mt-12 space-y-20">
           {aiCaseStudies.map((study) => (
             <article key={study.slug}>
               <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">
                 <div>
-                  <p className="font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
+                  <p className="label text-[0.55rem] text-muted-foreground">
                     {study.client} · {study.year}
                   </p>
 
@@ -301,7 +278,7 @@ export default function AiPage() {
                     {study.challenge}
                   </p>
 
-                  <h4 className="mt-8 font-mono text-[0.6rem] tracking-[0.25em] text-mint uppercase">
+                  <h4 className="mt-8 font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
                     What we did
                   </h4>
                   <ol className="mt-3 max-w-2xl list-decimal space-y-2 pl-5 text-muted-foreground">
@@ -312,9 +289,7 @@ export default function AiPage() {
                     ))}
                   </ol>
 
-                  <h4 className="mt-8 font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-                    Outcome
-                  </h4>
+                  <h4 className="mt-8 label text-[0.55rem] text-muted-foreground">Outcome</h4>
                   <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
                     {study.outcome}
                   </p>
@@ -329,9 +304,7 @@ export default function AiPage() {
                         <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
                           {metric.label}
                         </dt>
-                        <dd className="mt-1 font-display text-xl font-semibold tabular-nums">
-                          {metric.value}
-                        </dd>
+                        <dd className="mt-1 display-sm tabular-nums">{metric.value}</dd>
                       </div>
                     ))}
                   </dl>
