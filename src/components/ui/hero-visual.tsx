@@ -14,7 +14,8 @@ import { cn } from '@/lib/utils'
  *
  *   1. Depth attenuation. Each point's size and brightness scale with its z in
  *      camera space, so the limb brightens and the far side recedes.
- *   2. A limb ring plus three inclined orbital ellipses traced in the same
+ *   2. Three inclined orbital ellipses, a pink arc and two customer route arcs
+ *      traced in the same camera space, plus a Colombo home node.
  *      camera space, which give the silhouette an unambiguous frame of
  *      reference and catch a travelling highlight.
  *
@@ -43,8 +44,7 @@ varying float vDepth;
 varying float vAccent;
 
 void main() {
-  // Landmass samples ride slightly above the sphere so the coastline edge reads
-  // crisply against the limb ring.
+  // Landmass samples ride slightly above the sphere so coastlines stay crisp.
   vec3 lift = normalize(aPos) * (1.0 + aMask * 0.014);
   vec4 clip = uMVP * vec4(lift, 1.0);
 
@@ -60,9 +60,11 @@ void main() {
 
   // Perspective size attenuation, with a floor so the far limb does not
   // degenerate into sub-pixel dust and the sphere reads as a solid figure.
-  // Accent nodes are drawn larger — they are meant to read as signal, not noise.
+  // Accent nodes are drawn larger — they are meant to read as signal, not
+  // noise — and the home node larger still.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
-  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 1.1 * aAccent);
+  float accSize = aAccent > 1.5 ? 1.9 : aAccent * 1.1;
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize);
 }
 `
 
@@ -115,13 +117,16 @@ void main() {
 
   // A small number of accent nodes pulse in the site's pink. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
-  // distributed instead of pooling on the near face.
+  // distributed instead of pooling on the near face. Value 2 is the Colombo
+  // home node: brighter and steadier than the rest.
   if (vAccent > 0.5) {
+    float isHome = step(1.5, vAccent);
     float pulse = 0.55 + 0.45 * sin(uTime * 2.0 + vAccent * 20.0);
     // Halo: a wider, soft falloff behind a solid core, so the node reads as a
     // glowing point rather than a coloured dot.
     float halo = 1.0 - smoothstep(0.0, 1.0, r);
     col = uColorAccent * mix(1.5 + pulse * 0.7, 0.75 + pulse * 0.35, uTheme);
+    col = mix(col, uColorAccent * (2.0 + pulse * 0.4), isHome);
     alpha = limb * mix(0.35, 1.0, halo) * (0.75 + 0.25 * pulse);
   }
 
@@ -132,7 +137,7 @@ void main() {
 /** Ring / orbital pass — drawn as line strips around the same globe. */
 const LINE_VERT = /* glsl */ `
 attribute vec3 aPos;
-attribute float aKind;   // 0 = limb ring, 1 = orbital
+attribute float aKind;   // 1 = orbit, 2 = pink arc, 3 = customer route
 uniform mat4 uMVP;
 varying float vKind;
 varying float vDepth;
@@ -152,14 +157,17 @@ uniform float uTheme;
 varying float vKind;
 varying float vDepth;
 void main() {
-  // Kept faint: the rings are a frame of reference for the sphere, not a
-  // competing graphic. The limb ring in particular must not out-read the dots.
-  // Kind 2 is the pink arc sweeping over the top, like the reference's.
+  // Orbits are a quiet frame of reference; the pink arc and the customer
+  // routes carry the accent colour. Routes read slightly stronger so they
+  // survive at a glance. All fade toward their far arc so they pass behind
+  // the globe rather than sitting on top of it.
   float isArc = step(1.5, vKind);
+  float isRoute = step(2.5, vKind);
   float a = mix(vKind > 0.5 ? 0.26 : 0.34, 0.55, isArc);
+  a = mix(a, 0.9, isRoute);
   // Orbits fade toward their far arc so they read as passing behind the globe.
   float depth = mix(0.25, 1.0, vDepth);
-  vec3 col = mix(mix(uColorLine, uColorAccent, vKind * 0.45), uColorAccent, isArc);
+  vec3 col = mix(mix(uColorLine, uColorAccent, vKind * 0.45), uColorAccent, max(isArc, isRoute));
   gl_FragColor = vec4(col, a * depth * mix(1.0, 0.55, uTheme));
 }
 `
@@ -250,16 +258,16 @@ const WORLD: readonly string[] = [
 
 const POINT_COUNT = 24000
 const GLOBE_RADIUS = 1
-const RING_SEGMENTS = 180
 const ORBIT_SEGMENTS = 200
 /** Number of pink accent nodes scattered across the landmasses. */
 const ACCENT_TARGET = 8
 /**
  * Initial spin so the globe opens facing Europe and Africa, like the
  * reference. The camera looks down +z, which the Fibonacci distribution maps
- * to lon 90 — so the offset turns the planet back by the difference.
+ * to lon 90 — and rotationY carries lon L to the camera centre when
+ * a = (L - 90)°, so the offset turns the planet to face lon 20.
  */
-const SPIN_INITIAL = ((90 - 20) * Math.PI) / 180
+const SPIN_INITIAL = ((20 - 90) * Math.PI) / 180
 /** Full rotational speed, reached after the load ramp eases in. */
 const SPIN_SPEED = 0.16
 
@@ -449,16 +457,44 @@ export function HeroVisual({ className }: { className?: string }) {
       // Keep the sea sparse so land reads as the figure and sea as ground.
       if (!isLand && random() > 0.15) continue
 
-      // Roughly one accent node per 150 land points, capped, so the pink reads
-      // as scattered signal rather than a second landmass.
+      // Roughly a handful of accent nodes across the landmasses, so the pink
+      // reads as scattered signal rather than a second landmass. The value is
+      // a flag (1 = accent, 2 = home node), not a magnitude.
       const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.0015
       if (isAccent) accentsPlaced++
 
       positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS)
       masks.push(isLand ? 1 : 0)
-      accents.push(isAccent ? 1 + accentsPlaced * 0.37 : 0)
+      accents.push(isAccent ? 1 : 0)
       placed++
     }
+
+    // Studio home in object space. Defined here so both the marker point
+    // (uploaded with the cloud below) and the route arcs (built after) share it.
+    const toVec = (lon: number, lat: number): [number, number, number] => {
+      const lo = (lon * Math.PI) / 180
+      const la = (lat * Math.PI) / 180
+      return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)]
+    }
+    const COLOMBO: [number, number, number] = toVec(79.9, 6.9)
+    const ROUTES: readonly (readonly [number, number, number])[] = [
+      toVec(58.4, 23.6), // Muscat, Oman
+      toVec(12.6, 55.7), // Copenhagen, Denmark
+    ]
+
+    // Colombo home marker: appended to the point cloud so it rides the globe
+    // like every other dot. Accent value 2 marks it as the home node.
+    // (Positions must be final before the buffers below are uploaded.)
+    positions.push(COLOMBO[0] * 1.014, COLOMBO[1] * 1.014, COLOMBO[2] * 1.014)
+    masks.push(1)
+    accents.push(2)
+    // Endpoint markers so both routes terminate in a visible node.
+    for (const target of ROUTES) {
+      positions.push(target[0] * 1.014, target[1] * 1.014, target[2] * 1.014)
+      masks.push(1)
+      accents.push(1)
+    }
+    placed += 1 + ROUTES.length // draw count includes the markers above
 
     const pointBuf = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, pointBuf)
@@ -472,15 +508,17 @@ export function HeroVisual({ className }: { className?: string }) {
     gl.bindBuffer(gl.ARRAY_BUFFER, accentBuf)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(accents), gl.STATIC_DRAW)
 
-    // ---- Limb ring + orbital ellipses --------------------------------------
+    // ---- Orbital ellipses + customer route arcs ------------------------------
+    // No limb ring by design: the sphere edge is carried by the dot fade
+    // alone, so nothing geometric sits on the silhouette.
     const linePositions: number[] = []
     const lineKinds: number[] = []
-
-    // Limb ring: a great circle in the XZ plane at a hair above the surface.
-    for (let i = 0; i <= RING_SEGMENTS; i++) {
-      const a = (i / RING_SEGMENTS) * Math.PI * 2
-      linePositions.push(Math.cos(a) * 1.005, 0, Math.sin(a) * 1.005)
-      lineKinds.push(0)
+    /** [buffer offset, vertex count] for each line strip. */
+    const strips: { offset: number; count: number }[] = []
+    const pushStrip = (kind: number, points: readonly (readonly [number, number, number])[]) => {
+      strips.push({ offset: linePositions.length / 3, count: points.length })
+      for (const [x, y, z] of points) linePositions.push(x, y, z)
+      for (let i = 0; i < points.length; i++) lineKinds.push(kind)
     }
 
     // Orbits: circles of varying radius and inclination, so they cross in front
@@ -493,16 +531,14 @@ export function HeroVisual({ className }: { className?: string }) {
       [1.16, 0.9, -0.2, -0.04, 1],
       [1.66, 0.5, 0.12, 0.1, 2],
     ]
-    const orbitOffsets: number[] = []
     for (const [r, tx, tz, yo, kind] of orbits) {
-      const seg = ORBIT_SEGMENTS
-      orbitOffsets.push(linePositions.length / 3)
       const cx = Math.cos(tx)
       const sx = Math.sin(tx)
       const cz = Math.cos(tz)
       const sz = Math.sin(tz)
-      for (let i = 0; i <= seg; i++) {
-        const a = (i / seg) * Math.PI * 2
+      const points: [number, number, number][] = []
+      for (let i = 0; i <= ORBIT_SEGMENTS; i++) {
+        const a = (i / ORBIT_SEGMENTS) * Math.PI * 2
         // Circle in the XY plane, then rotated about X then Z.
         const px = Math.cos(a) * r
         const py = Math.sin(a) * r
@@ -510,9 +546,35 @@ export function HeroVisual({ className }: { className?: string }) {
         const z1 = py * sx + px * cx
         const x2 = y1 * cz - z1 * sz
         const z2 = y1 * sz + z1 * cz
-        linePositions.push(x2, y1 * 0 + yo, z2)
-        lineKinds.push(kind)
+        points.push([x2, y1 * 0 + yo, z2])
       }
+      pushStrip(kind, points)
+    }
+
+    // Customer routes: great-circle arcs from the Colombo studio to Oman and
+    // Denmark, drawn in object space so they rotate with the planet.
+    const ROUTE_SEGMENTS = 64
+    for (const target of ROUTES) {
+      // Slerp between the two unit vectors, lifted into an arc.
+      const dot = Math.max(
+        -1,
+        Math.min(1, COLOMBO[0] * target[0] + COLOMBO[1] * target[1] + COLOMBO[2] * target[2]),
+      )
+      const angle = Math.acos(dot)
+      const sinAngle = Math.sin(angle)
+      const points: [number, number, number][] = []
+      for (let i = 0; i <= ROUTE_SEGMENTS; i++) {
+        const t = i / ROUTE_SEGMENTS
+        const a = Math.sin((1 - t) * angle) / sinAngle
+        const b = Math.sin(t * angle) / sinAngle
+        const lift = 1 + 0.3 * Math.sin(t * Math.PI)
+        points.push([
+          (a * COLOMBO[0] + b * target[0]) * lift,
+          (a * COLOMBO[1] + b * target[1]) * lift,
+          (a * COLOMBO[2] + b * target[2]) * lift,
+        ])
+      }
+      pushStrip(3, points)
     }
 
     const lineBuf = gl.createBuffer()
@@ -661,12 +723,11 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(lTheme, theme)
 
-      // Limb ring, then each orbit from its own recorded offset. Offsets are
-      // tracked explicitly rather than recomputed from `orbits[i]` because the
-      // buffer layout must not silently drift if a loop segment count changes.
-      gl.drawArrays(gl.LINE_STRIP, 0, RING_SEGMENTS + 1)
-      for (const offset of orbitOffsets) {
-        gl.drawArrays(gl.LINE_STRIP, offset, ORBIT_SEGMENTS + 1)
+      // Every strip (orbits, pink arc, customer routes) is drawn from its
+      // recorded offset and count, so the buffer layout cannot silently drift
+      // if a segment count changes.
+      for (const strip of strips) {
+        gl.drawArrays(gl.LINE_STRIP, strip.offset, strip.count)
       }
 
       // Points.

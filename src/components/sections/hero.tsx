@@ -34,7 +34,7 @@ export function Hero() {
 
       {/* Presence pill riding the globe's upper-right limb. */}
       <div className="absolute top-[16%] right-[8%] z-10 hidden sm:block" aria-hidden="true">
-        <StatusBadge tone="coral">Online · London</StatusBadge>
+        <StatusBadge tone="coral">Online · Colombo</StatusBadge>
       </div>
 
       <div className="relative z-10 container-page">
