@@ -21,7 +21,7 @@ export function Hero() {
     <section
       id="top"
       aria-label="Introduction"
-      className="relative overflow-hidden pt-24 pb-24 sm:pb-28"
+      className="relative overflow-hidden pt-20 pb-24 sm:pb-28"
     >
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
@@ -35,7 +35,7 @@ export function Hero() {
       <div className="relative z-10 container-page">
         {/* Globe. Wrapper is the positioning context for the presence pill,
             so the pill tracks the sphere instead of the viewport. */}
-        <div className="relative mx-auto aspect-square w-[min(70vw,22rem)]">
+        <div className="relative mx-auto aspect-square w-[min(82vw,30rem)]">
           <HeroVisual />
 
           <div className="absolute top-[8%] right-[2%] z-10 hidden sm:block" aria-hidden="true">
@@ -43,7 +43,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mt-12 text-center sm:mt-14">
+        <div className="mt-10 text-center sm:mt-12">
           <h1
             className="mx-auto max-w-5xl display-xl"
             style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 120ms both' }}
