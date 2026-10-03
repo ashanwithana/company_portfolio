@@ -5,10 +5,11 @@ import * as React from 'react'
 import { useHasFinePointer, useReducedMotion } from '@/hooks/use-media-query'
 
 /**
- * Cursor follower with a magnetic, springy dot.
+ * Custom cursor dot.
  *
  * Only mounts on devices with a fine pointer, and is skipped entirely when the
- * user prefers reduced motion. Interaction state is derived from the DOM
+ * user prefers reduced motion. The dot tracks the pointer exactly and grows
+ * slightly over interactive elements. Interaction state is derived from the DOM
  * element under the pointer via `closest()` rather than per-element listeners,
  * so it stays O(1) regardless of how many hoverable nodes exist.
  */
@@ -18,7 +19,6 @@ export function Cursor() {
   const enabled = hasFinePointer && !reducedMotion
 
   const dotRef = React.useRef<HTMLDivElement>(null)
-  const ringRef = React.useRef<HTMLDivElement>(null)
   const [visible, setVisible] = React.useState(false)
   const [interactive, setInteractive] = React.useState(false)
 
@@ -28,7 +28,6 @@ export function Cursor() {
     document.body.dataset.customCursor = 'true'
 
     const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    const ring = { ...pointer }
     let frame = 0
 
     const INTERACTIVE = 'a, button, [role="button"], input, textarea, select, [data-cursor-hover]'
@@ -42,17 +41,9 @@ export function Cursor() {
       if (frame) return
       frame = requestAnimationFrame(() => {
         frame = 0
-        const dot = dotRef.current
-        if (!dot) return
-
-        // Dot tracks exactly; ring lags behind for the trailing effect.
-        dot.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0) translate(-50%, -50%)`
-
-        ring.x += (pointer.x - ring.x) * 0.15
-        ring.y += (pointer.y - ring.y) * 0.15
-        ringRef.current?.style.setProperty(
+        dotRef.current?.style.setProperty(
           'transform',
-          `translate3d(${ring.x}px, ${ring.y}px, 0) translate(-50%, -50%)`,
+          `translate3d(${pointer.x}px, ${pointer.y}px, 0) translate(-50%, -50%)`,
         )
       })
     }
@@ -78,19 +69,13 @@ export function Cursor() {
       aria-hidden="true"
     >
       <div
-        ref={ringRef}
-        className="absolute top-0 left-0 size-8 rounded-full border border-foreground/25 transition-[width,height,opacity,background-color] duration-300 will-change-transform"
+        ref={dotRef}
+        className="absolute top-0 left-0 rounded-full bg-coral transition-[opacity,width,height] duration-200 will-change-transform"
         style={{
           opacity: visible ? 1 : 0,
-          width: interactive ? 44 : 32,
-          height: interactive ? 44 : 32,
-          backgroundColor: interactive ? 'var(--primary)' : 'transparent',
+          width: interactive ? 12 : 8,
+          height: interactive ? 12 : 8,
         }}
-      />
-      <div
-        ref={dotRef}
-        className="absolute top-0 left-0 size-2 rounded-full bg-coral transition-opacity duration-200 will-change-transform"
-        style={{ opacity: visible && !interactive ? 1 : 0 }}
       />
     </div>
   )
