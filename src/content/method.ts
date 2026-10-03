@@ -10,9 +10,9 @@ import type { MethodStep } from '@/components/sections/method'
  */
 export const methodSteps: readonly MethodStep[] = [
   {
-    word: 'Understand',
+    word: 'See',
     numeral: '01',
-    label: 'Understand',
+    label: 'See',
     lead: 'Most software failures are decided before the first line of code is written.',
     points: [
       'we start with what is actually happening, not the org chart',
@@ -34,9 +34,9 @@ export const methodSteps: readonly MethodStep[] = [
     endsWith: 'the number — fixed, in writing',
   },
   {
-    word: 'Build',
+    word: 'Ship',
     numeral: '03',
-    label: 'Build',
+    label: 'Ship',
     lead: 'Short cycles, each ending with something demonstrable — never a big bang.',
     points: [
       'something you can click at the end of every cycle',
@@ -46,9 +46,9 @@ export const methodSteps: readonly MethodStep[] = [
     endsWith: 'working software, every cycle',
   },
   {
-    word: 'Prove',
+    word: 'Show',
     numeral: '04',
-    label: 'Prove',
+    label: 'Show',
     lead: 'Shipped is not the same as used. We measure against the week-one baseline.',
     points: [
       'done means your team runs it without calling us',
@@ -58,9 +58,9 @@ export const methodSteps: readonly MethodStep[] = [
     endsWith: 'numbers against the baseline, or an explanation',
   },
   {
-    word: 'Hand over',
+    word: 'Shift',
     numeral: '05',
-    label: 'Hand over',
+    label: 'Shift',
     lead: 'Docs, runbooks and paired working until your team is comfortable. Then we leave.',
     points: [
       'documentation your team will actually read',

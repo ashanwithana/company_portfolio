@@ -7,7 +7,7 @@ import { methodSteps } from '@/content/method'
 export const metadata = {
   title: 'Method',
   description:
-    'Understand, Shape, Build, Prove, Hand over — the five-phase method Northlight uses to take software from first sketch to production.',
+    'See, Shape, Ship, Show, Shift — the five-phase method Northlight uses to take software from first sketch to production.',
 }
 
 /**
