@@ -39,7 +39,7 @@ const STEP_FIELDS: readonly (readonly (keyof Values)[])[] = [
 ]
 
 const STEP_TITLES = [
-  "Let's start simple — what should we call you?",
+  'First things first — what should we call you?',
   'Where can we reach you?',
   'What do you need?',
   'What budget range are we in?',

@@ -58,7 +58,7 @@ export const services: readonly Service[] = [
   {
     slug: 'product-design',
     title: 'Product design',
-    summary: 'Interfaces that people can pick up and use without a manual.',
+    summary: 'Interfaces people can pick up and use on day one.',
     body: 'We start by getting close to the problem — talking to users, reading the analytics, and mapping what the software actually needs to do. From there we design the flows, the interface and the interaction details, then prototype the risky parts early enough that changing course is still cheap.',
     deliverables: [
       'Discovery research and user interviews',

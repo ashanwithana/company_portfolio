@@ -239,7 +239,7 @@ export function Header() {
               href="/contact"
               className="hidden h-9 items-center rounded-full border border-border-strong px-4 font-mono text-[12px] font-medium tracking-[-0.01em] transition-colors hover:border-coral hover:text-coral sm:inline-flex"
             >
-              message us
+              Start a project
             </Link>
 
             <button

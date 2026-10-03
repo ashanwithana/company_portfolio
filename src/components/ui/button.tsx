@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils'
 /*
  * Buttons speak quietly: sentence case, 500 weight, no letter-spacing. The
  * reference reserves wide-tracked caps for eyebrows and labels; its buttons
- * ("message us") are small, tight pills. Shouty uppercase CTAs belonged to the
- * old design.
+ * ("Start a project") are small, tight pills. Shouty uppercase CTAs belonged
+ * to the old design.
  */
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2.5 rounded-full font-mono text-[12px] leading-[1.5] font-medium tracking-[-0.01em] transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',

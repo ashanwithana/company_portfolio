@@ -83,11 +83,10 @@ export function Method({
         {showIntro ? (
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow className="justify-center">The method</Eyebrow>
-            <h2 className="mx-auto mt-5 display-lg">Five phases, one number.</h2>
+            <h2 className="mx-auto mt-5 display-lg">How every engagement runs.</h2>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Technology accelerates faster every day. Most businesses fall behind. We close that
-              gap with a five-phase method that does not follow the curve — it bends it. Every phase
-              ends with something you can hold us to.
+              Every engagement runs the same five phases. Each one ends with something you can hold
+              us to — that is the whole method.
             </p>
           </div>
         ) : null}

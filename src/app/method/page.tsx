@@ -13,14 +13,14 @@ export const metadata = {
 /**
  * Dedicated method page, mirroring the reference's /method: a dark header over
  * a wide visual band, the five phases as a pinned horizontal scroll on the
- * dark ground, and a diagnosis CTA before the shared footer.
+ * dark ground, and a discovery CTA before the shared footer.
  */
 export default function MethodPage() {
   return (
     <>
       <PageHeader
         eyebrow="Method"
-        title="The 5-phase method."
+        title="How every engagement runs."
         ghost="Method"
         lede="Discover the shape of every engagement we run: five phases, a fixed number at the end of the second, and numbers — not adjectives — at handover."
       />
@@ -35,11 +35,11 @@ export default function MethodPage() {
       </section>
 
       <CtaBand
-        eyebrow="Diagnosis"
-        title="Ready to start with the diagnosis?"
-        ghost="Diagnose"
-        body="Two weeks embedded with your team. You get the uncomfortable truth in writing, a plan with a fixed number — and the option to walk away with both."
-        actionLabel="Book a diagnosis"
+        eyebrow="Discovery"
+        title="Ready to see what is actually wrong?"
+        ghost="Discovery"
+        body="Two weeks embedded with your team. You get the truth in writing, a plan with a fixed number — and the option to walk away with both."
+        actionLabel="Start a project"
       />
     </>
   )

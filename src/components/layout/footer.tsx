@@ -14,7 +14,7 @@ export function Footer() {
 
   const columns = [
     {
-      heading: 'Popular services',
+      heading: 'Services',
       links: services.slice(0, 5).map((s) => ({ href: `/services/${s.slug}`, label: s.title })),
     },
     {
@@ -29,11 +29,11 @@ export function Footer() {
       ],
     },
     {
-      heading: 'Quick links',
+      heading: 'Explore',
       links: [
         { href: '/about', label: 'About' },
         { href: '/careers', label: 'Careers' },
-        { href: '/enterprise', label: 'Business diagnosis' },
+        { href: '/enterprise', label: 'Enterprise systems' },
         { href: '/sitemap.xml', label: 'Sitemap' },
       ],
     },
@@ -56,7 +56,7 @@ export function Footer() {
             email
           </span>
           <span className="text-base text-foreground">
-            write to us · {siteConfig.email}
+            email us · {siteConfig.email}
             <span
               aria-hidden="true"
               className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-coral"
@@ -134,13 +134,13 @@ export function Footer() {
 
         <div className="flex flex-col gap-3 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
           <p className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
-            © {year} {siteConfig.nameWithSuffix} · Built to evolve
+            © {year} {siteConfig.nameWithSuffix} · Built with care.
           </p>
 
           <nav aria-label="Legal" className="flex flex-wrap gap-x-6 gap-y-2">
             {[
               { href: '/privacy', label: 'Privacy policy' },
-              { href: '/accessibility', label: 'Terms and conditions' },
+              { href: '/accessibility', label: 'Accessibility' },
             ].map((link) => (
               <Link
                 key={link.href}

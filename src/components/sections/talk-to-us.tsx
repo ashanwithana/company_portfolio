@@ -4,14 +4,13 @@ import { Eyebrow } from '@/components/ui/badge'
 import { siteConfig } from '@/content/site'
 
 /**
- * Closing "the cure" beat, mirroring the reference's final section: a
- * left-aligned eyebrow over a giant two-line title with the last word in pink.
- * No buttons — the actions live in the talk-to-us cards above and the footer
- * below, which is where the reference puts them too.
+ * Closing beat: a left-aligned eyebrow over a giant two-line title with
+ * the last word in pink. No buttons — the actions live in the talk-to-us
+ * cards above and the footer below.
  */
 export function CureBand() {
   return (
-    <section aria-label="The cure" className="relative overflow-hidden pt-8 pb-24 md:pb-32">
+    <section aria-label="The point" className="relative overflow-hidden pt-8 pb-24 md:pb-32">
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
         aria-hidden="true"
@@ -19,13 +18,13 @@ export function CureBand() {
 
       <div className="relative container-page">
         <Eyebrow soft className="justify-start">
-          The cure
+          The point
         </Eyebrow>
 
         <h2 className="mt-7 display-xl">
-          And every business
+          Bring us the problem.
           <br />
-          deserves to <span className="text-coral">evolve.</span>
+          We&apos;ll bring the <span className="text-coral">method.</span>
         </h2>
       </div>
     </section>
@@ -79,7 +78,7 @@ export function TalkToUs() {
                 email
               </span>
               <span className="mt-1 block text-sm break-all text-muted-foreground">
-                write to us · {siteConfig.email}
+                email us · {siteConfig.email}
               </span>
             </span>
 

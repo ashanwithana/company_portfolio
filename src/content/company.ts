@@ -205,7 +205,7 @@ export const differentiators: readonly { tag: string; title: string; body: strin
   {
     tag: 'Proof',
     title: 'Measured, not promised',
-    body: 'A baseline in week one, numbers at handover. AI features ship behind an accuracy gate; performance work ships against a budget.',
+    body: 'A baseline in week one, numbers at handover. AI features earn production with measured accuracy; performance work ships against a budget.',
   },
   {
     tag: 'Freedom',
