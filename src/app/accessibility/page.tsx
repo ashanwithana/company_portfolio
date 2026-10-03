@@ -48,8 +48,8 @@ export default function AccessibilityPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Legal"
         ghost="A11y"
+        eyebrow="Legal"
         title="Accessibility"
         lede="An inaccessible product is a broken product, so this is a standard we hold our own work to rather than a policy we wrote afterwards."
       />
@@ -58,7 +58,7 @@ export default function AccessibilityPage() {
         <dl className="grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {checks.map((check) => (
             <div key={check.label} className="bg-background p-7">
-              <dt className="label text-[0.55rem] text-coral">{check.label}</dt>
+              <dt className="label text-[0.55rem] text-brand">{check.label}</dt>
               <dd className="mt-3">
                 <p className="text-xl leading-snug">{check.value}</p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{check.detail}</p>

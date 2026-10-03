@@ -11,8 +11,8 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Legal"
         ghost="Privacy"
+        eyebrow="Legal"
         title="Privacy"
         lede="Written to be read rather than to be legally impenetrable. If something here is unclear, ask and we will explain it."
       />
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
               Write to{' '}
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="text-foreground underline decoration-coral/50 underline-offset-4 hover:decoration-coral"
+                className="text-foreground underline decoration-brand/50 underline-offset-4 hover:decoration-brand"
               >
                 {siteConfig.email}
               </a>{' '}

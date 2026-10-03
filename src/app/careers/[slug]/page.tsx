@@ -86,7 +86,7 @@ export default async function RolePage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 label text-coral uppercase">{role.department}</p>
+        <p className="mt-8 label text-brand uppercase">{role.department}</p>
 
         <h1 className="mt-6 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl">
           {role.title}
@@ -105,14 +105,14 @@ export default async function RolePage({ params }: Params) {
           </li>
           {role.remote ? (
             <li>
-              <Tag className="text-coral">Remote-first</Tag>
+              <Tag className="text-brand">Remote-first</Tag>
             </li>
           ) : null}
         </ul>
 
         <a
           href={`mailto:careers@northlight.example.com?subject=${applySubject}`}
-          className="mt-10 inline-flex h-14 items-center justify-center rounded-full bg-coral px-8 font-mono text-sm tracking-[0.2em] text-white uppercase shadow-[0_10px_30px_-12px_var(--coral)] transition-shadow hover:shadow-[0_16px_40px_-10px_var(--coral)]"
+          className="mt-10 inline-flex h-14 items-center justify-center rounded-full bg-brand px-8 font-mono text-sm tracking-[0.2em] text-white uppercase shadow-[0_10px_30px_-12px_var(--brand)] transition-shadow hover:shadow-[0_16px_40px_-10px_var(--brand)]"
         >
           Apply for this role
           <span aria-hidden="true" className="ml-2">
@@ -191,7 +191,7 @@ export default async function RolePage({ params }: Params) {
                   key={benefit}
                   className="flex gap-3 rounded-xl border border-border bg-background p-5 text-sm leading-relaxed"
                 >
-                  <span aria-hidden="true" className="text-coral">
+                  <span aria-hidden="true" className="text-brand">
                     →
                   </span>
                   {benefit}
@@ -213,7 +213,7 @@ export default async function RolePage({ params }: Params) {
                   href={`/careers/${other.slug}`}
                   className="group flex h-full flex-col gap-2 bg-background p-6 transition-colors hover:bg-muted/40"
                 >
-                  <span className="text-lg leading-snug transition-colors group-hover:text-coral">
+                  <span className="text-lg leading-snug transition-colors group-hover:text-brand">
                     {other.title}
                   </span>
                   <span className="label text-[0.55rem] text-muted-foreground">

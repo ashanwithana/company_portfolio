@@ -9,10 +9,9 @@ import { cn } from '@/lib/utils'
 
 const BUDGET_OPTIONS = [
   { value: '', label: 'Not sure yet' },
-  { value: 'under-25k', label: 'Under £25k' },
-  { value: '25k-60k', label: '£25k – £60k' },
-  { value: '60k-150k', label: '£60k – £150k' },
-  { value: '150k-plus', label: '£150k+' },
+  { value: 'under-25k', label: 'Under 25k' },
+  { value: '25k-60k', label: '25k – 60k' },
+  { value: '60k-150k', label: '60k and up' },
 ] as const
 
 /**
@@ -98,7 +97,7 @@ export function ContactForm() {
   if (state?.status === 'success') {
     return (
       <div className="rounded-[22px] border border-border bg-card/40 p-8 md:p-12">
-        <p className="label text-coral">Enquiry sent</p>
+        <p className="label text-brand">Enquiry sent</p>
         <h2 className="mt-4 display-md">We&apos;ll be in touch within two working days.</h2>
         <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground" role="status">
           {state.message}
@@ -182,7 +181,7 @@ export function ContactForm() {
                 className={cn(
                   'min-h-10 rounded-full border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
                   values.service === option.value
-                    ? 'border-coral bg-coral text-coral-foreground'
+                    ? 'border-brand bg-brand text-brand-foreground'
                     : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
                 )}
               >
@@ -204,7 +203,7 @@ export function ContactForm() {
                 className={cn(
                   'min-h-10 rounded-full border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
                   values.budget === option.value
-                    ? 'border-coral bg-coral text-coral-foreground'
+                    ? 'border-brand bg-brand text-brand-foreground'
                     : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
                 )}
               >
@@ -237,7 +236,7 @@ export function ContactForm() {
           type="submit"
           disabled={pending}
           aria-disabled={pending}
-          className="inline-flex h-[52px] items-center justify-center gap-2.5 rounded-full bg-coral px-8 font-mono text-[12px] font-medium tracking-[-0.01em] text-coral-foreground shadow-[0_10px_30px_-12px_var(--coral)] transition-shadow hover:shadow-[0_16px_44px_-12px_var(--coral)] disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex h-[52px] items-center justify-center gap-2.5 rounded-full bg-brand px-8 font-mono text-[12px] font-medium tracking-[-0.01em] text-brand-foreground shadow-[0_10px_30px_-12px_var(--brand)] transition-shadow hover:shadow-[0_16px_44px_-12px_var(--brand)] disabled:pointer-events-none disabled:opacity-50"
         >
           {pending ? 'Sending…' : 'Send enquiry'}
           <span aria-hidden="true">→</span>
@@ -260,7 +259,8 @@ export function ContactForm() {
 
 /**
  * One ledger row: ordinal, label and an underline field. The field itself
- * carries the bottom hairline, which brightens to coral on focus-within — the
+ * carries the bottom hairline, which brightens to the brand lime on
+ * focus-within — the
  * whole row reads as a single line item rather than a boxed card.
  */
 function LedgerRow({
@@ -282,11 +282,11 @@ function LedgerRow({
     <div className="grid gap-2 py-7 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)] sm:gap-8">
       <div>
         <p className="flex items-baseline gap-3">
-          <span className="label text-[0.6rem] text-coral tabular-nums">{index}</span>
+          <span className="label text-[0.6rem] text-brand tabular-nums">{index}</span>
           <span className="label text-[0.6rem] text-muted-foreground">
             {label}
             {required ? (
-              <span aria-hidden="true" className="text-coral">
+              <span aria-hidden="true" className="text-brand">
                 {' '}
                 *
               </span>
@@ -300,7 +300,7 @@ function LedgerRow({
         {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
       </div>
 
-      <div className="border-b border-border pb-3 transition-colors focus-within:border-coral">
+      <div className="border-b border-border pb-3 transition-colors focus-within:border-brand">
         {children}
       </div>
     </div>

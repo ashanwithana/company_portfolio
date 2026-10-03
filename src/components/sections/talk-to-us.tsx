@@ -24,7 +24,7 @@ export function CureBand() {
         <h2 className="mt-7 display-xl">
           Bring us the problem.
           <br />
-          We&apos;ll bring the <span className="text-coral">method.</span>
+          We&apos;ll bring the <span className="text-brand">method.</span>
         </h2>
       </div>
     </section>
@@ -84,7 +84,7 @@ export function TalkToUs() {
 
             <span
               aria-hidden="true"
-              className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-coral"
+              className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand"
             >
               →
             </span>
@@ -112,7 +112,7 @@ export function TalkToUs() {
 
             <span
               aria-hidden="true"
-              className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-coral"
+              className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand"
             >
               →
             </span>

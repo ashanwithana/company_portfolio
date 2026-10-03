@@ -261,11 +261,11 @@ function PaletteItem({ label, onSelect, shortcut, keywords }: PaletteItemProps) 
       value={label}
       keywords={keywords ? [keywords] : undefined}
       onSelect={onSelect}
-      className="group flex cursor-pointer items-center justify-between gap-4 rounded-2xl px-3 py-3 text-sm transition-colors data-[selected=true]:bg-coral data-[selected=true]:text-coral-foreground"
+      className="group flex cursor-pointer items-center justify-between gap-4 rounded-2xl px-3 py-3 text-sm transition-colors data-[selected=true]:bg-brand data-[selected=true]:text-brand-foreground"
     >
       <span className="truncate">{label}</span>
       {shortcut ? (
-        <kbd className="shrink-0 label text-muted-foreground group-data-[selected=true]:text-coral-foreground">
+        <kbd className="shrink-0 label text-muted-foreground group-data-[selected=true]:text-brand-foreground">
           {shortcut}
         </kbd>
       ) : null}

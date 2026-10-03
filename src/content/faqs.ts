@@ -14,7 +14,7 @@ export const contactFaqs: readonly Faq[] = [
   {
     question: 'How much does a typical engagement cost?',
     answer:
-      'Most engagements run between £60,000 and £250,000 depending on scope and duration. Enterprise implementations with data migration sit at the higher end. You get a fixed number after discovery rather than an estimate that drifts — and if your budget is materially below what the work requires, we will tell you and suggest a smaller useful first step.',
+      'Most engagements run from the low six figures up, depending on scope and duration. Enterprise implementations with data migration sit at the higher end. You get a fixed number after discovery rather than an estimate that drifts — and if your budget is materially below what the work requires, we will tell you and suggest a smaller useful first step.',
   },
   {
     question: 'Do you work on Odoo, Dynamics 365 or SAP Business One?',
@@ -100,7 +100,7 @@ export const aiFaqs: readonly Faq[] = [
   {
     question: 'What does an AI engagement cost?',
     answer:
-      'A focused retrieval feature with a proper evaluation harness typically runs £40,000 to £120,000. The harness is not optional overhead — without it you have changed the system rather than improved it, and you cannot tell the difference.',
+      'A focused retrieval feature with a proper evaluation harness is a mid-sized engagement, not a sprint. The harness is not optional overhead — without it you have changed the system rather than improved it, and you cannot tell the difference.',
   },
   {
     question: 'Can you work with our existing data science team?',

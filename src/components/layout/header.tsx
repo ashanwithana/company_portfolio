@@ -140,7 +140,7 @@ export function Header() {
           >
             <span className="text-base font-bold tracking-tight">
               {siteConfig.name}
-              <span className="text-coral">{siteConfig.logoSuffix}</span>
+              <span className="text-brand">{siteConfig.logoSuffix}</span>
             </span>
             {/* Route dots — decorative, mirroring the pill's shape. */}
             <span className="hidden items-center gap-1.5 sm:flex" aria-hidden="true">
@@ -149,7 +149,7 @@ export function Header() {
                   key={i}
                   className={cn(
                     'size-1.5 rounded-full transition-colors duration-500',
-                    i === 3 ? 'bg-coral' : 'bg-foreground/40',
+                    i === 3 ? 'bg-brand' : 'bg-foreground/40',
                   )}
                 />
               ))}
@@ -168,7 +168,7 @@ export function Header() {
                       // min-h keeps the hit area at 32px+ despite small type.
                       'flex min-h-9 items-center gap-1.5 rounded-full px-3 label transition-colors',
                       isActive(entry.href)
-                        ? 'text-coral'
+                        ? 'text-brand'
                         : 'text-muted-foreground group-hover:text-foreground hover:text-foreground',
                     )}
                   >
@@ -225,7 +225,7 @@ export function Header() {
 
             <Link
               href="/contact"
-              className="hidden h-9 items-center rounded-full border border-border-strong px-4 font-mono text-[12px] font-medium tracking-[-0.01em] transition-colors hover:border-coral hover:text-coral sm:inline-flex"
+              className="hidden h-9 items-center rounded-full border border-border-strong px-4 font-mono text-[12px] font-medium tracking-[-0.01em] transition-colors hover:border-brand hover:text-brand sm:inline-flex"
             >
               Start a project
             </Link>
@@ -280,7 +280,7 @@ export function Header() {
                   className={cn(
                     'flex min-h-12 items-center justify-between rounded-2xl px-4 font-mono text-xs tracking-[0.18em] uppercase transition-colors',
                     isActive(entry.href)
-                      ? 'bg-accent text-coral'
+                      ? 'bg-accent text-brand'
                       : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                   )}
                 >

@@ -28,7 +28,7 @@ export type Service = {
   body: string
   deliverables: readonly string[]
   /** Accent used for card washes and icons. */
-  tint: 'primary' | 'amber' | 'coral'
+  tint: 'primary' | 'amber' | 'brand'
   /**
    * Canonical deep page, when one exists. The two specialist tracks have
    * dedicated practice pages (/enterprise, /ai) with comparison tables, FAQs
@@ -58,7 +58,7 @@ export const services: readonly Service[] = [
     slug: 'web-engineering',
     title: 'Web engineering',
     summary: 'Fast, accessible front-ends built to be maintained.',
-    body: 'We build in TypeScript on modern frameworks, with performance budgets and accessibility baked in from the first component rather than bolted on at the end. You get code that another team can pick up and extend without a rewrite.',
+    body: 'We build in TypeScript on modern frameworks, with performance budgets and accessibility baked in from the first component rather than bolted on at the end. You get code that another team can pick up and extend without a rewrite.\n\n## What the engagement involves\n\nMost front-end work is a mix of three things: building screens nobody has designed yet, rebuilding screens that have drifted out of alignment, and keeping the whole thing fast while the product grows. We treat them as one problem, because a component library that only covers the happy path is what causes the drift in the first place. The work usually starts in the design tokens and ends with a documented, tested set of patterns your team can extend without calling us.\n\nWe build in short cycles against a staging environment that mirrors production, so performance and accessibility are measured continuously instead of audited once at the end. Every pull request is checked for bundle size, Core Web Vitals and contrast, which is the only way those budgets survive a release deadline.\n\n## Who it suits\n\nThis is the right engagement for a product team with a working back end that needs a front end it can trust, or for a platform whose interface has become the main source of user complaints. It also fits design-led teams holding tokens and components but with no implementation capacity. It is the wrong fit for a marketing site that changes twice a year, or for native mobile work ’ we will say so in the first call rather than after the proposal.',
     deliverables: [
       'TypeScript applications with React or Next.js',
       'Design system implementation',
@@ -113,7 +113,7 @@ export const services: readonly Service[] = [
     slug: 'backend-systems',
     title: 'Backend & systems',
     summary: 'APIs and data layers that stay predictable under load.',
-    body: 'We design schemas and APIs we would be happy to own for years. Explicit contracts, sensible defaults, observability from day one, and infrastructure that is reproducible rather than tribal knowledge.',
+    body: 'We design schemas and APIs we would be happy to own for years. Explicit contracts, sensible defaults, observability from day one, and infrastructure that is reproducible rather than tribal knowledge.\n\n## What the engagement involves\n\nBack-end work fails in the places nobody demos: the migration that locks a table for eleven minutes, the retry that fires three times under load, the endpoint that returns slightly different shapes depending on which service answered. We design the schema and the contract before the endpoint, because those are the decisions that get expensive once other systems depend on them.\n\nWe ship infrastructure as code, structured logs and metrics from the first sprint, and a documented rollback path for every data change. Data work is treated as the main event rather than a cutover task at the end: mapping, cleansing and rehearsal happen in staging that mirrors production, so go-live is a switch rather than a gamble.\n\n## Who it suits\n\nThis suits teams whose data has outgrown the application that owns it, organisations integrating several systems that were never designed to agree, and anyone extracting a service from a monolith without freezing feature delivery. It is the wrong engagement if you need one small CRUD service this month ’ that is a fixed-scope build, not a systems engagement, and we will price it as one.',
     deliverables: [
       'API design and implementation',
       'Database schema and query optimisation',
@@ -121,7 +121,7 @@ export const services: readonly Service[] = [
       'Queueing, caching and background jobs',
       'Infrastructure as code and observability',
     ],
-    tint: 'coral',
+    tint: 'brand',
     wrongTitle: 'When backend work is the wrong answer',
     approach: [
       {
@@ -169,7 +169,7 @@ export const services: readonly Service[] = [
     slug: 'product-design',
     title: 'Product design',
     summary: 'Interfaces people can pick up and use on day one.',
-    body: 'We start by getting close to the problem — talking to users, reading the analytics, and mapping what the software actually needs to do. From there we design the flows, the interface and the interaction details, then prototype the risky parts early enough that changing course is still cheap.',
+    body: 'We start by getting close to the problem ’ talking to users, reading the analytics, and mapping what the software actually needs to do. From there we design the flows, the interface and the interaction details, then prototype the risky parts early enough that changing course is still cheap.\n\n## What the engagement involves\n\nDesign work on a product is not a set of screens. It is deciding what the software is responsible for, what it delegates, and what happens when someone does something the happy path never considered. We map those decisions before opening a design tool, then prototype the parts most likely to be wrong ’ usually the flow that depends on other people’s data or a third-party system.\n\nYou get flows, interface and interaction detail as one reviewable set, plus the reasoning behind the choices written down. That reasoning is what lets your team extend the design without us, and it is the part most agencies leave out.\n\n## Who it suits\n\nThis fits teams who know what they are building but not how it should behave, and product managers who need something testable before committing engineering budget. It also suits products that have drifted into inconsistency and need a coherent model rather than another set of screens. It is the wrong fit when the problem is engineering rather than design: if the software is correct but slow, you want a performance engagement, not a redesign.',
     deliverables: [
       'Discovery research and user interviews',
       'Information architecture and flow mapping',
@@ -233,7 +233,7 @@ export const services: readonly Service[] = [
       'Shadow-mode rollout and accuracy reporting',
       'Cost modelling and guardrails',
     ],
-    tint: 'coral',
+    tint: 'brand',
   },
   {
     slug: 'enterprise-systems',
@@ -254,7 +254,7 @@ export const services: readonly Service[] = [
     slug: 'design-systems',
     title: 'Design systems',
     summary: 'One source of truth for product and engineering.',
-    body: 'A design system is an agreement, not a component folder. We build the tokens, components and documentation that let a design and an engineering team move independently without the product drifting apart.',
+    body: 'A design system is an agreement, not a component folder. We build the tokens, components and documentation that let a design team and an engineering team move independently without the product drifting apart.\n\n## What the engagement involves\n\nMost organisations already run four or five accidental design systems ’ one per team, each defensible in isolation and collectively inconsistent. We start by cataloguing what exists rather than inventing something new, because the patterns that already survived real use are the ones worth formalising. The work is tokens first, components second, documentation throughout.\n\nAdoption is the hard part, and it is organisational rather than technical. We build the system with the teams who will use it, ship it into one real product first, and treat every adoption request as evidence of a missing pattern rather than an exception to argue about.\n\n## Who it suits\n\nThis suits product teams of roughly five people or more, working across more than one surface, where the same decision is being made repeatedly in slightly different ways. It is the wrong engagement for a single-team product with one interface ’ a component library you maintain yourself will serve you better than one built by outsiders.',
     deliverables: [
       'Token architecture and theming',
       'Component library with tests',
@@ -310,7 +310,7 @@ export const services: readonly Service[] = [
     slug: 'performance-audits',
     title: 'Performance & audits',
     summary: 'Find the bottleneck, fix it, and prove the improvement.',
-    body: 'We profile real users rather than guessing from a lab score, then prioritise fixes by effort against measured impact. You leave with the numbers, the reasoning and a team that knows what to watch.',
+    body: 'We profile real users rather than guessing from a lab score, then prioritise fixes by effort against measured impact. You leave with the numbers, the reasoning, and a team that knows what to watch.\n\n## What the engagement involves\n\nA lab score tells you what could happen on a fast laptop on a good network. Field data tells you what is actually happening to your users. We start from the field data ’ real-user Core Web Vitals, the slowest routes weighted by traffic, and the waterfalls behind them ’ and work down until the remaining fixes stop being worth the effort.\n\nEach finding arrives with a measurement, an estimated effort and a recommended fix, ordered by impact. We implement the high-value items inside the engagement rather than handing you a report, because a report that says \"reduce your JavaScript\" is not worth the audit fee.\n\n## Who it suits\n\nThis fits sites and applications where speed is measurably costing you conversions, rankings or support tickets, and teams who have tried the usual fixes without moving the numbers. It is the wrong engagement if you have no field data and no way to collect it ’ instrument first, audit second, or the exercise becomes guesswork delivered with confidence.',
     deliverables: [
       'Real-user and lab performance profiling',
       'Accessibility conformance audits',
@@ -318,7 +318,7 @@ export const services: readonly Service[] = [
       'Verification and regression monitoring',
       'Handover documentation',
     ],
-    tint: 'coral',
+    tint: 'brand',
     approach: [
       {
         name: 'Measure real users',

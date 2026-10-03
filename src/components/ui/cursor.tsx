@@ -70,7 +70,7 @@ export function Cursor() {
     >
       <div
         ref={dotRef}
-        className="absolute top-0 left-0 rounded-full bg-coral transition-[opacity,width,height] duration-200 will-change-transform"
+        className="absolute top-0 left-0 rounded-full bg-brand transition-[opacity,width,height] duration-200 will-change-transform"
         style={{
           opacity: visible ? 1 : 0,
           width: interactive ? 12 : 8,

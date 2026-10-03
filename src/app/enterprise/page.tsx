@@ -20,9 +20,9 @@ export const metadata = {
 }
 
 const DEPTH_TONE: Record<Platform['depth'], string> = {
-  partner: 'text-coral',
+  partner: 'text-brand',
   certified: 'text-primary',
-  'hands-on': 'text-coral',
+  'hands-on': 'text-brand',
 }
 
 export default function EnterprisePage() {
@@ -31,8 +31,8 @@ export default function EnterprisePage() {
       <FaqSchema items={servicesFaqs} />
 
       <PageHeader
-        eyebrow="Enterprise systems"
         ghost="Enterprise"
+        eyebrow="Enterprise systems"
         title="Start with the data, not the configuration."
         lede={enterpriseService.summary}
       />
@@ -51,7 +51,7 @@ export default function EnterprisePage() {
             <ul className="mt-4 space-y-3">
               {enterpriseService.deliverables.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                  <span aria-hidden="true" className="text-coral">
+                  <span aria-hidden="true" className="text-brand">
                     →
                   </span>
                   {item}
@@ -218,7 +218,7 @@ export default function EnterprisePage() {
           ].map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 40}>
               <div className="flex h-full gap-4 rounded-3xl border border-border bg-card/40 p-7">
-                <span className="font-mono text-xs text-coral tabular-nums">
+                <span className="font-mono text-xs text-brand tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>
                 <div>
@@ -259,7 +259,7 @@ export default function EnterprisePage() {
 
                 <div className="flex flex-col gap-6">
                   <div>
-                    <h4 className="label text-[0.55rem] text-coral">Outcome</h4>
+                    <h4 className="label text-[0.55rem] text-brand">Outcome</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{study.outcome}</p>
                   </div>
 

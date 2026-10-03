@@ -22,11 +22,11 @@ export function FaqList({
       {items.map((item, index) => (
         <Reveal key={item.question} as="div" delay={index * 40} y={12}>
           <details className="group border-b border-border">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-8 py-6 text-lg leading-snug transition-colors hover:text-coral">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-8 py-6 text-lg leading-snug transition-colors hover:text-brand">
               <span className="max-w-2xl">{item.question}</span>
               <span
                 aria-hidden="true"
-                className="mt-1 shrink-0 font-mono text-xl leading-none text-coral transition-transform duration-300 group-open:rotate-45"
+                className="mt-1 shrink-0 font-mono text-xl leading-none text-brand transition-transform duration-300 group-open:rotate-45"
               >
                 +
               </span>
@@ -64,7 +64,7 @@ export function FaqSection({
         <div>
           <p className="flex items-center gap-3 label text-muted-foreground">
             <span aria-hidden="true">[</span>
-            <span className="text-coral">{eyebrow}</span>
+            <span className="text-brand">{eyebrow}</span>
             <span aria-hidden="true">]</span>
           </p>
 

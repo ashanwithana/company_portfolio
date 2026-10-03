@@ -11,14 +11,14 @@ import { cn } from '@/lib/utils'
 export function StatusBadge({
   children,
   className,
-  tone = 'coral',
+  tone = 'brand',
 }: {
   children: ReactNode
   className?: string
-  tone?: 'coral' | 'primary' | 'amber'
+  tone?: 'brand' | 'primary' | 'amber'
 }) {
   const toneClass = {
-    coral: 'text-coral',
+    brand: 'text-brand',
     primary: 'text-primary',
     amber: 'text-amber',
   }[tone]
@@ -68,7 +68,7 @@ export function Eyebrow({
     <p
       className={cn(
         'flex items-center gap-4 label-wide',
-        accent ? 'text-coral' : 'text-muted-foreground',
+        accent ? 'text-brand' : 'text-muted-foreground',
         className,
       )}
     >

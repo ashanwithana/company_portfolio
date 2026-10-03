@@ -37,7 +37,7 @@ export type Role = {
 const baseBenefits = [
   'Four-day week at full pay',
   'Fully async, with two team weeks a year in the studio',
-  '£2,000 annual learning budget',
+  'An annual learning budget for courses, books and conferences',
   'Private healthcare and pension contribution',
   '31 days holiday plus public holidays',
 ] as const
@@ -47,7 +47,7 @@ export const roles: readonly Role[] = [
     slug: 'senior-full-stack-engineer',
     title: 'Senior Full-Stack Engineer',
     department: 'Engineering',
-    location: 'United Kingdom',
+    location: 'Sri Lanka',
     remote: true,
     employment: 'Full-time',
     summary:
@@ -74,7 +74,7 @@ export const roles: readonly Role[] = [
     slug: 'full-stack-engineer',
     title: 'Full-Stack Engineer',
     department: 'Engineering',
-    location: 'United Kingdom',
+    location: 'Sri Lanka',
     remote: true,
     employment: 'Full-time',
     summary:
@@ -125,7 +125,7 @@ export const roles: readonly Role[] = [
       'Monthly stipend well above local market rate',
       'A dedicated senior mentor and daily pairing time',
       'Four-day week, async-first like everyone else',
-      '£500 learning budget for the six months',
+      'A learning budget for the six months',
       'A genuine path to a full-time offer — most junior hires come through here',
     ],
   },

@@ -37,7 +37,7 @@ export type CaseStudy = {
   /** Headline results, rendered as a stat row. */
   metrics: readonly Metric[]
   tech: readonly string[]
-  tint: 'primary' | 'amber' | 'coral'
+  tint: 'primary' | 'amber' | 'brand'
   featured?: boolean
   /** Set to false to keep work-in-progress cases off the public listing. */
   published?: boolean
@@ -137,7 +137,7 @@ export const caseStudies: readonly CaseStudy[] = [
       { label: 'Teams onboarded', value: '9' },
     ],
     tech: ['React', 'TypeScript', 'Radix', 'Tailwind CSS', 'Storybook'],
-    tint: 'coral',
+    tint: 'brand',
     featured: true,
   },
   {
@@ -231,7 +231,7 @@ export const caseStudies: readonly CaseStudy[] = [
       { label: 'Regressions caught pre-launch', value: '2' },
     ],
     tech: ['TypeScript', 'Next.js', 'pgvector', 'OpenAI', 'Playwright'],
-    tint: 'coral',
+    tint: 'brand',
   },
 ] as const
 

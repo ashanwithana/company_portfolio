@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }: Params) {
               className="group flex flex-col gap-2 py-10 pr-6 sm:border-r sm:border-border"
             >
               <span className="label text-[0.55rem] text-muted-foreground">Newer</span>
-              <span className="text-lg leading-snug transition-colors group-hover:text-coral">
+              <span className="text-lg leading-snug transition-colors group-hover:text-brand">
                 {newer.title}
               </span>
             </Link>
@@ -168,7 +168,7 @@ export default async function BlogPostPage({ params }: Params) {
               className="group flex flex-col gap-2 py-10 sm:items-end sm:pl-6 sm:text-right"
             >
               <span className="label text-[0.55rem] text-muted-foreground">Older</span>
-              <span className="text-lg leading-snug transition-colors group-hover:text-coral">
+              <span className="text-lg leading-snug transition-colors group-hover:text-brand">
                 {older.title}
               </span>
             </Link>

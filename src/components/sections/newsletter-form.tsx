@@ -68,7 +68,7 @@ export function NewsletterForm({ className }: { className?: string }) {
             aria-describedby={error ? 'newsletter-error' : undefined}
             className={cn(
               'h-12 w-full rounded-full border bg-background/60 px-5 text-sm transition-colors outline-none',
-              'placeholder:text-muted-foreground/60 focus:border-coral',
+              'placeholder:text-muted-foreground/60 focus:border-brand',
               error ? 'border-destructive/70' : 'border-border',
             )}
           />
@@ -87,7 +87,7 @@ export function NewsletterForm({ className }: { className?: string }) {
         aria-live="polite"
         className={cn(
           'mt-3 min-h-5 text-sm outline-none',
-          state?.status === 'success' && 'text-coral',
+          state?.status === 'success' && 'text-brand',
           error && 'text-destructive',
         )}
       >

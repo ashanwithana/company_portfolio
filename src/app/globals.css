@@ -29,11 +29,12 @@
   --popover: #1c1c1c;
   --popover-foreground: #f0f0f8;
 
-  /* Accents — pink leads, violet supports, amber tags the third category. */
+  /* Accents — signal lime leads, violet supports, amber tags the third category. */
   --primary: #7c5bff;
   --primary-foreground: #f5f2ff;
-  --coral: #e4007c;
-  --coral-foreground: #ffffff;
+  --brand: #c2f853;
+  /* Lime is light, so anything sitting on it takes ink, not white. */
+  --brand-foreground: #171717;
   --amber: #ff9f1c;
   --muted: #1c1c1c;
   --muted-foreground: #8b8b96;
@@ -47,11 +48,11 @@
   --border: #ffffff1a;
   --border-strong: #ffffff33;
   --input: #ffffff1f;
-  --ring: #e4007c;
+  --ring: #c2f853;
 
-  --gradient-editorial: linear-gradient(135deg, #e4007c 0%, #7c5bff 100%);
-  --gradient-coral: linear-gradient(135deg, #e4007c 0%, #ff9f1c 100%);
-  --gradient-glow: radial-gradient(ellipse at center, #e4007c33 0%, transparent 70%);
+  --gradient-editorial: linear-gradient(135deg, #c2f853 0%, #7c5bff 100%);
+  --gradient-brand: linear-gradient(135deg, #c2f853 0%, #ff9f1c 100%);
+  --gradient-glow: radial-gradient(ellipse at center, #c2f85326 0%, transparent 70%);
   --shadow-elegant: 0 30px 80px -20px #00000080;
 }
 
@@ -68,8 +69,9 @@
 
   --primary: #6a3ff0;
   --primary-foreground: #ffffff;
-  --coral: #d1006b;
-  --coral-foreground: #ffffff;
+  /* Darkened for the cream ground — the raw lime washes out on light. */
+  --brand: #5c7f0a;
+  --brand-foreground: #ffffff;
   --amber: #b06000;
   --muted: #f4f1ea;
   --muted-foreground: #6b6558;
@@ -82,11 +84,11 @@
   --border: #1613101f;
   --border-strong: #16131033;
   --input: #16131026;
-  --ring: #d1006b;
+  --ring: #5c7f0a;
 
-  --gradient-editorial: linear-gradient(135deg, #d1006b 0%, #6a3ff0 100%);
-  --gradient-coral: linear-gradient(135deg, #d1006b 0%, #b06000 100%);
-  --gradient-glow: radial-gradient(ellipse at center, #d1006b26 0%, transparent 70%);
+  --gradient-editorial: linear-gradient(135deg, #5c7f0a 0%, #6a3ff0 100%);
+  --gradient-brand: linear-gradient(135deg, #5c7f0a 0%, #b06000 100%);
+  --gradient-glow: radial-gradient(ellipse at center, #5c7f0a26 0%, transparent 70%);
   --shadow-elegant: 0 30px 80px -24px #16131033;
 }
 
@@ -105,8 +107,8 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-amber: var(--amber);
-  --color-coral: var(--coral);
-  --color-coral-foreground: var(--coral-foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -213,7 +215,7 @@
   }
 
   ::selection {
-    background-color: var(--coral);
+    background-color: var(--brand);
     color: #fff;
   }
 
@@ -249,15 +251,19 @@
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 96rem;
-  padding-inline: 1rem;
+  max-width: 88rem;
+  padding-inline: 1.25rem;
 
   @media (width >= 40rem) {
-    padding-inline: 1.5rem;
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 3rem;
   }
 
   @media (width >= 80rem) {
-    padding-inline: 2rem;
+    padding-inline: 4.5rem;
   }
 }
 

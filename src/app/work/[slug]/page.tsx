@@ -82,7 +82,7 @@ export default async function CaseStudyPage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 label text-coral uppercase">
+        <p className="mt-8 label text-brand uppercase">
           {study.categoryLabel} · {study.year}
         </p>
 
@@ -172,7 +172,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
             <Link
               href="/contact"
-              className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
+              className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
             >
               Start a similar project
               <span aria-hidden="true">→</span>
@@ -190,7 +190,7 @@ export default async function CaseStudyPage({ params }: Params) {
           >
             <div>
               <p className="label text-[0.55rem] text-muted-foreground">Next case study</p>
-              <p className="mt-2 text-2xl transition-colors group-hover:text-coral sm:text-3xl">
+              <p className="mt-2 text-2xl transition-colors group-hover:text-brand sm:text-3xl">
                 {next.title}
               </p>
             </div>

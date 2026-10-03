@@ -59,7 +59,7 @@ export function Footer() {
             email us · {siteConfig.email}
             <span
               aria-hidden="true"
-              className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-coral"
+              className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand"
             >
               →
             </span>
@@ -78,7 +78,7 @@ export function Footer() {
                 <li key={link.href + link.label}>
                   <Link
                     href={link.href}
-                    className="inline-flex min-h-8 items-center text-sm text-muted-foreground transition-colors hover:text-coral"
+                    className="inline-flex min-h-8 items-center text-sm text-muted-foreground transition-colors hover:text-brand"
                   >
                     {link.label}
                   </Link>
@@ -97,7 +97,7 @@ export function Footer() {
             className="inline-block text-xl font-bold tracking-tight"
           >
             {siteConfig.name}
-            <span className="text-coral">{siteConfig.logoSuffix}</span>
+            <span className="text-brand">{siteConfig.logoSuffix}</span>
           </Link>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
             {siteConfig.tagline}
@@ -109,10 +109,10 @@ export function Footer() {
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase">
             <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
-              <span className="absolute size-2 animate-pulse-ring rounded-full bg-coral" />
-              <span className="size-1.5 rounded-full bg-coral" />
+              <span className="absolute size-2 animate-pulse-ring rounded-full bg-brand" />
+              <span className="size-1.5 rounded-full bg-brand" />
             </span>
-            London · UK · HQ · <OfficeTime timeZone="Europe/London" />
+            Colombo · Sri Lanka · HQ · <OfficeTime timeZone="Asia/Colombo" />
           </span>
 
           <span className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
@@ -125,7 +125,7 @@ export function Footer() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors hover:border-coral hover:text-coral"
+              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors hover:border-brand hover:text-brand"
             >
               {network}
             </a>
@@ -145,7 +145,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase transition-colors hover:text-coral"
+                className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase transition-colors hover:text-brand"
               >
                 {link.label}
               </Link>

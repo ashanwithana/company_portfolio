@@ -1,3 +1,4 @@
+import { GhostWord } from '@/components/ui/ghost-word'
 import { Reveal } from '@/components/ui/reveal'
 import { differentiators } from '@/content/company'
 
@@ -19,14 +20,8 @@ export function WhyUs() {
       />
 
       <div className="relative container-page">
-        <header className="relative text-center">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-[0.12em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,54vh,32rem)] text-ghost"
-          >
-            Trust
-          </span>
-
+        <header className="@container relative text-center">
+          <GhostWord word="Trust" placement="center" className="-top-[0.14em]" />
           <p className="relative text-center label-wide text-muted-foreground">
             <span aria-hidden="true">[</span> <span className="text-foreground">Why us</span>{' '}
             <span aria-hidden="true">]</span>
@@ -42,7 +37,7 @@ export function WhyUs() {
             <Reveal key={item.title} delay={i * 70}>
               <div className="group grid gap-3 border-t border-border py-10 transition-transform duration-500 ease-out last:border-b hover:translate-x-2 md:grid-cols-[minmax(0,7rem)_minmax(0,1fr)] md:gap-8 md:py-12">
                 <p className="flex items-baseline gap-4 md:flex-col md:gap-2">
-                  <span className="label text-[0.6rem] text-coral tabular-nums">
+                  <span className="label text-[0.6rem] text-brand tabular-nums">
                     {(i + 1).toString().padStart(2, '0')}
                   </span>
                   <span className="label text-[0.6rem] text-muted-foreground">{item.tag}</span>

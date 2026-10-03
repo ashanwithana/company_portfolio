@@ -12,7 +12,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <div className="container-page flex min-h-[70svh] flex-col justify-center py-32">
-      <p className="label text-coral">404</p>
+      <p className="label text-brand">404</p>
 
       <h1 className="mt-6 max-w-3xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
         This page does not exist.

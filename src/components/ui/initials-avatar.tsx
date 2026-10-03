@@ -19,7 +19,7 @@ export function InitialsAvatar({ initials, className }: InitialsAvatarProps) {
     <span
       aria-hidden="true"
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full border border-border bg-gradient-to-br from-primary/20 to-coral/10 font-display text-xs tracking-[0.08em] text-foreground',
+        'inline-flex shrink-0 items-center justify-center rounded-full border border-border bg-gradient-to-br from-primary/20 to-brand/10 font-display text-xs tracking-[0.08em] text-foreground',
         className,
       )}
     >

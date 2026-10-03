@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { Eyebrow } from '@/components/ui/badge'
+import { GhostWord } from '@/components/ui/ghost-word'
 import { cn } from '@/lib/utils'
 
 export type Crumb = {
@@ -27,7 +28,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
           return (
             <li key={item.label} className="flex items-center gap-2.5">
               {item.href && !isLast ? (
-                <Link href={item.href} className="rounded transition-colors hover:text-coral">
+                <Link href={item.href} className="rounded transition-colors hover:text-brand">
                   {item.label}
                 </Link>
               ) : (
@@ -79,6 +80,7 @@ export function BreadcrumbSchema({ items }: { items: Crumb[] }) {
  *
  * `ghost` repeats the eyebrow as oversized background type, which ties every
  * inner page to the home page's visual language without a bespoke illustration.
+ * It is sized against the content box (see GhostWord) so it never crops.
  */
 export function PageHeader({
   eyebrow,
@@ -102,20 +104,8 @@ export function PageHeader({
         aria-hidden="true"
       />
 
-      <div className="relative container-page">
-        {/*
-          Ghost word sits behind the title rather than behind the section's top
-          padding — anchored to the content box so it lands on the headline at
-          every viewport width instead of bleeding off the top of the document.
-        */}
-        {ghost ? (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-[0.1em] left-0 font-display text-[clamp(8rem,48vh,28rem)] text-ghost"
-          >
-            {ghost}
-          </span>
-        ) : null}
+      <div className="@container relative container-page">
+        {ghost ? <GhostWord word={ghost} className="-top-[0.14em]" /> : null}
 
         <Eyebrow accent className="relative">
           {eyebrow}

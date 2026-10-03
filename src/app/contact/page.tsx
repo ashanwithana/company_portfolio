@@ -20,8 +20,8 @@ export default function ContactPage() {
       <FaqSchema items={contactFaqs} />
 
       <PageHeader
-        eyebrow="Contact"
         ghost="Contact"
+        eyebrow="Contact"
         title="Tell us what you are building."
         lede="The more specific you are about the problem, the more useful our first reply will be. We will tell you honestly whether we are the right studio for it."
       />
@@ -48,7 +48,7 @@ export default function ContactPage() {
 
                 <a
                   href={`mailto:${siteConfig.email}`}
-                  className="mt-4 flex items-start gap-3 text-lg break-all transition-colors hover:text-coral"
+                  className="mt-4 flex items-start gap-3 text-lg break-all transition-colors hover:text-brand"
                 >
                   <MailIcon />
                   {siteConfig.email}

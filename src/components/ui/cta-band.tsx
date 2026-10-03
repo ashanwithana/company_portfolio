@@ -1,5 +1,6 @@
 import { Eyebrow } from '@/components/ui/badge'
 import { ButtonLink } from '@/components/ui/button'
+import { GhostWord } from '@/components/ui/ghost-word'
 import { cn } from '@/lib/utils'
 
 /**
@@ -41,16 +42,8 @@ export function CtaBand({
         aria-hidden="true"
       />
 
-      {ghost ? (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,58vh,34rem)] text-ghost"
-        >
-          {ghost}
-        </span>
-      ) : null}
-
-      <div className="relative container-page text-center">
+      <div className="@container relative container-page text-center">
+        {ghost ? <GhostWord word={ghost} placement="center" className="-bottom-[0.12em]" /> : null}
         <div className="mx-auto max-w-3xl">
           <Eyebrow accent className="justify-center">
             {eyebrow}

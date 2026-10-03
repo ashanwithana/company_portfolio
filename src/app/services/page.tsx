@@ -17,8 +17,8 @@ export default function ServicesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Services"
         ghost="Services"
+        eyebrow="Services"
         title="A deliberately narrow practice."
         lede="We could offer everything. We do not, because the value of working with us is that everyone here has done the specific thing you need before. Each service below has been delivered dozens of times, not once."
       />
@@ -47,7 +47,7 @@ export default function ServicesPage() {
                   <p className="label text-muted-foreground tabular-nums">
                     {(index + 1).toString().padStart(2, '0')}
                   </p>
-                  <h2 className="mt-3 text-2xl transition-colors group-hover:text-coral sm:text-3xl">
+                  <h2 className="mt-3 text-2xl transition-colors group-hover:text-brand sm:text-3xl">
                     {service.title}
                   </h2>
                 </div>
@@ -97,7 +97,7 @@ export default function ServicesPage() {
               <dt className="label text-[0.55rem] text-muted-foreground">{stat.label}</dt>
               <dd className="mt-2 display-lg tabular-nums">
                 {stat.value}
-                <span className="text-coral">{stat.suffix}</span>
+                <span className="text-brand">{stat.suffix}</span>
               </dd>
             </div>
           ))}
@@ -129,7 +129,7 @@ export default function ServicesPage() {
             <Reveal key={model.title} delay={index * 70}>
               <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl">{model.title}</h3>
-                <p className="mt-2 label text-[0.6rem] text-coral">{model.price}</p>
+                <p className="mt-2 label text-[0.6rem] text-brand">{model.price}</p>
                 <p className="mt-4 leading-relaxed text-muted-foreground">{model.body}</p>
               </div>
             </Reveal>

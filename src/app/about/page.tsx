@@ -14,17 +14,17 @@ import { studioStats } from '@/content/services'
 export const metadata = {
   title: 'About',
   description:
-    'Northlight is a seven-person product studio in London. We design and build software, and we are deliberately small enough to know every project by name.',
+    'Northlight is a seven-person product studio in Colombo. We design and build software, and we are deliberately small enough to know every project by name.',
 }
 
 export default function AboutPage() {
   return (
     <>
       <PageHeader
-        eyebrow="About"
         ghost="About"
+        eyebrow="About"
         title="Seven people who would rather be right than fast."
-        lede="Northlight is an independent product studio in London. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
+        lede="Northlight is an independent product studio in Colombo. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
       />
 
       {/* Platforms and models — concrete capability rather than adjectives. */}
@@ -47,7 +47,7 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/enterprise"
-                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-coral"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-brand"
               >
                 Enterprise practice
                 <span aria-hidden="true">→</span>
@@ -70,7 +70,7 @@ export default function AboutPage() {
               </ul>
               <Link
                 href="/ai"
-                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-coral"
+                className="mt-auto inline-flex min-h-8 items-center gap-2 pt-6 label text-[0.6rem] transition-colors hover:text-brand"
               >
                 AI practice
                 <span aria-hidden="true">→</span>
@@ -107,7 +107,7 @@ export default function AboutPage() {
               <dt className="label text-[0.55rem] text-muted-foreground">{stat.label}</dt>
               <dd className="mt-2 display-lg tabular-nums">
                 {stat.value}
-                <span className="text-coral">{stat.suffix}</span>
+                <span className="text-brand">{stat.suffix}</span>
               </dd>
             </div>
           ))}
@@ -122,7 +122,7 @@ export default function AboutPage() {
           {process.map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 60} y={16}>
               <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="label text-coral tabular-nums">
+                <p className="label text-brand tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </p>
                 <div>
@@ -165,7 +165,7 @@ export default function AboutPage() {
 
                 <div>
                   <h3 className="text-lg leading-tight">{member.name}</h3>
-                  <p className="mt-1 label text-coral uppercase">{member.role}</p>
+                  <p className="mt-1 label text-brand uppercase">{member.role}</p>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
                 </div>
               </div>

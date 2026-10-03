@@ -6,32 +6,32 @@ import { methodSteps } from '@/content/method'
 export const metadata = {
   title: 'Method',
   description:
-    'See, Shape, Ship, Show, Shift — the five-phase method Northlight uses to take software from first sketch to production.',
+    'Brief, Map, Prototype, Build, Harden, Hand over — the six-phase method Northlight uses to take software from first sketch to production.',
 }
 
 /**
- * Dedicated method page: a dark header flowing straight into the five phases
+ * Dedicated method page: a dark header flowing straight into the six phases
  * on the dark ground, and a discovery CTA before the shared footer.
  */
 export default function MethodPage() {
   return (
     <>
       <PageHeader
+        ghost="Method"
         eyebrow="Method"
         title="How every engagement runs."
-        ghost="Method"
         className="pb-10 md:pb-14"
-        lede="Discover the shape of every engagement we run: five phases, a fixed number at the end of the second, and numbers — not adjectives — at handover."
+        lede="The shape of every engagement we run: six phases, a fixed number at the end of the second, and numbers — not adjectives — at handover."
       />
 
-      <section aria-label="The five phases">
+      <section aria-label="The six phases">
         <Method steps={methodSteps} showIntro={false} />
       </section>
 
       <CtaBand
+        ghost="Discovery"
         eyebrow="Discovery"
         title="Ready to see what is actually wrong?"
-        ghost="Discovery"
         body="Two weeks embedded with your team. You get the truth in writing, a plan with a fixed number — and the option to walk away with both."
         actionLabel="Start a project"
       />

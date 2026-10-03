@@ -22,11 +22,11 @@ export type MethodStep = {
 }
 
 /**
- * The five-phase method, staged as a sticky rail beside scrolling phases.
+ * The six-phase method, staged as a sticky rail beside scrolling phases.
  *
  * A deliberate departure from the sideways-pinned reference: the left rail
  * pins a giant numeral that flips as each phase crosses the viewport centre,
- * with a progress spine and an anchor list of the five phases. The phases
+ * with a progress spine and an anchor list of the six phases. The phases
  * themselves scroll naturally on the right, each closing with an "Ends with"
  * line — the concrete artifact that makes the phase accountable.
  *
@@ -90,7 +90,7 @@ export function Method({
             <Eyebrow className="justify-center">The method</Eyebrow>
             <h2 className="mx-auto mt-5 display-lg">How every engagement runs.</h2>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Every engagement runs the same five phases. Each one ends with something you can hold
+              Every engagement runs the same six phases. Each one ends with something you can hold
               us to — that is the whole method.
             </p>
           </div>
@@ -123,7 +123,7 @@ export function Method({
                     )}
                   >
                     <span className={i === active ? 'text-foreground' : ''}>{step.numeral}</span>
-                    <span className="text-coral">.</span>
+                    <span className="text-brand">.</span>
                   </span>
                 ))}
               </div>
@@ -142,7 +142,7 @@ export function Method({
                 aria-label="Method progress"
               >
                 <div
-                  className="h-full origin-left bg-coral transition-transform duration-500 ease-out"
+                  className="h-full origin-left bg-brand transition-transform duration-500 ease-out"
                   style={{ transform: `scaleX(${(active + 1) / steps.length})` }}
                 />
               </div>
@@ -165,7 +165,7 @@ export function Method({
                       <span
                         className={cn(
                           'font-mono text-[11px] tabular-nums',
-                          i === active ? 'text-coral' : 'text-muted-foreground/60',
+                          i === active ? 'text-brand' : 'text-muted-foreground/60',
                         )}
                       >
                         {step.numeral}
@@ -199,13 +199,13 @@ export function Method({
                 className="border-t border-border py-14 first:border-t-0 first:pt-0 md:py-20 lg:min-h-[62vh] lg:first:pt-14"
               >
                 {/* Inline numeral for narrow screens, where the rail is hidden. */}
-                <p className="label text-coral tabular-nums lg:hidden">
+                <p className="label text-brand tabular-nums lg:hidden">
                   {step.numeral} / {String(steps.length).padStart(2, '0')}
                 </p>
 
                 <h3 className="mt-4 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[1] font-bold tracking-normal text-balance lg:mt-0">
                   {step.word}
-                  <span aria-hidden="true" className="text-coral">
+                  <span aria-hidden="true" className="text-brand">
                     .
                   </span>
                 </h3>
@@ -229,7 +229,7 @@ export function Method({
                 </ul>
 
                 <p className="mt-8 flex max-w-md items-baseline gap-3 border-t border-border pt-5 text-[13px]">
-                  <span className="shrink-0 label text-[0.6rem] text-coral">Ends with</span>
+                  <span className="shrink-0 label text-[0.6rem] text-brand">Ends with</span>
                   <span className="text-foreground">{step.endsWith}</span>
                 </p>
               </article>

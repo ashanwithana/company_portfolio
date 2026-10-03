@@ -1,4 +1,5 @@
 import { Eyebrow } from '@/components/ui/badge'
+import { GhostWord } from '@/components/ui/ghost-word'
 import { cn } from '@/lib/utils'
 
 /**
@@ -52,10 +53,7 @@ export type SectionHeadingProps = {
   label: string
   title: string
   description?: string
-  /**
-   * Word rendered as oversized ghost type behind the heading, bleeding off the
-   * edge. Decorative — never the only place the section is named.
-   */
+  /** Decorative oversized type behind the heading. Never the only section name. */
   ghost?: string
   className?: string
 }
@@ -63,9 +61,8 @@ export type SectionHeadingProps = {
 /**
  * Numbered editorial section header.
  *
- * A server component — there is no interactivity here. The oversized ghost word
- * sits behind the content and is hidden from assistive technology, since the
- * `title` already names the section.
+ * A server component — there is no interactivity here. The section is named
+ * by its label and title; no oversized background type sits behind it.
  */
 export function SectionHeading({
   index,
@@ -76,20 +73,13 @@ export function SectionHeading({
   className,
 }: SectionHeadingProps) {
   return (
-    <header className={cn('relative mb-14 text-center md:mb-20', className)}>
-      {ghost ? (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-[0.12em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,54vh,32rem)] text-ghost"
-        >
-          {ghost}
-        </span>
-      ) : null}
+    <header className={cn('@container relative mb-14 text-center md:mb-20', className)}>
+      {ghost ? <GhostWord word={ghost} placement="center" className="-top-[0.14em]" /> : null}
 
       <div className="relative">
         <Eyebrow
           className="justify-center"
-          leading={<span className="text-coral tabular-nums">{index}</span>}
+          leading={<span className="text-brand tabular-nums">{index}</span>}
         >
           {label}
         </Eyebrow>

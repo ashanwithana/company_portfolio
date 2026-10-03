@@ -101,7 +101,7 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
               className={cn(
                 'min-h-9 rounded-full border px-5 py-2 label transition-colors',
                 isActive
-                  ? 'border-coral bg-coral text-coral-foreground'
+                  ? 'border-brand bg-brand text-brand-foreground'
                   : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
               )}
             >
@@ -130,7 +130,7 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
         as the filter changes. The first paint has no entrance animation either
         way — it is already at the target state.
       */}
-      <motion.ul layout={!reducedMotion} className="grid gap-5 md:grid-cols-2">
+      <motion.ul layout={!reducedMotion} className="grid gap-4 sm:grid-cols-3">
         <AnimatePresence mode="popLayout" initial={false}>
           {visible.map((study, position) => (
             <motion.li
@@ -144,7 +144,7 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
               <Link
                 href={`/work/${study.slug}`}
                 className={cn(
-                  'group flex h-full flex-col gap-6 rounded-3xl border border-border bg-gradient-to-br p-5 transition-[border-color,transform] duration-500 hover:-translate-y-1',
+                  'group flex h-full flex-col gap-4 rounded-3xl border border-border bg-gradient-to-br p-4 transition-[border-color,transform] duration-500 hover:-translate-y-1',
                   ACCENT_WASH[study.tint],
                   ACCENT_BORDER[study.tint],
                 )}
@@ -157,12 +157,12 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
                   className="w-full shrink-0"
                 />
 
-                <div className="flex flex-1 flex-col gap-3 px-2 pb-2">
+                <div className="flex flex-1 flex-col gap-2 px-1.5 pb-1.5">
                   <p className="label text-[0.55rem] text-muted-foreground">
                     {study.client} · {study.categoryLabel} · {study.year}
                   </p>
 
-                  <h2 className="display-sm transition-colors group-hover:text-coral">
+                  <h2 className="display-sm transition-colors group-hover:text-brand">
                     {study.title}
                   </h2>
 

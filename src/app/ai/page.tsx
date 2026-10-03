@@ -18,7 +18,7 @@ export const metadata = {
  * AI case studies carry no tint of their own, so the plates cycle the three
  * accents in order. It is decorative differentiation, not a category signal.
  */
-const AI_TINTS = ['coral', 'primary', 'amber'] as const
+const AI_TINTS = ['brand', 'primary', 'amber'] as const
 
 export default function AiPage() {
   return (
@@ -26,8 +26,8 @@ export default function AiPage() {
       <FaqSchema items={aiFaqs} />
 
       <PageHeader
-        eyebrow="AI engineering"
         ghost="AI"
+        eyebrow="AI engineering"
         title="We build the evaluation harness first."
         lede="Most AI projects fail quietly. A retrieval system produces a confident, fluent, wrong answer and nobody notices until a customer does. Our approach is to make that impossible: measure before you ship, keep every answer traceable, and let the system say it does not know."
       />
@@ -42,7 +42,7 @@ export default function AiPage() {
               <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{principle.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{principle.body}</p>
-                <p className="mt-5 border-t border-border pt-4 label leading-relaxed text-coral">
+                <p className="mt-5 border-t border-border pt-4 label leading-relaxed text-brand">
                   {principle.evidence}
                 </p>
               </div>
@@ -75,12 +75,12 @@ export default function AiPage() {
 
                 <div className="space-y-5">
                   <div>
-                    <h4 className="label text-[0.55rem] text-coral">Use it when</h4>
+                    <h4 className="label text-[0.55rem] text-brand">Use it when</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{pattern.useWhen}</p>
                   </div>
 
                   <div>
-                    <h4 className="label text-[0.55rem] text-coral">The trade-off</h4>
+                    <h4 className="label text-[0.55rem] text-brand">The trade-off</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{pattern.tradeoff}</p>
                   </div>
 
@@ -124,13 +124,13 @@ export default function AiPage() {
 
                 <dl className="mt-6 space-y-4 border-t border-border pt-5 text-sm">
                   <div>
-                    <dt className="label text-[0.55rem] text-coral">Best for</dt>
+                    <dt className="label text-[0.55rem] text-brand">Best for</dt>
                     <dd className="mt-1.5 leading-relaxed text-muted-foreground">
                       {provider.bestFor}
                     </dd>
                   </div>
                   <div>
-                    <dt className="label text-[0.55rem] text-coral">Avoid when</dt>
+                    <dt className="label text-[0.55rem] text-brand">Avoid when</dt>
                     <dd className="mt-1.5 leading-relaxed text-muted-foreground">
                       {provider.avoidWhen}
                     </dd>
@@ -269,12 +269,12 @@ export default function AiPage() {
                     {study.summary}
                   </p>
 
-                  <h4 className="mt-8 label text-coral uppercase">The challenge</h4>
+                  <h4 className="mt-8 label text-brand uppercase">The challenge</h4>
                   <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
                     {study.challenge}
                   </p>
 
-                  <h4 className="mt-8 label text-coral uppercase">What we did</h4>
+                  <h4 className="mt-8 label text-brand uppercase">What we did</h4>
                   <ol className="mt-3 max-w-2xl list-decimal space-y-2 pl-5 text-muted-foreground">
                     {study.approach.map((step) => (
                       <li key={step} className="leading-relaxed">

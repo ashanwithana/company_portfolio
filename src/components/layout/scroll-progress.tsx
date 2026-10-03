@@ -69,7 +69,7 @@ export function ScrollProgress() {
       <span className="relative block h-32 w-px overflow-hidden bg-border-strong">
         <span
           ref={railRef}
-          className="absolute inset-0 origin-top bg-coral will-change-transform"
+          className="absolute inset-0 origin-top bg-brand will-change-transform"
           style={{ transform: 'scaleY(0)' }}
         />
         <span

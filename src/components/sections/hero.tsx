@@ -39,7 +39,7 @@ export function Hero() {
           <HeroVisual />
 
           <div className="absolute top-[8%] right-[2%] z-10 hidden sm:block" aria-hidden="true">
-            <StatusBadge tone="coral">Online · Colombo</StatusBadge>
+            <StatusBadge tone="brand">Online · Colombo</StatusBadge>
           </div>
         </div>
 

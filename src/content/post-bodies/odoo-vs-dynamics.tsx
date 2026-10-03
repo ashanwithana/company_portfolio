@@ -25,8 +25,9 @@ export default function Content() {
           each other from day one.
         </li>
         <li>
-          <strong>Total cost.</strong> Lower licences and a faster implementation typically put Odoo
-          at £40k–£180k all-in for a mid-sized business, against £120k–£400k+ for Dynamics.
+          <strong>Total cost.</strong> Lower licences and a faster implementation put Odoo well
+          below Dynamics over five years for a mid-sized business, and the gap widens with every
+          entity you add.
         </li>
         <li>
           <strong>Coherence.</strong> One vendor, one interface, one support contract. For a team of

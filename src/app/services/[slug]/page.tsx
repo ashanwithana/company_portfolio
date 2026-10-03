@@ -48,8 +48,8 @@ export default async function ServiceDetailPage({ params }: Params) {
 
   // Sibling services, so the page is a hub rather than a dead end.
   // Canonical practice pages are used where they exist.
-  const others = services.filter((item) => item.slug !== service.slug)
   const ghost = service.title.split(' ')[0] ?? service.title
+  const others = services.filter((item) => item.slug !== service.slug)
   const paragraphs = service.body.split('\n\n')
 
   return (
@@ -57,15 +57,24 @@ export default async function ServiceDetailPage({ params }: Params) {
       <BreadcrumbSchema items={crumbs} />
       <FaqSchema items={servicesFaqs} />
 
-      <PageHeader eyebrow="Services" ghost={ghost} title={service.title} lede={service.summary} />
+      <PageHeader ghost={ghost} eyebrow="Services" title={service.title} lede={service.summary} />
 
       {/* Standing description plus the deliverables and stack card. */}
       <PageSection className="pt-0">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-16">
           <Prose>
-            {paragraphs.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-            ))}
+            {paragraphs.map((paragraph) =>
+              paragraph.startsWith('## ') ? (
+                // `## ` in the body marks a subheading. Parsed here rather than
+                // stored as JSX so the content layer stays plain data, which is
+                // what lets the listings, palette and command palette read the
+                // same source. It also gives each service page a real h2
+                // outline instead of one undifferentiated block of text.
+                <h2 key={paragraph.slice(3, 27)}>{paragraph.slice(3)}</h2>
+              ) : (
+                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+              ),
+            )}
           </Prose>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
@@ -77,7 +86,7 @@ export default async function ServiceDetailPage({ params }: Params) {
                     key={item}
                     className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
                   >
-                    <span aria-hidden="true" className="text-coral">
+                    <span aria-hidden="true" className="text-brand">
                       →
                     </span>
                     {item}
@@ -100,7 +109,7 @@ export default async function ServiceDetailPage({ params }: Params) {
 
               <Link
                 href="/contact"
-                className="mt-8 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
+                className="mt-8 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
               >
                 Discuss this
                 <span aria-hidden="true">→</span>
@@ -174,7 +183,7 @@ export default async function ServiceDetailPage({ params }: Params) {
         <div className="container-page py-14">
           <h2 className="label text-muted-foreground">Other services</h2>
 
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-3">
             {others.map((other, index) => (
               <li key={other.slug}>
                 <Reveal delay={index * 50} y={12}>
@@ -182,7 +191,7 @@ export default async function ServiceDetailPage({ params }: Params) {
                     href={other.canonicalHref ?? `/services/${other.slug}`}
                     className="group flex h-full flex-col justify-between gap-3 bg-background p-6 transition-colors hover:bg-muted/40"
                   >
-                    <span className="text-lg leading-snug transition-colors group-hover:text-coral">
+                    <span className="text-lg leading-snug transition-colors group-hover:text-brand">
                       {other.title}
                     </span>
                     <span className="label text-[0.55rem] text-muted-foreground">Explore</span>

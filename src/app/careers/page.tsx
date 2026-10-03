@@ -24,8 +24,8 @@ export default function CareersPage() {
       <FaqSchema items={careersFaqs} />
 
       <PageHeader
-        eyebrow="Careers"
         ghost="Careers"
+        eyebrow="Careers"
         title="Seven people, deliberately not seventy."
         lede="We stay small enough that everyone knows every project, which means we can hire slowly and well. Everything here is async-first, with two weeks a year in the studio together."
       />
@@ -48,7 +48,7 @@ export default function CareersPage() {
                         className="group flex flex-col gap-4 py-7 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div className="max-w-2xl">
-                          <h4 className="text-xl transition-colors group-hover:text-coral">
+                          <h4 className="text-xl transition-colors group-hover:text-brand">
                             {role.title}
                           </h4>
                           <p className="mt-2 leading-relaxed text-muted-foreground">
@@ -64,7 +64,7 @@ export default function CareersPage() {
                             </li>
                             {role.remote ? (
                               <li>
-                                <Tag className="text-coral">Remote</Tag>
+                                <Tag className="text-brand">Remote</Tag>
                               </li>
                             ) : null}
                           </ul>
@@ -95,7 +95,7 @@ export default function CareersPage() {
                       key={benefit}
                       className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
                     >
-                      <span aria-hidden="true" className="text-coral">
+                      <span aria-hidden="true" className="text-brand">
                         →
                       </span>
                       {benefit}
@@ -114,7 +114,7 @@ export default function CareersPage() {
                 </p>
                 <a
                   href="mailto:careers@northlight.example.com?subject=Speculative%20application"
-                  className="mt-5 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
+                  className="mt-5 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
                 >
                   Write to us
                   <span aria-hidden="true">→</span>

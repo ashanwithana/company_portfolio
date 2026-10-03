@@ -17,18 +17,18 @@ export const siteConfig = {
   description:
     'Northlight is a product studio and software engineering partner. We take ambitious ideas from first sketch to production, and ship software that holds up in the real world.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://northlight.example.com',
-  locale: 'en_US',
-  email: 'hello@northlight.example.com',
-  phone: '+44 20 7946 0000',
+  locale: 'en_LK',
+  email: 'hello@northlight.example.lk',
+  phone: '+94 11 234 5678',
   /** HQ used in the footer and contact page. */
-  location: 'London, UK',
+  location: 'Colombo, Sri Lanka',
   address: {
-    street: '18 Wharf Road',
-    city: 'London',
-    region: 'London',
-    postalCode: 'N1 7GU',
-    country: 'GB',
-    countryName: 'United Kingdom',
+    street: '42 Galle Road',
+    city: 'Colombo',
+    region: 'Western Province',
+    postalCode: '00300',
+    country: 'LK',
+    countryName: 'Sri Lanka',
   },
   foundedYear: 2019,
   socials: {
