@@ -32,7 +32,7 @@ export function Footer() {
       heading: 'Quick links',
       links: [
         { href: '/about', label: 'About' },
-        { href: '/about#reviews', label: 'Reviews' },
+        { href: '/careers', label: 'Careers' },
         { href: '/enterprise', label: 'Business diagnosis' },
         { href: '/sitemap.xml', label: 'Sitemap' },
       ],

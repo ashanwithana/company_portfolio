@@ -1,6 +1,5 @@
 import { StatusBadge } from '@/components/ui/badge'
 import { HeroVisual } from '@/components/ui/hero-visual'
-import { ReviewsMarquee } from '@/components/sections/reviews-marquee'
 import { siteConfig } from '@/content/site'
 
 /**
@@ -53,13 +52,6 @@ export function Hero() {
             {siteConfig.description}
           </p>
         </div>
-      </div>
-
-      <div
-        className="relative z-10"
-        style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 240ms both' }}
-      >
-        <ReviewsMarquee />
       </div>
     </section>
   )
