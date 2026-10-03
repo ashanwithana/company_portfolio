@@ -3,6 +3,7 @@
 import * as React from 'react'
 
 import { useReducedMotion } from '@/hooks/use-media-query'
+import { landCoverage } from '@/lib/land-mask'
 import { cn } from '@/lib/utils'
 
 /**
@@ -63,7 +64,18 @@ void main() {
   // noise — and the home node larger still.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
   float accSize = aAccent > 1.5 ? 1.9 : aAccent * 1.1;
-  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize);
+
+  /*
+   * Limb correction. Near the silhouette the surface is edge-on to the camera,
+   * so dozens of points project into the same pixel. Left alone they stack into
+   * a hard bright wall around the sphere that reads as a rendering fault rather
+   * than a horizon. Shrinking each dot as it approaches the edge — by the same
+   * curve the fragment stage fades alpha with — spreads that density back out
+   * and lets the silhouette dissolve instead of being stamped.
+   */
+  float limbT = smoothstep(0.0, 0.22, t);
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize)
+               * mix(0.30, 1.0, limbT);
 }
 `
 
@@ -91,8 +103,10 @@ void main() {
   if (disc <= 0.001) discard;
 
   // Points at the edge of the disc are the ones near the limb: fade them so the
-  // sphere silhouette stays circular.
-  float limb = smoothstep(0.0, 0.08, vDepth);
+  // sphere silhouette stays circular. The window is deliberately wide — a tight
+  // one leaves a visible ring of dots standing proud of the horizon, which is
+  // what makes a dot sphere look broken rather than atmospheric.
+  float limb = smoothstep(0.0, 0.22, vDepth);
 
   // Depth: near points brighter, far points dimmed toward the background.
   // The floor stays high — the reference globe reads as luminous white
@@ -111,8 +125,15 @@ void main() {
   vec3 col = mix(sea, land, vMask) * depthGain;
   // Land renders nearly solid; the sea is a whisper so the continents carry
   // the figure against the ground.
+  //
+  // The sea term is additionally confined to the near face. Carried out toward
+  // the limb it stops reading as water and becomes a dust halo around the
+  // sphere, which dissolves the silhouette and leaves the globe looking like
+  // scattered debris rather than a planet. Land is allowed all the way to the
+  // edge because a landmass running off the horizon is what sells the curve.
+  float seaFace = smoothstep(0.22, 0.58, vDepth);
   float alpha = vMask * limb * (0.75 + 0.25 * vDepth)
-              + (1.0 - vMask) * limb * 0.06 * vDepth;
+              + (1.0 - vMask) * limb * 0.07 * vDepth * seaFace;
 
   // A small number of accent nodes pulse in the site's pink. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
@@ -176,75 +197,6 @@ function mulberry32(seed: number) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
-
-/**
- * Sample a real-world land mask.
- *
- * Rather than synthesising continents from blobs, the mask below is a 60×30
- * hand-plotted equirectangular grid (6° per cell) traced from an actual world
- * map — Africa and Eurasia facing the camera on load, the Americas rotating
- * into view. Lookup is bilinear, so cell edges interpolate instead of
- * stair-stepping, and a small noise term keeps coastlines ragged. Antarctica
- * is omitted, like the reference.
- */
-function landAt(lon: number, lat: number): number {
-  const gx = ((lon + 180) / 360) * (WORLD_COLS - 1)
-  const gy = ((90 - lat) / 180) * (WORLD_ROWS - 1)
-
-  const x0 = Math.max(0, Math.min(WORLD_COLS - 2, Math.floor(gx)))
-  const y0 = Math.max(0, Math.min(WORLD_ROWS - 2, Math.floor(gy)))
-  const fx = gx - Math.floor(gx)
-  const fy = gy - Math.floor(gy)
-
-  const at = (x: number, y: number) => (WORLD[y]?.[x] === 'X' ? 1 : 0)
-  const top = at(x0, y0) * (1 - fx) + at(x0 + 1, y0) * fx
-  const bottom = at(x0, y0 + 1) * (1 - fx) + at(x0 + 1, y0 + 1) * fx
-  const field = top * (1 - fy) + bottom * fy
-
-  const toRad = Math.PI / 180
-  const noise =
-    Math.sin(lon * toRad * 5.9 - lat * toRad * 4.3) * 0.09 +
-    Math.sin(lon * toRad * 11.3 + lat * toRad * 9.7) * 0.06 +
-    Math.sin(lon * toRad * 19.1 - lat * toRad * 17.3) * 0.04
-
-  return field + noise * field * (1 - field) * 4
-}
-
-const WORLD_COLS = 60
-const WORLD_ROWS = 30
-
-const WORLD: readonly string[] = [
-  '............................................................',
-  '................XXX.XXXXXX......XX..........................',
-  '...........XXXXXX...XXXXXX...................XXXX...........',
-  '..XXXXXXXXXXXXXXXXXXXXXXXX......XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-  '..XXXXXXXXXXXXXXXXXXXXXX..XX...XXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-  '.........XXXXXXXX............X..XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-  '.........XXXXXXXXXXXXX.......XXXXXXXXXXXXXXXXXXXXXXXXX..X...',
-  '.........XXXXXXXXXX..........XXXXXXXXXXXXXXXXXXXXXXXXXX.....',
-  '.........XXXXXXXXX..........XXXXXXXXXXXXX.XXXXXXXXX..X......',
-  '..........XXXXXXX...........XXXX..XXXXXXXXXXXXX....XX.......',
-  '............XX..X..........XXXXXXXXXXXXXXXXXXX.XXXX.........',
-  '............XXXX...........XXXXXXXXXXXXX.XXXXXXXX...........',
-  '..............XXX..........XXXXXXXXX.XXX..XX.XXX..X.........',
-  '...............XXX.........XXXXXXXXXXX....X...XX..XX........',
-  '.................XXXXX......XXXXXXXXXXX......XXXXXX.........',
-  '.................XXXXXXX.......XXXXXXX.........XXXXXXXXX....',
-  '.................XXXXXXXX.......XXXXX..........XXX..XXX.....',
-  '..................XXXXXX........XXXXXXX............XX.......',
-  '..................XXXXX.........XXXX.XX..........XXXXXXX....',
-  '..................XXX...........XXXX............XXXXXXXX....',
-  '.................XXXXX..........XXX..............XXXXXXX..XX',
-  '.................XXX.....................................XXX',
-  '.................XXX.....................................XX.',
-  '.................XXX........................................',
-  '..................XX........................................',
-  '............................................................',
-  '............................................................',
-  '............................................................',
-  '............................................................',
-  '............................................................',
-]
 
 const POINT_COUNT = 24000
 const GLOBE_RADIUS = 1
@@ -442,9 +394,23 @@ export function HeroVisual({ className }: { className?: string }) {
       const lon = (Math.atan2(z, x) * 180) / Math.PI
       const lat = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
 
-      const isLand = landAt(lon, lat) > 0.5
-      // Keep the sea sparse so land reads as the figure and sea as ground.
-      if (!isLand && random() > 0.15) continue
+      /*
+       * Jitter the lookup by a fraction of a degree before sampling. The mask
+       * is a 1-degree raster, and without this the coastlines read as clean
+       * vector edges — correct, but wrong for a dot screen. Half a degree of
+       * noise is enough to ragged them up while leaving geography recognisable.
+       */
+      const jLon = lon + Math.sin(lon * 0.73 + lat * 1.31) * 0.5
+      const jLat = lat + Math.cos(lat * 0.91 - lon * 1.09) * 0.5
+
+      // Coverage is a 0-1 figure, not a bit. It goes into the mask attribute
+      // unthresholded so the shader blends sea into land across the cell, which
+      // is what makes the coastlines soft instead of staircased.
+      const coverage = landCoverage(jLon, jLat)
+      const isLand = coverage > 0.5
+      // Hold on to partial-coverage points so the shoreline itself is
+      // represented; keep open sea sparse so land reads as the figure.
+      if (coverage <= 0.25 && random() > 0.15) continue
 
       // Roughly a handful of accent nodes across the landmasses, so the pink
       // reads as scattered signal rather than a second landmass. The value is
@@ -453,7 +419,7 @@ export function HeroVisual({ className }: { className?: string }) {
       if (isAccent) accentsPlaced++
 
       positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS)
-      masks.push(isLand ? 1 : 0)
+      masks.push(coverage)
       accents.push(isAccent ? 1 : 0)
       placed++
     }
@@ -703,7 +669,7 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform1f(pTime, t)
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
-      gl.uniform1f(pScale, canvas.height * 0.0042)
+      gl.uniform1f(pScale, canvas.height * 0.0047)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(pTheme, theme)
       gl.drawArrays(gl.POINTS, 0, placed)
@@ -744,9 +710,27 @@ export function HeroVisual({ className }: { className?: string }) {
       data-hero-visual
     >
       {/*
+        Atmosphere. A dot sphere with no limb treatment reads as a flat disc of
+        confetti, because a silhouette alone gives the eye nothing to infer depth
+        from. This soft glow just outside the point field supplies the missing
+        cue: bright at the rim, gone by the edge. It is a radial gradient behind
+        the canvas rather than a shader pass, so it costs nothing per frame.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-[6%] rounded-full opacity-70 blur-xl"
+        style={{
+          background:
+            'radial-gradient(circle, transparent 62%, color-mix(in oklab, var(--foreground) 12%, transparent) 76%, transparent 88%)',
+        }}
+      />
+
+      {/*
         CSS fallback: a dotted sphere built from two radial gradients. Visible
         during SSR, before WebGL boots, and permanently when WebGL is unavailable
-        or motion is reduced.
+        or motion is reduced. The two hairline circles that used to sit here were
+        left visible once WebGL took over — they outlived the fallback they
+        belonged to and floated around the live globe as unrelated rings.
       */}
       <div
         className={cn(
@@ -762,8 +746,6 @@ export function HeroVisual({ className }: { className?: string }) {
           WebkitMaskImage: 'radial-gradient(circle, black 46%, transparent 68%)',
         }}
       />
-      <div className="absolute inset-[8%] rounded-full border border-border" />
-      <div className="absolute inset-[8%] rotate-[24deg] rounded-[50%] border border-border/60" />
 
       {mounted && !reducedMotion && !glFailed ? (
         <canvas
