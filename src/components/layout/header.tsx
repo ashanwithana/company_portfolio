@@ -7,7 +7,59 @@ import * as React from 'react'
 import { CommandPalette } from '@/components/layout/command-palette'
 import { ThemeToggle } from '@/components/layout/theme-toggle'
 import { primaryNav, siteConfig } from '@/content/site'
+import { services } from '@/content/services'
+import { publishedCaseStudies } from '@/content/case-studies'
 import { cn } from '@/lib/utils'
+
+type NavChild = { href: string; label: string; hint?: string }
+type NavEntry = { href: string; label: string; children?: readonly NavChild[] }
+
+/**
+ * Desktop navigation with dropdowns, mirroring the reference's structure:
+ * a services index, a plain method anchor, a work index and a "more" bucket.
+ * The lists are derived from the same content modules as the pages, so a
+ * dropdown can never offer a route that does not exist.
+ */
+const navEntries: readonly NavEntry[] = [
+  {
+    href: '/services',
+    label: 'Services',
+    children: [
+      ...services.map((service) => ({
+        href: service.canonicalHref ?? `/services/${service.slug}`,
+        label: service.title,
+        hint: service.summary.slice(0, 72),
+      })),
+    ],
+  },
+  { href: '/#method', label: 'Method' },
+  {
+    href: '/work',
+    label: 'Work',
+    children: [
+      { href: '/work', label: 'All case studies', hint: 'Every engagement, with the numbers.' },
+      ...publishedCaseStudies()
+        .filter((study) => study.featured)
+        .slice(0, 3)
+        .map((study) => ({
+          href: `/work/${study.slug}`,
+          label: study.title,
+          hint: `${study.client} · ${study.year}`,
+        })),
+    ],
+  },
+  {
+    href: '/about',
+    label: 'More',
+    children: [
+      { href: '/about', label: 'About', hint: 'The studio, the team, the beliefs.' },
+      { href: '/insights', label: 'Blog', hint: 'Notes from the work.' },
+      { href: '/careers', label: 'Careers', hint: 'Open roles at the studio.' },
+      { href: '/contact', label: 'Contact', hint: 'Start a project.' },
+    ],
+  },
+  { href: '/contact', label: 'Contact' },
+]
 
 /**
  * Floating pill navigation.
@@ -114,21 +166,62 @@ export function Header() {
 
           <nav aria-label="Primary" className="hidden xl:block">
             <ul className="flex items-center gap-2">
-              {primaryNav.map((item) => (
-                <li key={item.href}>
+              {navEntries.map((entry) => (
+                <li key={entry.label} className="group relative">
                   <Link
-                    href={item.href}
-                    aria-current={isActive(item.href) ? 'page' : undefined}
+                    href={entry.href}
+                    aria-current={isActive(entry.href) ? 'page' : undefined}
+                    aria-haspopup={entry.children ? 'true' : undefined}
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
-                      'flex min-h-9 items-center rounded-full px-3 label transition-colors',
-                      isActive(item.href)
+                      'flex min-h-9 items-center gap-1.5 rounded-full px-3 label transition-colors',
+                      isActive(entry.href)
                         ? 'text-coral'
-                        : 'text-muted-foreground hover:text-foreground',
+                        : 'text-muted-foreground group-hover:text-foreground hover:text-foreground',
                     )}
                   >
-                    {item.label}
+                    {entry.label}
+                    {entry.children ? (
+                      <span
+                        aria-hidden="true"
+                        className="text-[8px] transition-transform duration-300 group-focus-within:rotate-180 group-hover:rotate-180"
+                      >
+                        ▾
+                      </span>
+                    ) : null}
                   </Link>
+
+                  {entry.children ? (
+                    <div className="invisible absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                      <ul className="w-64 overflow-hidden rounded-[22px] border border-border bg-popover p-2 shadow-elegant">
+                        {entry.children.map((child) => (
+                          <li key={child.href + child.label}>
+                            <Link
+                              href={child.href}
+                              className="flex min-h-11 items-center justify-between gap-3 rounded-2xl px-4 py-2.5 transition-colors hover:bg-accent"
+                            >
+                              <span>
+                                <span className="block text-[13px] text-foreground">
+                                  {child.label}
+                                </span>
+                                {child.hint ? (
+                                  <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+                                    {child.hint}
+                                  </span>
+                                ) : null}
+                              </span>
+                              <span
+                                aria-hidden="true"
+                                className="shrink-0 text-[11px] text-muted-foreground"
+                              >
+                                →
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -137,6 +230,13 @@ export function Header() {
           <div className="flex shrink-0 items-center gap-2">
             <CommandPalette />
             <ThemeToggle />
+
+            <Link
+              href="/contact"
+              className="hidden h-9 items-center rounded-full border border-border-strong px-4 font-mono text-[12px] font-medium tracking-[-0.01em] transition-colors hover:border-coral hover:text-coral sm:inline-flex"
+            >
+              message us
+            </Link>
 
             <button
               type="button"

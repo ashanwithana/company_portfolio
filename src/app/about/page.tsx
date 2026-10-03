@@ -6,6 +6,7 @@ import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { ClientLogos } from '@/components/sections/work-preview'
+import { Testimonials } from '@/components/sections/testimonials'
 import { modelProviders } from '@/content/ai'
 import { milestones, process, team, values } from '@/content/company'
 import { platforms } from '@/content/enterprise'
@@ -199,6 +200,16 @@ export default function AboutPage() {
         <h2 className="label text-muted-foreground">Clients</h2>
         <div className="mt-10">
           <ClientLogos />
+        </div>
+      </PageSection>
+
+      <PageSection tone="paper" dotGrid={false}>
+        <div id="reviews" className="scroll-mt-28">
+          <h2 className="label text-muted-foreground">Reviews</h2>
+          <p className="mt-6 max-w-2xl display-md">In their words, with the numbers attached.</p>
+          <div className="mt-10">
+            <Testimonials />
+          </div>
         </div>
       </PageSection>
 

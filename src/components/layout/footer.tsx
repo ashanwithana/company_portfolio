@@ -1,31 +1,42 @@
 import Link from 'next/link'
-import type { ReactNode } from 'react'
 
 import { NewsletterForm } from '@/components/sections/newsletter-form'
+import { OfficeTime } from '@/components/sections/office-time'
 import { services } from '@/content/services'
-import { footerContent, footerNav, siteConfig } from '@/content/site'
+import { siteConfig } from '@/content/site'
 
 /**
- * Site footer.
- *
- * Four tracked columns over a status strip, capped by a marquee band. The columns
- * are laid out as an even grid rather than a brand-plus-sitemap split, because at
- * this type size a ragged left edge reads as broken rather than editorial.
+ * Site footer, mirroring the reference's structure: link columns, a status
+ * strip with the office clock and the studio's numbers, then the legal bar.
  */
 export function Footer() {
   const year = new Date().getFullYear()
 
   const columns = [
-    { heading: 'Company', links: footerNav.company },
     {
-      heading: 'Services',
+      heading: 'Popular services',
       links: services.slice(0, 5).map((s) => ({ href: `/services/${s.slug}`, label: s.title })),
     },
     {
-      heading: 'Practice',
-      links: [...footerNav.practices, { href: '/careers', label: 'Careers' }],
+      heading: 'Company',
+      links: [
+        { href: '/services', label: 'Services' },
+        { href: '/work', label: 'Case studies' },
+        { href: '/insights', label: 'Blog' },
+        { href: '/#method', label: 'Method' },
+        { href: '/about', label: 'About' },
+        { href: '/contact', label: 'Contact' },
+      ],
     },
-    { heading: 'Legal', links: footerNav.legal },
+    {
+      heading: 'Quick links',
+      links: [
+        { href: '/about', label: 'About' },
+        { href: '/about#reviews', label: 'Reviews' },
+        { href: '/enterprise', label: 'Business diagnosis' },
+        { href: '/sitemap.xml', label: 'Sitemap' },
+      ],
+    },
   ]
 
   return (
@@ -35,81 +46,54 @@ export function Footer() {
         aria-hidden="true"
       />
 
-      {/* Marquee band — the site's closing rhythm. Duplicated so the loop is seamless. */}
-      <div className="relative overflow-hidden border-y border-border py-5">
-        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap">
-          {[0, 1].map((copy) => (
-            <div key={copy} className="flex gap-10" aria-hidden={copy === 1}>
-              {[
-                'Odoo partner',
-                'Dynamics 365',
-                'SAP Business One',
-                'Salesforce',
-                'RAG pipelines',
-                'Design systems',
-                'Accessibility',
-              ].map((item) => (
-                <span
-                  key={item}
-                  className="font-mono text-xs tracking-[0.3em] text-muted-foreground uppercase"
-                >
-                  {item}
-                  <span className="ml-10 text-coral">✦</span>
-                </span>
+      <div className="relative container-page grid gap-12 py-12 sm:grid-cols-3 sm:py-16">
+        {columns.map((column) => (
+          <nav key={column.heading} aria-label={column.heading}>
+            <h2 className="label text-muted-foreground">{column.heading}</h2>
+            <ul className="mt-5 space-y-3">
+              {column.links.map((link) => (
+                <li key={link.href + link.label}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex min-h-8 items-center text-sm text-muted-foreground transition-colors hover:text-coral"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
               ))}
-            </div>
-          ))}
-        </div>
+            </ul>
+          </nav>
+        ))}
       </div>
 
-      <div className="relative container-page pt-16 pb-10">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.5fr)]">
-          {columns.map((column) => (
-            <nav key={column.heading} aria-label={column.heading}>
-              <h2 className="label text-muted-foreground">{column.heading}</h2>
-              <ul className="mt-5 space-y-3">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="inline-flex min-h-8 items-center text-sm text-muted-foreground transition-colors hover:text-coral"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
-
-          {/* Brand + newsletter */}
-          <div>
-            <Link
-              href="/"
-              aria-label={`${siteConfig.name} — home`}
-              className="inline-block text-xl font-bold tracking-tight"
-            >
-              {siteConfig.name}
-              <span className="text-coral">{siteConfig.logoSuffix}</span>
-            </Link>
-
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              {siteConfig.tagline}
-            </p>
-
-            <h2 className="mt-8 label text-muted-foreground">Newsletter</h2>
-            <NewsletterForm className="mt-4" />
-          </div>
+      <div className="relative container-page flex flex-col gap-10 pb-12">
+        <div>
+          <Link
+            href="/"
+            aria-label={`${siteConfig.name} — home`}
+            className="inline-block text-xl font-bold tracking-tight"
+          >
+            {siteConfig.name}
+            <span className="text-coral">{siteConfig.logoSuffix}</span>
+          </Link>
+          <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            {siteConfig.tagline}
+          </p>
+          <NewsletterForm className="mt-6" />
         </div>
 
-        {/* Status strip: office, reach and socials as pills. */}
-        <div className="mt-14 flex flex-wrap items-center gap-2.5">
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 label uppercase">
+        {/* Status strip */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase">
             <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
               <span className="absolute size-2 animate-pulse-ring rounded-full bg-coral" />
               <span className="size-1.5 rounded-full bg-coral" />
             </span>
-            {siteConfig.location} · HQ
+            London · UK · HQ · <OfficeTime timeZone="Europe/London" />
+          </span>
+
+          <span className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+            7+ years · 60+ projects · 14 people
           </span>
 
           {Object.entries(siteConfig.socials).map(([network, href]) => (
@@ -118,24 +102,34 @@ export function Footer() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 label transition-colors hover:border-coral hover:text-coral"
+              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors hover:border-coral hover:text-coral"
             >
               {network}
             </a>
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
-          <p className="label text-[0.55rem] text-muted-foreground">
-            © {year} {siteConfig.nameWithSuffix}. {footerContent.builtWith}
+        <div className="flex flex-col gap-3 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
+          <p className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
+            © {year} {siteConfig.nameWithSuffix} · Built to evolve
           </p>
 
-          <p className="label text-[0.55rem] text-muted-foreground">{footerContent.hint}</p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-6 gap-y-2">
+            {[
+              { href: '/privacy', label: 'Privacy policy' },
+              { href: '/accessibility', label: 'Terms and conditions' },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase transition-colors hover:text-coral"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>
   )
 }
-
-/** Re-exported so pages can compose a footer-level note if needed. */
-export type FooterSlot = ReactNode
