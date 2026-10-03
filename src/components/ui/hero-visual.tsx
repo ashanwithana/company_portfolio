@@ -6,19 +6,18 @@ import { useReducedMotion } from '@/hooks/use-media-query'
 import { cn } from '@/lib/utils'
 
 /**
- * Hero 3D visual — a tilted orbital system rendered with true perspective.
+ * Hero 3D visual — a liquid-chrome orb in a studio environment.
  *
- * What makes this 3D rather than a flat gradient: every ring is a circle in 3D
- * object space, rotated by yaw/pitch into camera space and projected with a
- * perspective divide. Near-side arcs render brighter than far-side ones, and a
- * shell of particles orbits the same centre with depth-attenuated size and
- * alpha. The pointer drives the camera, so the whole system visibly turns in
- * depth rather than sliding in the plane.
+ * A ray-sphere intersection (analytic, no marching) shaded as polished metal:
+ * the surface reflects a procedural studio (key softbox, mint strip, floor
+ * bounce) while a slowly rotating normal perturbation makes highlights crawl
+ * like mercury. One sharp sun glint plus a fresnel rim sell the material.
+ * The pointer drifts the camera; the lights stay fixed like a real studio.
  *
- * Performance budget: the canvas is backed at 60% of display resolution
- * (upscaled by CSS — glow hides the softness), rings are traced at 20 samples
- * each and the particle shell is 22 points. One rAF loop, paused off-screen,
- * static fallback for reduced motion.
+ * Performance budget: one analytic intersection per pixel, six 3-octave noise
+ * calls only on the surface, backdrop at reduced rate. Canvas is backed at 60%
+ * of display resolution (upscaled by CSS — chrome hides the softness). One rAF
+ * loop, paused off-screen, static CSS fallback for reduced motion.
  */
 
 const FRAG = /* glsl */ `
@@ -32,17 +31,6 @@ uniform float uTheme;    // 0 = dark, 1 = light
 mat3 rotY(float a) {
   float c = cos(a), s = sin(a);
   return mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c);
-}
-
-mat3 rotX(float a) {
-  float c = cos(a), s = sin(a);
-  return mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c);
-}
-
-// Perspective projection: camera sits at +z looking at the origin.
-vec2 proj(vec3 p, float camD, float viewH) {
-  float denom = max(camD - p.z, 0.25);
-  return p.xy * (camD / denom) / viewH;
 }
 
 float hash(vec2 p) {
@@ -77,32 +65,23 @@ float fbm(vec2 p) {
   return v;
 }
 
-// Trace one 3D ring: returns closest screen-space distance, plus the depth
-// (frontness) of the closest sample for the near-side-brighter cue.
-//
-// The ring radius breathes with a low-amplitude travelling wave. This is a
-// continuous function of the loop parameter, so the curve stays perfectly
-// smooth — unlike dashes derived from the quantized closest-sample angle,
-// which imprint sharp Voronoi seams fanning from the projected centre.
-float traceRing(
-  vec3 U, vec3 V, float R, float wobFreq, float wobSpeed, float wobAmp,
-  vec2 uv, mat3 rot, float t, float camD, float viewH,
-  out float front
-) {
-  float md = 1e9;
-  front = 0.5;
-  for (int i = 0; i < 20; i++) {
-    float a = float(i) / 20.0 * 6.2831853;
-    float Rw = R * (1.0 + wobAmp * sin(a * wobFreq - t * wobSpeed));
-    vec3 p = rot * (Rw * (cos(a) * U + sin(a) * V));
-    vec2 s = proj(p, camD, viewH);
-    float d = length(uv - s);
-    if (d < md) {
-      md = d;
-      front = clamp(p.z * 0.5 + 0.5, 0.0, 1.0);
-    }
-  }
-  return md;
+// Procedural studio environment: dark room, one big soft key, one mint strip,
+// faint floor bounce. What the chrome reflects.
+vec3 studioEnv(vec3 d, float theme) {
+  vec3 room = mix(
+    mix(vec3(0.030, 0.035, 0.090), vec3(0.090, 0.050, 0.190), d.y * 0.5 + 0.5),
+    mix(vec3(0.930, 0.910, 0.870), vec3(0.780, 0.760, 0.830), d.y * 0.5 + 0.5),
+    theme);
+  vec3 col = room;
+  vec3 key = normalize(vec3(-0.5, 0.7, 0.4));
+  vec3 keyCol = mix(vec3(0.90, 0.80, 1.00), vec3(1.00, 0.98, 0.95), theme);
+  col += keyCol * pow(max(dot(d, key), 0.0), 18.0) * 1.4;
+  vec3 strip = normalize(vec3(0.9, 0.1, 0.2));
+  vec3 stripCol = mix(vec3(0.20, 0.90, 0.65), vec3(0.35, 0.55, 1.00), theme);
+  col += stripCol * pow(max(dot(d, strip), 0.0), 36.0) * 1.0;
+  col += mix(vec3(0.150, 0.100, 0.250), vec3(0.550, 0.520, 0.580), theme)
+    * pow(max(dot(d, vec3(0.0, -1.0, 0.2)), 0.0), 3.0);
+  return col;
 }
 
 void main() {
@@ -110,79 +89,88 @@ void main() {
   vec2 uv = (frag * 2.0 - uRes) / min(uRes.x, uRes.y);
   float t = uTime;
 
-  // Camera: slow auto-orbit plus pointer control.
-  float yaw = t * 0.10 + uPointer.x * 0.7;
-  float pitch = 0.42 + uPointer.y * 0.45;
-  mat3 rot = rotY(yaw) * rotX(pitch);
-  float camD = 3.4;
-  float viewH = 1.35;
+  // Camera follows the pointer; the lights stay fixed like a real studio.
+  vec3 ro = vec3(uv.x * 0.25 + uPointer.x * 0.28, uv.y * 0.25 + uPointer.y * 0.22, 2.9);
+  vec3 rd = normalize(vec3(uv.x * 0.55, uv.y * 0.55, -1.0));
 
-  // Domain-warped aurora backdrop.
-  vec2 p = uv + uPointer * 0.10;
-  float warp = fbm(p * 1.4 + vec2(t * 0.05, -t * 0.04));
-  float bands = fbm(vec2(p.x * 1.2 + warp * 1.6, p.y * 1.6 - t * 0.06));
-  bands = smoothstep(0.25, 0.85, bands);
-  float r = length(p);
+  // Backdrop: dim aurora wash plus a few faint dust motes for depth.
+  vec2 bp = uv + uPointer * 0.06;
+  float warp = fbm(bp * 1.3 + vec2(t * 0.04, -t * 0.03));
+  float bands = fbm(vec2(bp.x * 1.1 + warp * 1.5, bp.y * 1.5 - t * 0.05));
+  bands = smoothstep(0.30, 0.85, bands);
+  float br = length(bp);
+  vec3 bgDeep = mix(vec3(0.030, 0.045, 0.110), vec3(0.960, 0.940, 0.900), uTheme);
+  vec3 bgGlow = mix(vec3(0.200, 0.140, 0.520), vec3(0.940, 0.620, 0.420), uTheme);
+  vec3 bg = mix(bgDeep, bgGlow, clamp(bands * 0.55 + br * 0.12, 0.0, 1.0) * 0.55);
 
-  // Three orbital rings in genuinely different planes. Each keeps its own
-  // frontness so the depth cue follows its own nearest arc.
-  float frontA;
-  float dA = traceRing(
-    vec3(1.0, 0.0, 0.0), vec3(0.0, 0.37, 0.93), 0.62, 6.0, 0.50, 0.045,
-    uv, rot, t, camD, viewH, frontA);
-  float ringA = exp(-dA * dA * 5200.0) * (0.55 + 0.85 * frontA);
-
-  float frontB;
-  // Tilted ~20° off the edge-on YZ plane: foreshortened enough to show depth,
-  // open enough to read as an ellipse rather than a line.
-  float dB = traceRing(
-    normalize(vec3(0.35, 0.0, 0.94)), vec3(0.0, 1.0, 0.0), 0.95, 9.0, 0.70, 0.035,
-    uv, rot, t, camD, viewH, frontB);
-  float ringB = exp(-dB * dB * 7000.0) * (0.55 + 0.85 * frontB);
-
-  float frontC;
-  float dC = traceRing(
-    normalize(vec3(0.86, 0.50, 0.0)), normalize(vec3(-0.19, 0.33, 0.92)), 1.25,
-    12.0, 0.90, 0.030,
-    uv, rot, t, camD, viewH, frontC);
-  float ringC = exp(-dC * dC * 9000.0) * (0.55 + 0.85 * frontC);
-
-  // Particle shell: points distributed through a spherical volume, rotated by
-  // the same camera transform, with perspective size and depth fade.
-  float dots = 0.0;
-  for (int i = 0; i < 22; i++) {
+  float dust = 0.0;
+  for (int i = 0; i < 10; i++) {
     float fi = float(i);
-    vec3 dir = normalize(vec3(
-      hash1(fi * 1.37 + 0.5) - 0.5,
-      hash1(fi * 2.11 + 3.7) - 0.5,
-      hash1(fi * 3.73 + 9.1) - 0.5));
-    float rad = 0.55 + 0.75 * hash1(fi * 7.3 + 1.3);
-    vec3 wp = rot * (dir * rad);
-    vec2 s = proj(wp, camD, viewH);
-    float d = length(uv - s);
-    float depth = clamp((wp.z + 1.4) / 2.8, 0.0, 1.0);
-    float tw = 0.6 + 0.4 * sin(t * 2.2 + fi * 2.7);
-    float k = 0.020 + 0.030 * depth;
-    dots += exp(-d * d / (k * k)) * (0.20 + 0.80 * depth) * tw;
+    vec2 sp = vec2(hash1(fi * 3.7 + 1.0) - 0.5, hash1(fi * 7.9 + 4.0) - 0.5) * 2.4;
+    sp.x += sin(t * 0.10 + fi * 2.0) * 0.08;
+    sp.y += cos(t * 0.08 + fi * 1.3) * 0.08;
+    float d = length(uv - sp);
+    dust += exp(-d * d * 2600.0) * (0.35 + 0.30 * sin(t * 1.4 + fi * 3.1));
+  }
+  bg += vec3(0.75, 0.80, 1.00) * dust * 0.10;
+
+  // Chrome orb: analytic ray-sphere intersection, gently bobbing.
+  vec3 centre = vec3(0.0, 0.045 * sin(t * 0.5), 0.0);
+  float radius = 1.0;
+  vec3 oc = ro - centre;
+  float b = dot(oc, rd);
+  float c = dot(oc, oc) - radius * radius;
+  float h = b * b - c;
+
+  vec3 col = bg;
+  if (h > 0.0) {
+    float dist = -b - sqrt(h);
+    vec3 p = ro + rd * dist;
+    vec3 n0 = (p - centre) / radius;
+
+    // Liquid-metal surface: object-space pattern rotates slowly while the
+    // studio lights stay fixed, so highlights crawl like mercury.
+    vec3 pw = rotY(t * 0.12) * p;
+    vec3 wob = vec3(
+      sin(pw.y * 3.1 + t * 0.9) + 0.5 * sin(pw.z * 5.3 - t * 0.7),
+      sin(pw.z * 3.7 + t * 1.1) + 0.5 * sin(pw.x * 4.7 + t * 0.8),
+      sin(pw.x * 4.3 - t * 1.0) + 0.5 * sin(pw.y * 5.9 + t * 0.6));
+    vec3 large = vec3(
+      fbm(pw.xy * 1.4 + t * 0.06) - 0.5,
+      fbm(pw.yz * 1.4 - t * 0.05) - 0.5,
+      fbm(pw.zx * 1.4 + t * 0.04) - 0.5);
+    vec3 n = normalize(n0 + wob * 0.085 + large * 0.10);
+
+    vec3 view = -rd;
+    vec3 refl = reflect(-view, n);
+    float fres = pow(1.0 - max(dot(n, view), 0.0), 3.0);
+
+    vec3 keyDir = normalize(vec3(-0.6, 0.9, 0.6));
+    float key = max(dot(n, keyDir), 0.0);
+    vec3 baseTint = mix(vec3(0.30, 0.20, 0.62), vec3(0.62, 0.60, 0.66), uTheme);
+
+    vec3 chrome = studioEnv(refl, uTheme) * 0.90;
+    chrome += baseTint * key * 0.18;
+    // Dim violet fill so the shadow side holds shape instead of going black.
+    vec3 fillDir = normalize(vec3(0.7, -0.3, 0.6));
+    chrome += baseTint * max(dot(n, fillDir), 0.0) * 0.22;
+    chrome += baseTint * 0.045;
+    // Sharp sun glint.
+    vec3 sunDir = normalize(vec3(-0.5, 0.75, 0.55));
+    chrome += vec3(1.0) * pow(max(dot(refl, sunDir), 0.0), 600.0) * 2.2;
+    // Mint rim light.
+    vec3 rimCol = mix(vec3(0.20, 0.90, 0.62), vec3(0.30, 0.55, 1.00), uTheme);
+    chrome += rimCol * fres * 0.85;
+
+    // Soft contact darkening where the orb meets the backdrop glow.
+    float edge = smoothstep(0.0, 0.12, dot(n, view));
+    chrome *= mix(0.55, 1.0, edge);
+
+    col = mix(bg, chrome, 0.985);
   }
 
-  // Core glow.
-  float core = exp(-r * r * 3.2) * (0.55 + 0.45 * warp);
-
-  // Palette: violet -> mint in dark, warm paper-friendly in light.
-  vec3 deepA = mix(vec3(0.30, 0.16, 0.75), vec3(0.95, 0.55, 0.30), uTheme);
-  vec3 deepB = mix(vec3(0.05, 0.10, 0.28), vec3(0.98, 0.90, 0.78), uTheme);
-  vec3 glowA = mix(vec3(0.55, 0.35, 1.00), vec3(0.85, 0.38, 0.20), uTheme);
-  vec3 glowB = mix(vec3(0.20, 0.95, 0.70), vec3(0.30, 0.55, 1.00), uTheme);
-
-  vec3 base = mix(deepB, deepA, clamp(bands + r * 0.25, 0.0, 1.0));
-  vec3 col = base;
-  col += glowA * (ringA * 0.9 + ringB * 0.7 + ringC * 0.5) * (uTheme > 0.5 ? 0.55 : 0.9);
-  col += glowB * core * 0.55;
-  col += vec3(1.0) * dots * 0.45 * (uTheme > 0.5 ? 0.5 : 1.0);
-
   // Vignette + dither to kill banding.
-  col *= 1.0 - 0.32 * dot(uv * 0.62, uv * 0.62);
+  col *= 1.0 - 0.30 * dot(uv * 0.62, uv * 0.62);
   float g = fract(sin(dot(frag, vec2(12.9898, 78.233))) * 43758.5453);
   col += (g - 0.5) * 0.014;
 
