@@ -5,19 +5,23 @@ import { siteConfig } from '@/content/site'
 /**
  * Home hero.
  *
- * Composition mirrors the reference exactly: the globe is full-bleed and
- * centred in the upper viewport with an ONLINE status pill riding its upper
- * limb; the headline sits low, overlapping the globe's lower third; a single
- * centred sub-line follows; and a review marquee closes the section. There are
- * deliberately no CTA buttons here — conversion lives in the nav pill, the
- * method close and the final CTA band, which is where the reference puts it.
+ * The globe sits in normal flow, centred and scaled to roughly a third of the
+ * viewport, with the ONLINE status pill riding its upper-right limb. The
+ * headline follows underneath in its own block rather than overlapping the
+ * sphere — the two used to collide, and the smaller globe plus a stacked
+ * layout reads more calmly at every breakpoint.
+ *
+ * The globe keeps its load sequence (CSS dotted fallback fading out as the
+ * WebGL canvas scales and fades in), and the headline/sub-line fade up behind
+ * it on the same easing curve. There are deliberately no CTA buttons here —
+ * conversion lives in the nav pill, the method close and the final CTA band.
  */
 export function Hero() {
   return (
     <section
       id="top"
       aria-label="Introduction"
-      className="relative overflow-hidden pt-28 pb-20 sm:pb-40"
+      className="relative overflow-hidden pt-24 pb-24 sm:pb-28"
     >
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
@@ -28,26 +32,28 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      {/* Globe: centred, sized off viewport width so the whole sphere reads. */}
-      <HeroVisual className="pointer-events-none absolute top-[3%] left-1/2 aspect-square w-[min(88vw,46rem)] -translate-x-1/2" />
-
-      {/* Presence pill riding the globe's upper-right limb. */}
-      <div className="absolute top-[16%] right-[8%] z-10 hidden sm:block" aria-hidden="true">
-        <StatusBadge tone="coral">Online · Colombo</StatusBadge>
-      </div>
-
       <div className="relative z-10 container-page">
-        <div className="mt-[54svh] text-center">
+        {/* Globe. Wrapper is the positioning context for the presence pill,
+            so the pill tracks the sphere instead of the viewport. */}
+        <div className="relative mx-auto aspect-square w-[min(70vw,22rem)]">
+          <HeroVisual />
+
+          <div className="absolute top-[8%] right-[2%] z-10 hidden sm:block" aria-hidden="true">
+            <StatusBadge tone="coral">Online · Colombo</StatusBadge>
+          </div>
+        </div>
+
+        <div className="mt-12 text-center sm:mt-14">
           <h1
             className="mx-auto max-w-5xl display-xl"
-            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) both' }}
+            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 120ms both' }}
           >
             Software that earns its place.
           </h1>
 
           <p
             className="mx-auto mt-7 max-w-xl text-[15px] leading-relaxed text-muted-foreground"
-            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 120ms both' }}
+            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 240ms both' }}
           >
             {siteConfig.description}
           </p>
