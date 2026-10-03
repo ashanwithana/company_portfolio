@@ -1,5 +1,4 @@
 import { PageHeader } from '@/components/layout/page'
-import { BlockArt } from '@/components/ui/block-art'
 import { CtaBand } from '@/components/ui/cta-band'
 import { Method } from '@/components/sections/method'
 import { methodSteps } from '@/content/method'
@@ -24,11 +23,6 @@ export default function MethodPage() {
         ghost="Method"
         lede="Discover the shape of every engagement we run: five phases, a fixed number at the end of the second, and numbers — not adjectives — at handover."
       />
-
-      {/* Wide visual band under the header, like the reference's media panel. */}
-      <div className="container-page pb-16 md:pb-24">
-        <BlockArt seed="northlight-method" ratio="wide" className="w-full" />
-      </div>
 
       <section aria-label="The five phases">
         <Method steps={methodSteps} showIntro={false} />
