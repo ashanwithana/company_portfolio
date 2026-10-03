@@ -62,7 +62,7 @@ void main() {
   // degenerate into sub-pixel dust and the sphere reads as a solid figure.
   // Accent nodes are drawn larger — they are meant to read as signal, not noise.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
-  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 1.5 * aAccent);
+  gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + 1.1 * aAccent);
 }
 `
 
@@ -180,75 +180,88 @@ function mulberry32(seed: number) {
 }
 
 /**
- * Sample a coarse land mask.
+ * Sample a real-world land mask.
  *
- * Rather than shipping a coastline dataset, this synthesises continents from
- * overlapping spherical lobes. It is not geography — it is a land/water
- * distribution with the right amount of irregularity to read as a planet at
- * dot density. Lobes are kept small and numerous so coastlines stay ragged;
- * a few large lobes produce a single mushy blob instead.
+ * Rather than synthesising continents from blobs, the mask below is a 60×30
+ * hand-plotted equirectangular grid (6° per cell) traced from an actual world
+ * map — Africa and Eurasia facing the camera on load, the Americas rotating
+ * into view. Lookup is bilinear, so cell edges interpolate instead of
+ * stair-stepping, and a small noise term keeps coastlines ragged. Antarctica
+ * is omitted, like the reference.
  */
 function landAt(lon: number, lat: number): number {
+  const gx = ((lon + 180) / 360) * (WORLD_COLS - 1)
+  const gy = ((90 - lat) / 180) * (WORLD_ROWS - 1)
+
+  const x0 = Math.max(0, Math.min(WORLD_COLS - 2, Math.floor(gx)))
+  const y0 = Math.max(0, Math.min(WORLD_ROWS - 2, Math.floor(gy)))
+  const fx = gx - Math.floor(gx)
+  const fy = gy - Math.floor(gy)
+
+  const at = (x: number, y: number) => (WORLD[y]?.[x] === 'X' ? 1 : 0)
+  const top = at(x0, y0) * (1 - fx) + at(x0 + 1, y0) * fx
+  const bottom = at(x0, y0 + 1) * (1 - fx) + at(x0 + 1, y0 + 1) * fx
+  const field = top * (1 - fy) + bottom * fy
+
   const toRad = Math.PI / 180
-  const y = lat * toRad
-  const cosLat = Math.cos(y)
-  const sinLat = Math.sin(y)
-
-  let field = 0
-  for (const [clon, clat, radius, weight] of LAND_LOBES) {
-    const cLat = clat * toRad
-    // Great-circle angular distance to the lobe centre.
-    const cosD = sinLat * Math.sin(cLat) + cosLat * Math.cos(cLat) * Math.cos((clon - lon) * toRad)
-    const ang = Math.acos(Math.max(-1, Math.min(1, cosD)))
-    const f = 1 - ang / (radius * toRad)
-    // Squared falloff keeps each lobe's core solid and its edge thin, so
-    // overlapping lobes read as separate landmasses rather than a single mass.
-    if (f > 0) field += weight * f * f
-  }
-
-  // Ridged noise on top, to chew the coastlines.
   const noise =
-    Math.sin(lon * toRad * 2.7 + lat * toRad * 1.3) * 0.15 +
     Math.sin(lon * toRad * 5.9 - lat * toRad * 4.3) * 0.09 +
-    Math.sin(lon * toRad * 11.3 + lat * toRad * 9.7) * 0.05 +
-    Math.sin(lon * toRad * 19.1 - lat * toRad * 17.3) * 0.03
+    Math.sin(lon * toRad * 11.3 + lat * toRad * 9.7) * 0.06 +
+    Math.sin(lon * toRad * 19.1 - lat * toRad * 17.3) * 0.04
 
-  return field + noise
+  return field + noise * field * (1 - field) * 4
 }
 
-/** [centre lon, centre lat, angular radius, weight] */
-const LAND_LOBES: readonly (readonly [number, number, number, number])[] = [
-  [-100, 48, 20, 1.0],
-  [-112, 40, 16, 0.95],
-  [-95, 25, 15, 0.9],
-  [-80, 10, 14, 0.85],
-  [-68, -12, 18, 0.95],
-  [-60, -35, 14, 0.9],
-  [-75, 8, 12, 0.8],
-  [15, 12, 18, 1.0],
-  [25, 30, 16, 0.9],
-  [10, -5, 14, 0.85],
-  [30, -25, 13, 0.85],
-  [45, 48, 17, 0.9],
-  [62, 30, 12, 0.8],
-  [75, 22, 12, 0.75],
-  [95, 20, 14, 0.8],
-  [100, 42, 13, 0.8],
-  [110, 30, 12, 0.75],
-  [133, -22, 12, 0.8],
-  [145, -28, 11, 0.75],
-  [172, 60, 14, 0.7],
-  [-160, 64, 13, 0.7],
-  [-42, 70, 12, 0.65],
-  [55, -30, 10, 0.6],
+const WORLD_COLS = 60
+const WORLD_ROWS = 30
+
+const WORLD: readonly string[] = [
+  '............................................................',
+  '................XXX.XXXXXX......XX..........................',
+  '...........XXXXXX...XXXXXX...................XXXX...........',
+  '..XXXXXXXXXXXXXXXXXXXXXXXX......XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  '..XXXXXXXXXXXXXXXXXXXXXX..XX...XXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  '.........XXXXXXXX............X..XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  '.........XXXXXXXXXXXXX.......XXXXXXXXXXXXXXXXXXXXXXXXX..X...',
+  '.........XXXXXXXXXX..........XXXXXXXXXXXXXXXXXXXXXXXXXX.....',
+  '.........XXXXXXXXX..........XXXXXXXXXXXXX.XXXXXXXXX..X......',
+  '..........XXXXXXX...........XXXX..XXXXXXXXXXXXX....XX.......',
+  '............XX..X..........XXXXXXXXXXXXXXXXXXX.XXXX.........',
+  '............XXXX...........XXXXXXXXXXXXX.XXXXXXXX...........',
+  '..............XXX..........XXXXXXXXX.XXX..XX.XXX..X.........',
+  '...............XXX.........XXXXXXXXXXX....X...XX..XX........',
+  '.................XXXXX......XXXXXXXXXXX......XXXXXX.........',
+  '.................XXXXXXX.......XXXXXXX.........XXXXXXXXX....',
+  '.................XXXXXXXX.......XXXXX..........XXX..XXX.....',
+  '..................XXXXXX........XXXXXXX............XX.......',
+  '..................XXXXX.........XXXX.XX..........XXXXXXX....',
+  '..................XXX...........XXXX............XXXXXXXX....',
+  '.................XXXXX..........XXX..............XXXXXXX..XX',
+  '.................XXX.....................................XXX',
+  '.................XXX.....................................XX.',
+  '.................XXX........................................',
+  '..................XX........................................',
+  '............................................................',
+  '............................................................',
+  '............................................................',
+  '............................................................',
+  '............................................................',
 ]
 
-const POINT_COUNT = 18000
+const POINT_COUNT = 24000
 const GLOBE_RADIUS = 1
 const RING_SEGMENTS = 180
 const ORBIT_SEGMENTS = 200
 /** Number of pink accent nodes scattered across the landmasses. */
-const ACCENT_TARGET = 22
+const ACCENT_TARGET = 8
+/**
+ * Initial spin so the globe opens facing Europe and Africa, like the
+ * reference. The camera looks down +z, which the Fibonacci distribution maps
+ * to lon 90 — so the offset turns the planet back by the difference.
+ */
+const SPIN_INITIAL = ((90 - 20) * Math.PI) / 180
+/** Full rotational speed, reached after the load ramp eases in. */
+const SPIN_SPEED = 0.16
 
 /** Backing-store resolution as a fraction of display size. */
 const RENDER_SCALE = 0.65
@@ -373,6 +386,10 @@ export function HeroVisual({ className }: { className?: string }) {
     () => false,
   )
   const [glFailed, setGlFailed] = React.useState(false)
+  // First painted WebGL frame. Drives the canvas fade-and-scale entrance so
+  // the globe arrives rather than popping in with the page.
+  const [ready, setReady] = React.useState(false)
+  const readyRef = React.useRef(false)
 
   React.useEffect(() => {
     const canvas = canvasRef.current
@@ -428,13 +445,13 @@ export function HeroVisual({ className }: { className?: string }) {
       const lon = (Math.atan2(z, x) * 180) / Math.PI
       const lat = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
 
-      const isLand = landAt(lon, lat) > 0.24
+      const isLand = landAt(lon, lat) > 0.5
       // Keep the sea sparse so land reads as the figure and sea as ground.
       if (!isLand && random() > 0.15) continue
 
       // Roughly one accent node per 150 land points, capped, so the pink reads
       // as scattered signal rather than a second landmass.
-      const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.004
+      const isAccent = isLand && accentsPlaced < ACCENT_TARGET && random() < 0.0015
       if (isAccent) accentsPlaced++
 
       positions.push(x * GLOBE_RADIUS, y * GLOBE_RADIUS, z * GLOBE_RADIUS)
@@ -545,6 +562,11 @@ export function HeroVisual({ className }: { className?: string }) {
     let theme = document.documentElement.classList.contains('light') ? 1 : 0
     const t0 = performance.now()
 
+    // Spin state for the load ramp: the globe eases from rest to full speed
+    // over the first seconds instead of snapping into motion with the fade-in.
+    let spinAngle = SPIN_INITIAL
+    let lastT = t0
+
     const mo = new MutationObserver(() => {
       theme = document.documentElement.classList.contains('light') ? 1 : 0
     })
@@ -595,17 +617,32 @@ export function HeroVisual({ className }: { className?: string }) {
       easedX += (pointerX - easedX) * 0.05
       easedY += (pointerY - easedY) * 0.05
 
-      const t = (performance.now() - t0) / 1000
+      const now = performance.now()
+      const t = (now - t0) / 1000
+      // Ease the spin from rest to full speed over the first seconds, matched
+      // to the CSS fade-in below so the globe arrives rather than appears.
+      // dt is clamped so a backgrounded tab does not jump the planet on return.
+      const ramp = Math.min(t / 2.6, 1)
+      const eased = ramp * ramp * (3 - 2 * ramp)
+      const dt = Math.min((now - lastT) / 1000, 0.05)
+      spinAngle += dt * SPIN_SPEED * eased
+      lastT = now
+
+      // Signal the first painted frame so the canvas fades and scales in.
+      if (!readyRef.current) {
+        readyRef.current = true
+        setReady(true)
+      }
+
       const aspect = canvas.width / Math.max(canvas.height, 1)
 
       // Slow constant spin with a nod to the pointer.
-      const spin = t * 0.16
       const tilt = -0.34 + easedY * 0.22
 
       let mvp = perspective(Math.PI / 5.2, aspect, 0.1, 100)
       mvp = multiply(mvp, translation(0, 0, -3.15))
       mvp = multiply(mvp, rotationX(tilt))
-      mvp = multiply(mvp, rotationY(spin + easedX * 0.34))
+      mvp = multiply(mvp, rotationY(spinAngle + easedX * 0.34))
 
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
@@ -694,7 +731,10 @@ export function HeroVisual({ className }: { className?: string }) {
         or motion is reduced.
       */}
       <div
-        className="absolute inset-0 rounded-full opacity-45"
+        className={cn(
+          'absolute inset-0 rounded-full transition-opacity duration-1000',
+          ready ? 'opacity-0' : 'opacity-45',
+        )}
         style={{
           backgroundImage:
             'radial-gradient(circle at 38% 32%, rgba(240,240,248,0.9) 0.6px, transparent 1px), radial-gradient(circle at 38% 32%, rgba(139,139,150,0.5) 0.6px, transparent 1px)',
@@ -708,7 +748,13 @@ export function HeroVisual({ className }: { className?: string }) {
       <div className="absolute inset-[3%] rotate-[24deg] rounded-[50%] border border-border/60" />
 
       {mounted && !reducedMotion && !glFailed ? (
-        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+        <canvas
+          ref={canvasRef}
+          className={cn(
+            'absolute inset-0 h-full w-full transition-[opacity,scale] duration-[1400ms] ease-out',
+            ready ? 'scale-100 opacity-100' : 'scale-[0.94] opacity-0',
+          )}
+        />
       ) : null}
     </div>
   )
