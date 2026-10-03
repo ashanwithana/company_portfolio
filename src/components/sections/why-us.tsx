@@ -12,7 +12,7 @@ import { differentiators } from '@/content/company'
  */
 export function WhyUs() {
   return (
-    <section aria-label="Why us" className="relative overflow-hidden py-24 md:py-32">
+    <section aria-label="Why us" className="tone-paper relative overflow-hidden py-24 md:py-32">
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
         aria-hidden="true"
