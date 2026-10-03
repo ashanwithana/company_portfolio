@@ -133,7 +133,7 @@ void main() {
 }
 `
 
-/** Ring / orbital pass — drawn as line strips around the same globe. */
+/** Route pass — the customer arcs drawn as line strips around the globe. */
 const LINE_VERT = /* glsl */ `
 attribute vec3 aPos;
 attribute float aKind;   // 3 = customer route (the only linework left)
@@ -681,9 +681,8 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
       gl.uniform1f(lTheme, theme)
 
-      // Every strip (orbits, pink arc, customer routes) is drawn from its
-      // recorded offset and count, so the buffer layout cannot silently drift
-      // if a segment count changes.
+      // Every strip is drawn from its recorded offset and count, so the
+      // buffer layout cannot silently drift if a segment count changes.
       for (const strip of strips) {
         gl.drawArrays(gl.LINE_STRIP, strip.offset, strip.count)
       }
