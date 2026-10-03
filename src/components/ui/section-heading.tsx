@@ -1,3 +1,4 @@
+import { Eyebrow } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 /**
@@ -80,19 +81,16 @@ export function SectionHeading({
       {ghost ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[0.12em] -left-[0.03em] font-display text-[clamp(9rem,54vh,32rem)] text-ghost"
+          className="pointer-events-none absolute -top-[0.12em] -left-[0.03em] font-sans text-[clamp(9rem,54vh,32rem)] text-ghost"
         >
           {ghost}
         </span>
       ) : null}
 
       <div className="relative">
-        <p className="flex items-center gap-3 label text-muted-foreground">
-          <span className="text-coral tabular-nums">{index}</span>
-          <span aria-hidden="true">[</span>
-          <span className="text-foreground">{label}</span>
-          <span aria-hidden="true">]</span>
-        </p>
+        <Eyebrow leading={<span className="text-coral tabular-nums">{index}</span>}>
+          {label}
+        </Eyebrow>
 
         <h2 className="mt-7 max-w-4xl display-lg">{title}</h2>
 

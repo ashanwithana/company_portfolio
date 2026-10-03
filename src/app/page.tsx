@@ -129,7 +129,7 @@ export default function HomePage() {
         <div className="mt-12">
           <Link
             href="/work"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-strong px-6 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:border-coral hover:text-coral"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-strong px-6 label transition-colors hover:border-coral hover:text-coral"
           >
             All case studies
             <span aria-hidden="true">→</span>

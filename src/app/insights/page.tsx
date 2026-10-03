@@ -48,7 +48,7 @@ export default function InsightsPage() {
             <li key={tag}>
               <Link
                 href={`/insights?tag=${encodeURIComponent(tag)}`}
-                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:border-border-strong hover:text-foreground"
+                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 label transition-colors hover:border-border-strong hover:text-foreground"
               >
                 {tag}
               </Link>
@@ -65,7 +65,7 @@ export default function InsightsPage() {
             className="group grid gap-8 rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong md:grid-cols-[minmax(0,1fr)_22rem] md:p-10"
           >
             <div>
-              <p className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
+              <p className="label text-[0.55rem] text-coral">
                 Latest · {formatPostDate(featured.date)} · {featured.readingTimeMinutes} min read
               </p>
 
@@ -143,7 +143,7 @@ export default function InsightsPage() {
         <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {aiPrinciples.map((principle, index) => (
             <Reveal key={principle.title} as="li" delay={index * 40}>
-              <div className="h-full rounded-3xl border border-border bg-card/40 p-6">
+              <div className="h-full rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-lg leading-snug">{principle.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {principle.body}
@@ -162,7 +162,7 @@ export default function InsightsPage() {
               <Reveal key={pattern.slug} as="li" delay={index * 40}>
                 <Link
                   href="/ai"
-                  className="group flex h-full flex-col rounded-3xl border border-border bg-card/40 p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
                 >
                   <h4 className="text-lg transition-colors group-hover:text-coral">
                     {pattern.name}
@@ -170,7 +170,7 @@ export default function InsightsPage() {
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                     {pattern.summary}
                   </p>
-                  <p className="mt-4 border-t border-border pt-4 font-mono text-[0.6rem] leading-relaxed tracking-[0.1em] text-coral uppercase">
+                  <p className="mt-4 border-t border-border pt-4 label leading-relaxed text-coral">
                     {pattern.tradeoff}
                   </p>
                 </Link>
@@ -181,10 +181,7 @@ export default function InsightsPage() {
       </section>
 
       {/* Model selection reference */}
-      <section
-        aria-labelledby="models-heading"
-        className="border-y border-border bg-muted/20 py-20"
-      >
+      <section aria-labelledby="models-heading" className="tone-paper py-20">
         <div className="container-page">
           <h2 id="models-heading" className="label text-muted-foreground">
             Model selection, in brief
@@ -248,10 +245,7 @@ export default function InsightsPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/work"
-                className="mt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
-              >
+              <Link href="/work" className="mt-6 label transition-colors hover:text-coral">
                 All case studies
               </Link>
             </div>
@@ -273,10 +267,7 @@ export default function InsightsPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/ai"
-                className="mt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
-              >
+              <Link href="/ai" className="mt-6 label transition-colors hover:text-coral">
                 AI practice
               </Link>
             </div>
@@ -298,10 +289,7 @@ export default function InsightsPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/enterprise"
-                className="mt-6 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
-              >
+              <Link href="/enterprise" className="mt-6 label transition-colors hover:text-coral">
                 Enterprise practice
               </Link>
             </div>

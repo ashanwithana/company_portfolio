@@ -104,7 +104,7 @@ export function Footer() {
 
         {/* Status strip: office, reach and socials as pills. */}
         <div className="mt-14 flex flex-wrap items-center gap-2.5">
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 font-mono text-[0.6rem] tracking-[0.2em] uppercase">
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-border px-4 py-2.5 label uppercase">
             <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
               <span className="absolute size-2 animate-pulse-ring rounded-full bg-coral" />
               <span className="size-1.5 rounded-full bg-coral" />
@@ -118,7 +118,7 @@ export function Footer() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[0.6rem] tracking-[0.2em] uppercase transition-colors hover:border-coral hover:text-coral"
+              className="inline-flex items-center rounded-full border border-border px-4 py-2.5 label transition-colors hover:border-coral hover:text-coral"
             >
               {network}
             </a>

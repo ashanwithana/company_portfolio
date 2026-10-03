@@ -265,7 +265,7 @@ function PaletteItem({ label, onSelect, shortcut, keywords }: PaletteItemProps) 
     >
       <span className="truncate">{label}</span>
       {shortcut ? (
-        <kbd className="shrink-0 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground group-data-[selected=true]:text-coral-foreground">
+        <kbd className="shrink-0 label text-muted-foreground group-data-[selected=true]:text-coral-foreground">
           {shortcut}
         </kbd>
       ) : null}

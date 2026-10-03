@@ -33,7 +33,7 @@ export default function ServicesPage() {
                 className="group grid gap-6 py-10 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:gap-12"
               >
                 <div>
-                  <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
+                  <p className="label text-muted-foreground tabular-nums">
                     {(index + 1).toString().padStart(2, '0')}
                   </p>
                   <h2 className="mt-3 text-2xl transition-colors group-hover:text-coral sm:text-3xl">

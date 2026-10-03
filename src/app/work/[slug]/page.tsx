@@ -9,7 +9,6 @@ import { Prose } from '@/components/ui/prose'
 import { caseStudies, getCaseStudy, publishedCaseStudies } from '@/content/case-studies'
 import { siteConfig } from '@/content/site'
 import { ACCENT_TEXT } from '@/lib/accent'
-import { cn } from '@/lib/utils'
 
 /**
  * Pre-render every case study at build time.
@@ -83,7 +82,7 @@ export default async function CaseStudyPage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-coral uppercase">
+        <p className="mt-8 label text-coral uppercase">
           {study.categoryLabel} · {study.year}
         </p>
 
@@ -153,14 +152,10 @@ export default async function CaseStudyPage({ params }: Params) {
 
           {/* Sidebar */}
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-              Client
-            </h2>
+            <h2 className="label text-muted-foreground">Client</h2>
             <p className="mt-2 text-lg">{study.client}</p>
 
-            <h2 className="mt-8 font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-              Built with
-            </h2>
+            <h2 className="mt-8 label text-muted-foreground uppercase">Built with</h2>
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {study.tech.map((tech) => (
                 <li key={tech}>
@@ -171,7 +166,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
             <Link
               href="/contact"
-              className="mt-10 inline-flex min-h-11 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+              className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
             >
               Start a similar project
               <span aria-hidden="true">→</span>
@@ -182,7 +177,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
       {/* Next case study */}
       {next ? (
-        <nav aria-label="More case studies" className={cn('border-t border-border bg-muted/20')}>
+        <nav aria-label="More case studies" className="tone-paper">
           <Link
             href={`/work/${next.slug}`}
             className="group container-page flex flex-col gap-4 py-14 sm:flex-row sm:items-center sm:justify-between"

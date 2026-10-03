@@ -37,7 +37,7 @@ export type CaseStudy = {
   /** Headline results, rendered as a stat row. */
   metrics: readonly Metric[]
   tech: readonly string[]
-  tint: 'primary' | 'mint' | 'coral'
+  tint: 'primary' | 'amber' | 'coral'
   featured?: boolean
   /** Set to false to keep work-in-progress cases off the public listing. */
   published?: boolean
@@ -105,7 +105,7 @@ export const caseStudies: readonly CaseStudy[] = [
       { label: 'Support tickets', value: '−48%' },
     ],
     tech: ['React', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'Expo'],
-    tint: 'mint',
+    tint: 'amber',
     featured: true,
   },
   {
@@ -200,7 +200,7 @@ export const caseStudies: readonly CaseStudy[] = [
       { label: 'Lighthouse performance', value: '99 / 100' },
     ],
     tech: ['Next.js', 'TypeScript', 'MDX', 'Tailwind CSS'],
-    tint: 'mint',
+    tint: 'amber',
   },
   {
     slug: 'heliostat-ai-workflow',

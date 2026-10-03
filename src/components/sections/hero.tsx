@@ -2,13 +2,10 @@ import { StatusBadge } from '@/components/ui/badge'
 import { ButtonLink } from '@/components/ui/button'
 import { HeroVisual } from '@/components/ui/hero-visual'
 import { Reveal } from '@/components/ui/reveal'
-import { Typewriter } from '@/components/ui/typewriter'
 import { studioStats } from '@/content/services'
 import { contactContent, siteConfig } from '@/content/site'
 
 const headline = ['Software that', 'earns its', 'place.']
-
-const rotatingPhrases = ['Odoo & ERP', 'RAG pipelines', 'interface design', 'platform migration']
 
 /**
  * Home hero.
@@ -62,7 +59,7 @@ export function Hero() {
             <span className="text-coral" aria-hidden="true">
               →
             </span>{' '}
-            <Typewriter words={rotatingPhrases} />
+            ERP, AI and product engineering, in one studio.
           </p>
 
           <p
@@ -96,7 +93,7 @@ export function Hero() {
             ].map((item) => (
               <span
                 key={item}
-                className="inline-flex items-center rounded-full border border-border px-3.5 py-2 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase"
+                className="inline-flex items-center rounded-full border border-border px-3.5 py-2 label text-muted-foreground uppercase"
               >
                 <span aria-hidden="true" className="mr-2 text-coral">
                   ✦

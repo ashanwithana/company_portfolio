@@ -88,9 +88,7 @@ export default function CareersPage() {
           <aside className="space-y-8 lg:sticky lg:top-28 lg:self-start">
             <Reveal>
               <div className="rounded-3xl border border-border bg-card/40 p-7">
-                <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
-                  What we offer
-                </h2>
+                <h2 className="label text-muted-foreground">What we offer</h2>
                 <ul className="mt-5 space-y-3">
                   {benefits.map((benefit) => (
                     <li
@@ -116,7 +114,7 @@ export default function CareersPage() {
                 </p>
                 <a
                   href="mailto:careers@northlight.example.com?subject=Speculative%20application"
-                  className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+                  className="mt-5 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
                 >
                   Write to us
                   <span aria-hidden="true">→</span>

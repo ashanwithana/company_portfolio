@@ -36,7 +36,7 @@ export default function AiPage() {
               <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{principle.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{principle.body}</p>
-                <p className="mt-5 border-t border-border pt-4 font-mono text-[0.65rem] leading-relaxed tracking-[0.05em] text-coral">
+                <p className="mt-5 border-t border-border pt-4 label leading-relaxed text-coral">
                   {principle.evidence}
                 </p>
               </div>
@@ -60,7 +60,7 @@ export default function AiPage() {
             <Reveal key={pattern.slug} as="li" delay={index * 50} y={16}>
               <div className="grid gap-5 py-10 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-14">
                 <div>
-                  <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
+                  <p className="label text-muted-foreground tabular-nums">
                     {(index + 1).toString().padStart(2, '0')}
                   </p>
                   <h3 className="mt-3 text-2xl leading-tight sm:text-3xl">{pattern.name}</h3>
@@ -69,16 +69,12 @@ export default function AiPage() {
 
                 <div className="space-y-5">
                   <div>
-                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                      Use it when
-                    </h4>
+                    <h4 className="label text-[0.55rem] text-coral">Use it when</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{pattern.useWhen}</p>
                   </div>
 
                   <div>
-                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                      The trade-off
-                    </h4>
+                    <h4 className="label text-[0.55rem] text-coral">The trade-off</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{pattern.tradeoff}</p>
                   </div>
 
@@ -122,17 +118,13 @@ export default function AiPage() {
 
                 <dl className="mt-6 space-y-4 border-t border-border pt-5 text-sm">
                   <div>
-                    <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                      Best for
-                    </dt>
+                    <dt className="label text-[0.55rem] text-coral">Best for</dt>
                     <dd className="mt-1.5 leading-relaxed text-muted-foreground">
                       {provider.bestFor}
                     </dd>
                   </div>
                   <div>
-                    <dt className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                      Avoid when
-                    </dt>
+                    <dt className="label text-[0.55rem] text-coral">Avoid when</dt>
                     <dd className="mt-1.5 leading-relaxed text-muted-foreground">
                       {provider.avoidWhen}
                     </dd>
@@ -204,10 +196,10 @@ export default function AiPage() {
                   <th scope="row" className="p-5 text-base text-foreground">
                     {row.name}
                   </th>
-                  <td className="p-5 font-mono text-[0.75rem] whitespace-nowrap tabular-nums">
+                  <td className="p-5 font-mono text-sm whitespace-nowrap tabular-nums">
                     {row.low}
                   </td>
-                  <td className="p-5 font-mono text-[0.75rem] whitespace-nowrap tabular-nums">
+                  <td className="p-5 font-mono text-sm whitespace-nowrap tabular-nums">
                     {row.high}
                   </td>
                   <td className="p-5 text-muted-foreground">{row.driver}</td>
@@ -271,16 +263,12 @@ export default function AiPage() {
                     {study.summary}
                   </p>
 
-                  <h4 className="mt-8 font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                    The challenge
-                  </h4>
+                  <h4 className="mt-8 label text-coral uppercase">The challenge</h4>
                   <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
                     {study.challenge}
                   </p>
 
-                  <h4 className="mt-8 font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                    What we did
-                  </h4>
+                  <h4 className="mt-8 label text-coral uppercase">What we did</h4>
                   <ol className="mt-3 max-w-2xl list-decimal space-y-2 pl-5 text-muted-foreground">
                     {study.approach.map((step) => (
                       <li key={step} className="leading-relaxed">
@@ -301,9 +289,7 @@ export default function AiPage() {
                   <dl className="grid grid-cols-2 gap-5">
                     {study.metrics.map((metric) => (
                       <div key={metric.label}>
-                        <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
-                          {metric.label}
-                        </dt>
+                        <dt className="label text-muted-foreground uppercase">{metric.label}</dt>
                         <dd className="mt-1 display-sm tabular-nums">{metric.value}</dd>
                       </div>
                     ))}

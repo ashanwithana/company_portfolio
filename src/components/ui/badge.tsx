@@ -15,18 +15,18 @@ export function StatusBadge({
 }: {
   children: ReactNode
   className?: string
-  tone?: 'coral' | 'primary' | 'mint'
+  tone?: 'coral' | 'primary' | 'amber'
 }) {
   const toneClass = {
     coral: 'text-coral',
     primary: 'text-primary',
-    mint: 'text-coral',
+    amber: 'text-amber',
   }[tone]
 
   return (
     <span
       className={cn(
-        'relative inline-flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 font-mono text-[0.62rem] tracking-[0.25em] uppercase backdrop-blur-sm',
+        'relative inline-flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 label backdrop-blur-sm',
         className,
       )}
     >
@@ -39,12 +39,41 @@ export function StatusBadge({
   )
 }
 
-/** Tracked uppercase eyebrow used above section titles. */
-export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+/**
+ * Bracketed section label — `[ LABEL ]`.
+ *
+ * The one way a section announces itself. It was previously hand-written in
+ * three places with slightly different markup, which is how two spellings of
+ * the same component end up coexisting.
+ *
+ * `accent` colours the label text (used where the label is the accent, e.g. a
+ * page eyebrow); otherwise it stays muted.
+ */
+export function Eyebrow({
+  children,
+  className,
+  accent = false,
+  leading,
+}: {
+  children: ReactNode
+  className?: string
+  accent?: boolean
+  /** Optional leading element, e.g. a section ordinal. */
+  leading?: ReactNode
+}) {
   return (
-    <span className={cn('label text-muted-foreground', className)}>
-      <span aria-hidden="true">[</span> {children} <span aria-hidden="true">]</span>
-    </span>
+    <p
+      className={cn(
+        'flex items-center gap-3 label',
+        accent ? 'text-coral' : 'text-muted-foreground',
+        className,
+      )}
+    >
+      {leading}
+      <span aria-hidden="true">[</span>
+      <span className={accent ? undefined : 'text-foreground'}>{children}</span>
+      <span aria-hidden="true">]</span>
+    </p>
   )
 }
 

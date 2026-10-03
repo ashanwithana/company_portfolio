@@ -99,7 +99,7 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
               onClick={() => selectFilter(option.value)}
               aria-pressed={isActive}
               className={cn(
-                'min-h-9 rounded-full border px-5 py-2 font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors',
+                'min-h-9 rounded-full border px-5 py-2 label transition-colors',
                 isActive
                   ? 'border-coral bg-coral text-coral-foreground'
                   : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',

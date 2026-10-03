@@ -34,8 +34,8 @@ export default function ContactPage() {
           {/* Direct details */}
           <aside className="space-y-8 lg:pt-2">
             <Reveal>
-              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
-                <StatusBadge tone="mint">{contactContent.availability.badge}</StatusBadge>
+              <div className="rounded-3xl border border-border bg-card/40 p-7">
+                <StatusBadge tone="amber">{contactContent.availability.badge}</StatusBadge>
                 <p className="mt-5 leading-relaxed text-muted-foreground">
                   {contactContent.availability.body}
                 </p>
@@ -43,10 +43,8 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={60}>
-              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
-                <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
-                  {contactContent.directLabel}
-                </h2>
+              <div className="rounded-3xl border border-border bg-card/40 p-7">
+                <h2 className="label text-muted-foreground">{contactContent.directLabel}</h2>
 
                 <a
                   href={`mailto:${siteConfig.email}`}
@@ -56,17 +54,15 @@ export default function ContactPage() {
                   {siteConfig.email}
                 </a>
 
-                <p className="mt-4 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
+                <p className="mt-4 label text-muted-foreground uppercase">
                   {contactContent.responseTime}
                 </p>
               </div>
             </Reveal>
 
             <Reveal delay={120}>
-              <div className="rounded-3xl border border-border bg-card/40 p-7 backdrop-blur-sm">
-                <h2 className="font-mono text-[0.65rem] tracking-[0.3em] text-muted-foreground uppercase">
-                  Studio
-                </h2>
+              <div className="rounded-3xl border border-border bg-card/40 p-7">
+                <h2 className="label text-muted-foreground">Studio</h2>
                 <address className="mt-4 text-sm leading-relaxed text-muted-foreground not-italic">
                   {siteConfig.address.street}
                   <br />

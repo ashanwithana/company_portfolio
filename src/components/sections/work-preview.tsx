@@ -18,7 +18,7 @@ export function WorkPreview() {
         <Reveal key={study.slug} delay={index * 70} as="article" className="h-full">
           <Link
             href={`/work/${study.slug}`}
-            className="group flex h-full flex-col gap-6 rounded-3xl border border-border bg-card/40 p-5 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
+            className="group flex h-full flex-col gap-6 rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
           >
             <BlockArt seed={study.slug} ratio="wide" className="w-full shrink-0" />
 

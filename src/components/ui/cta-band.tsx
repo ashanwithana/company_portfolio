@@ -1,3 +1,4 @@
+import { Eyebrow } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 /**
@@ -41,7 +42,7 @@ export function CtaBand({
       {ghost ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-display text-[clamp(9rem,58vh,34rem)] text-ghost"
+          className="pointer-events-none absolute -bottom-[0.1em] left-1/2 -translate-x-1/2 font-sans text-[clamp(9rem,58vh,34rem)] text-ghost"
         >
           {ghost}
         </span>
@@ -49,11 +50,7 @@ export function CtaBand({
 
       <div className="relative container-page">
         <div className="max-w-3xl">
-          <p className="flex items-center gap-3 label text-muted-foreground">
-            <span aria-hidden="true">[</span>
-            <span className="text-coral">{eyebrow}</span>
-            <span aria-hidden="true">]</span>
-          </p>
+          <Eyebrow accent>{eyebrow}</Eyebrow>
 
           <h2 className="mt-7 display-lg">{title}</h2>
 

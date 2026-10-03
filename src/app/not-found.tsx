@@ -12,7 +12,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <div className="container-page flex min-h-[70svh] flex-col justify-center py-32">
-      <p className="font-mono text-[0.7rem] tracking-[0.3em] text-coral uppercase">404</p>
+      <p className="label text-coral">404</p>
 
       <h1 className="mt-6 max-w-3xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
         This page does not exist.
@@ -41,15 +41,13 @@ export default function NotFound() {
       </nav>
 
       <div className="mt-10">
-        <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-          Or start with a service
-        </h2>
+        <h2 className="label text-muted-foreground">Or start with a service</h2>
         <ul className="mt-4 flex flex-wrap gap-2">
           {services.map((service) => (
             <li key={service.slug}>
               <Link
                 href={`/services/${service.slug}`}
-                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 font-mono text-[0.65rem] tracking-[0.15em] uppercase transition-colors hover:border-border-strong"
+                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 label transition-colors hover:border-border-strong"
               >
                 {service.title}
               </Link>

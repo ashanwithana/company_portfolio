@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
+import { Eyebrow } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
 export type Crumb = {
@@ -110,17 +111,15 @@ export function PageHeader({
         {ghost ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-[0.1em] left-0 font-display text-[clamp(8rem,48vh,28rem)] text-ghost"
+            className="pointer-events-none absolute -top-[0.1em] left-0 font-sans text-[clamp(8rem,48vh,28rem)] text-ghost"
           >
             {ghost}
           </span>
         ) : null}
 
-        <p className="relative flex items-center gap-3 label text-muted-foreground">
-          <span aria-hidden="true">[</span>
-          <span className="text-coral">{eyebrow}</span>
-          <span aria-hidden="true">]</span>
-        </p>
+        <Eyebrow accent className="relative">
+          {eyebrow}
+        </Eyebrow>
 
         <h1 className="mt-7 max-w-5xl display-lg">{title}</h1>
 

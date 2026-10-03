@@ -47,9 +47,7 @@ export default function EnterprisePage() {
           </div>
 
           <aside className="rounded-3xl border border-border bg-card/40 p-7">
-            <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-              What you get
-            </h2>
+            <h2 className="label text-muted-foreground">What you get</h2>
             <ul className="mt-4 space-y-3">
               {enterpriseService.deliverables.map((item) => (
                 <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
@@ -79,9 +77,7 @@ export default function EnterprisePage() {
               <div className="flex h-full flex-col rounded-3xl border border-border bg-background p-6">
                 <h3 className="text-lg leading-tight">{platform.name}</h3>
 
-                <p
-                  className={`mt-2 font-mono text-[0.55rem] tracking-[0.2em] uppercase ${DEPTH_TONE[platform.depth]}`}
-                >
+                <p className={`mt-2 label ${DEPTH_TONE[platform.depth]}`}>
                   {depthLabels[platform.depth]}
                 </p>
 
@@ -165,7 +161,7 @@ export default function EnterprisePage() {
                   </th>
                   <td className="p-5 leading-relaxed text-muted-foreground">{row.fit}</td>
                   <td className="p-5 leading-relaxed text-muted-foreground">{row.risk}</td>
-                  <td className="p-5 font-mono text-[0.7rem] whitespace-nowrap tabular-nums">
+                  <td className="p-5 font-mono text-sm whitespace-nowrap tabular-nums">
                     {row.cost}
                   </td>
                 </tr>
@@ -221,7 +217,7 @@ export default function EnterprisePage() {
             },
           ].map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 40}>
-              <div className="flex h-full gap-4 rounded-3xl border border-border bg-card/40 p-6">
+              <div className="flex h-full gap-4 rounded-3xl border border-border bg-card/40 p-7">
                 <span className="font-mono text-xs text-coral tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>
@@ -263,18 +259,14 @@ export default function EnterprisePage() {
 
                 <div className="flex flex-col gap-6">
                   <div>
-                    <h4 className="font-mono text-[0.6rem] tracking-[0.25em] text-coral uppercase">
-                      Outcome
-                    </h4>
+                    <h4 className="label text-[0.55rem] text-coral">Outcome</h4>
                     <p className="mt-2 leading-relaxed text-muted-foreground">{study.outcome}</p>
                   </div>
 
                   <dl className="grid grid-cols-2 gap-6 border-t border-border pt-6">
                     {study.metrics.map((metric) => (
                       <div key={metric.label}>
-                        <dt className="font-mono text-[0.55rem] tracking-[0.2em] text-muted-foreground uppercase">
-                          {metric.label}
-                        </dt>
+                        <dt className="label text-muted-foreground uppercase">{metric.label}</dt>
                         <dd className="mt-1 display-sm tabular-nums">{metric.value}</dd>
                       </div>
                     ))}

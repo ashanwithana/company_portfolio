@@ -77,9 +77,7 @@ export default async function ServiceDetailPage({ params }: Params) {
         <Prose>{<p>{service.body}</p>}</Prose>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-            What you get
-          </h2>
+          <h2 className="label text-muted-foreground">What you get</h2>
           <ul className="mt-4 space-y-3">
             {service.deliverables.map((item) => (
               <li key={item} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
@@ -93,7 +91,7 @@ export default async function ServiceDetailPage({ params }: Params) {
 
           <Link
             href="/contact"
-            className="mt-10 inline-flex min-h-11 items-center gap-2 font-mono text-[0.7rem] tracking-[0.2em] uppercase transition-colors hover:text-coral"
+            className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-coral"
           >
             Discuss this
             <span aria-hidden="true">→</span>
@@ -102,7 +100,7 @@ export default async function ServiceDetailPage({ params }: Params) {
       </div>
 
       {/* Other services */}
-      <nav aria-label="Other services" className="border-t border-border bg-muted/20">
+      <nav aria-label="Other services" className="tone-paper">
         <div className="container-page py-14">
           <h2 className="label text-muted-foreground">Other services</h2>
 

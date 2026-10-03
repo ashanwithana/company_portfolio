@@ -34,10 +34,7 @@
   --primary-foreground: #f5f2ff;
   --coral: #e4007c;
   --coral-foreground: #ffffff;
-  --mint: #ff9f1c;
-
-  --secondary: #232323;
-  --secondary-foreground: #f0f0f8;
+  --amber: #ff9f1c;
   --muted: #1c1c1c;
   --muted-foreground: #8b8b96;
   --accent: #232323;
@@ -59,7 +56,6 @@
   --gradient-editorial: linear-gradient(135deg, #e4007c 0%, #7c5bff 100%);
   --gradient-coral: linear-gradient(135deg, #e4007c 0%, #ff9f1c 100%);
   --gradient-glow: radial-gradient(ellipse at center, #e4007c33 0%, transparent 70%);
-  --shadow-glow: 0 0 60px -10px #e4007c66;
   --shadow-elegant: 0 30px 80px -20px #00000080;
 }
 
@@ -78,10 +74,7 @@
   --primary-foreground: #ffffff;
   --coral: #d1006b;
   --coral-foreground: #ffffff;
-  --mint: #b06000;
-
-  --secondary: #f1ede4;
-  --secondary-foreground: #161310;
+  --amber: #b06000;
   --muted: #f4f1ea;
   --muted-foreground: #6b6558;
   --accent: #f1ede4;
@@ -101,7 +94,6 @@
   --gradient-editorial: linear-gradient(135deg, #d1006b 0%, #6a3ff0 100%);
   --gradient-coral: linear-gradient(135deg, #d1006b 0%, #b06000 100%);
   --gradient-glow: radial-gradient(ellipse at center, #d1006b26 0%, transparent 70%);
-  --shadow-glow: 0 0 60px -12px #d1006b4d;
   --shadow-elegant: 0 30px 80px -24px #16131033;
 }
 
@@ -126,8 +118,6 @@
   --elevated: color-mix(in oklab, var(--paper-foreground) 10%, var(--paper));
   --popover: var(--paper);
   --popover-foreground: var(--paper-foreground);
-  --secondary: color-mix(in oklab, var(--paper-foreground) 8%, var(--paper));
-  --secondary-foreground: var(--paper-foreground);
   --muted: color-mix(in oklab, var(--paper-foreground) 5%, var(--paper));
   --muted-foreground: color-mix(in oklab, var(--paper-foreground) 62%, var(--paper));
   --accent: color-mix(in oklab, var(--paper-foreground) 8%, var(--paper));
@@ -147,13 +137,11 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-mint: var(--mint);
+  --color-amber: var(--amber);
   --color-coral: var(--coral);
   --color-coral-foreground: var(--coral-foreground);
   --color-destructive: var(--destructive);
@@ -166,28 +154,24 @@
   --color-paper-foreground: var(--paper-foreground);
 
   /*
-   * Monospace throughout. `font-display` is an alias rather than a separate
-   * family so existing `font-display` utilities pick up the display weights
-   * without every call site changing.
+   * Monospace throughout. There is deliberately no separate display family:
+   * the previous design aliased one for the old Syne headings, and keeping the
+   * alias meant two names for the same typeface. Headings set their weight and
+   * tracking instead of their family.
    */
   --font-sans: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-mono: var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --shadow-glow: var(--shadow-glow);
   --shadow-elegant: var(--shadow-elegant);
 
   --animate-marquee: marquee 38s linear infinite;
-  --animate-blink: blink 1s step-end infinite;
   --animate-pulse-ring: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-float: float 9s ease-in-out infinite;
   --animate-fade-up: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-twinkle: twinkle 3.6s ease-in-out infinite;
 }
 
 @keyframes marquee {
@@ -196,17 +180,6 @@
   }
   to {
     transform: translateX(-50%);
-  }
-}
-
-@keyframes blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  to {
-    opacity: 0;
   }
 }
 
@@ -225,16 +198,6 @@
   }
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(0, -18px, 0) rotate(6deg);
-  }
-}
-
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -243,16 +206,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 1;
   }
 }
 
@@ -287,7 +240,7 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     letter-spacing: -0.04em;
     font-weight: 800;
     text-wrap: balance;
@@ -357,21 +310,6 @@
   background-position: center;
 }
 
-@utility grid-bg {
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 64px 64px;
-}
-
 /* Uppercase tracked micro-label used for eyebrows, nav and metadata. */
 @utility label {
   font-family: var(--font-mono);
@@ -431,11 +369,6 @@
   user-select: none;
 }
 
-@utility text-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--foreground) 22%, transparent);
-}
-
 @utility text-gradient {
   background-image: var(--gradient-editorial);
   background-clip: text;
@@ -443,26 +376,8 @@
   color: transparent;
 }
 
-@utility text-gradient-coral {
-  background-image: var(--gradient-coral);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-@utility mask-fade-x {
-  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-}
-
 @utility mask-fade-radial {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 72%);
-}
-
-/* Pink glow ring used on primary cards and interactive tiles. */
-@utility glow-pink {
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--coral) 40%, transparent),
-    0 18px 60px -24px var(--coral);
 }
 
 /* ---------------------------------------------------------------------------

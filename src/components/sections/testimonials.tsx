@@ -10,7 +10,7 @@ export function Testimonials() {
       {testimonials.map((testimonial, index) => (
         <Reveal key={testimonial.name} as="li" delay={index * 60}>
           <figure className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
-            <span aria-hidden="true" className="font-display text-4xl leading-none text-coral">
+            <span aria-hidden="true" className="font-sans text-4xl leading-none text-coral">
               &ldquo;
             </span>
             <blockquote className="mt-2 flex-1 leading-relaxed text-foreground/90">

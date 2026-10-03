@@ -122,7 +122,7 @@ export default function AboutPage() {
           {process.map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 60} y={16}>
               <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="label font-mono text-[0.55rem] text-coral tabular-nums">
+                <p className="label text-coral tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </p>
                 <div>
@@ -165,9 +165,7 @@ export default function AboutPage() {
 
                 <div>
                   <h3 className="text-lg leading-tight">{member.name}</h3>
-                  <p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-coral uppercase">
-                    {member.role}
-                  </p>
+                  <p className="mt-1 label text-coral uppercase">{member.role}</p>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{member.bio}</p>
                 </div>
               </div>
@@ -184,9 +182,7 @@ export default function AboutPage() {
           {milestones.map((milestone, index) => (
             <Reveal key={milestone.year} as="li" delay={index * 60} y={16}>
               <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="label font-mono text-[0.55rem] text-muted-foreground tabular-nums">
-                  {milestone.year}
-                </p>
+                <p className="label text-muted-foreground tabular-nums">{milestone.year}</p>
                 <div>
                   <h3 className="text-xl">{milestone.title}</h3>
                   <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">

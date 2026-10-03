@@ -84,9 +84,7 @@ export default async function RolePage({ params }: Params) {
       <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
         <Breadcrumbs items={crumbs} />
 
-        <p className="mt-8 font-mono text-[0.7rem] tracking-[0.3em] text-coral uppercase">
-          {role.department}
-        </p>
+        <p className="mt-8 label text-coral uppercase">{role.department}</p>
 
         <h1 className="mt-6 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl">
           {role.title}
@@ -162,9 +160,7 @@ export default async function RolePage({ params }: Params) {
         </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <h2 className="font-mono text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase">
-            At a glance
-          </h2>
+          <h2 className="label text-muted-foreground">At a glance</h2>
           <dl className="mt-4 space-y-4 text-sm">
             {[
               { term: 'Department', detail: role.department },
@@ -182,7 +178,7 @@ export default async function RolePage({ params }: Params) {
       </div>
 
       {role.benefits ? (
-        <section aria-labelledby="benefits" className="border-t border-border bg-muted/20">
+        <section aria-labelledby="benefits" className="tone-paper">
           <div className="container-page py-14">
             <h2 id="benefits" className="label text-muted-foreground">
               What we offer

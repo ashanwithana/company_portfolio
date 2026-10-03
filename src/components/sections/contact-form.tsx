@@ -166,7 +166,7 @@ export function ContactForm() {
             <label
               key={option.value}
               className={cn(
-                'inline-flex min-h-10 cursor-pointer items-center rounded-full border px-4 font-mono text-[0.65rem] tracking-[0.15em] uppercase transition-colors',
+                'inline-flex min-h-10 cursor-pointer items-center rounded-full border px-4 label transition-colors',
                 'has-checked:border-coral has-checked:bg-coral has-checked:text-coral-foreground',
                 'has-focus-visible:outline has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring',
                 values.budget === option.value

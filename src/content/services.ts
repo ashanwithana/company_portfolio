@@ -14,7 +14,7 @@ export type Service = {
   body: string
   deliverables: readonly string[]
   /** Accent used for card washes and icons. */
-  tint: 'primary' | 'mint' | 'coral'
+  tint: 'primary' | 'amber' | 'coral'
   /**
    * Canonical deep page, when one exists. The two specialist tracks have
    * dedicated practice pages (/enterprise, /ai) with comparison tables, FAQs
@@ -81,7 +81,7 @@ export const services: readonly Service[] = [
       'WCAG 2.2 AA accessibility',
       'Test coverage and CI pipelines',
     ],
-    tint: 'mint',
+    tint: 'amber',
   },
   {
     slug: 'backend-systems',
@@ -109,7 +109,7 @@ export const services: readonly Service[] = [
       'Documentation and usage guidelines',
       'Adoption and contribution process',
     ],
-    tint: 'mint',
+    tint: 'amber',
   },
   {
     slug: 'performance-audits',

@@ -118,7 +118,7 @@ export function Header() {
                     aria-current={isActive(item.href) ? 'page' : undefined}
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
-                      'flex min-h-9 items-center rounded-full px-3.5 font-mono text-[0.65rem] tracking-[0.18em] uppercase transition-colors',
+                      'flex min-h-9 items-center rounded-full px-3.5 label transition-colors',
                       isActive(item.href)
                         ? 'text-coral'
                         : 'text-muted-foreground hover:text-foreground',
