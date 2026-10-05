@@ -30,15 +30,26 @@ async function postJson(endpoint: string, payload: unknown, signal: AbortSignal)
     cache: 'no-store',
   })
 
+  if (!response.ok) {
+    // Server log only — the body can mention key fragments, so it must never
+    // reach the visitor. This is what turns "something went wrong" into an
+    // actionable diagnosis.
+    const detail = await response.text().catch(() => '<unreadable>')
+    console.error(`[contact] EmailJS rejected the send (${response.status}):`, detail)
+  }
+
   return response.ok
 }
 
-/** Contact enquiries. */
+/** Contact enquiries, delivered through EmailJS. */
 async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
-  const endpoint = process.env.CONTACT_FORM_ENDPOINT
+  const serviceId = process.env.EMAILJS_SERVICE_ID
+  const templateId = process.env.EMAILJS_TEMPLATE_ID
+  const publicKey = process.env.EMAILJS_PUBLIC_KEY
+  const privateKey = process.env.EMAILJS_PRIVATE_KEY
 
-  if (!endpoint) {
-    console.warn('[contact] CONTACT_FORM_ENDPOINT is not set. Enquiry not sent:', {
+  if (!serviceId || !templateId || !publicKey || !privateKey) {
+    console.warn('[contact] EmailJS is not configured. Enquiry not sent:', {
       name: input.name,
       email: input.email,
       service: input.service ?? 'unspecified',
@@ -47,7 +58,7 @@ async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
     return process.env.NODE_ENV === 'development'
       ? {
           status: 'success',
-          message: 'Looks good! (Dev mode — no mail provider configured, so nothing was sent.)',
+          message: 'Looks good! (Dev mode — EmailJS is not configured, so nothing was sent.)',
         }
       : {
           status: 'error',
@@ -56,8 +67,31 @@ async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
         }
   }
 
+  const budgetLabels: Record<string, string> = {
+    'under-25k': 'Under 25k',
+    '25k-60k': '25k – 60k',
+    '60k-150k': '60k and up',
+  }
+
   try {
-    const ok = await postJson(endpoint, input, AbortSignal.timeout(TIMEOUT_MS))
+    const ok = await postJson(
+      'https://api.emailjs.com/api/v1.0/email/send',
+      {
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: {
+          from_name: input.name,
+          reply_to: input.email,
+          company: input.company || '—',
+          service: input.service || 'Not sure yet',
+          budget: budgetLabels[input.budget ?? ''] ?? 'Not sure yet',
+          message: input.message,
+        },
+      },
+      AbortSignal.timeout(TIMEOUT_MS),
+    )
 
     return ok
       ? { status: 'success', message: 'Message sent — we will reply within two working days.' }
@@ -89,7 +123,7 @@ export async function submitContactAction(
     service: formData.get('service') ?? '',
     budget: formData.get('budget') ?? '',
     message: formData.get('message'),
-    website: formData.get('website') ?? '',
+    zx9q: formData.get('zx9q') ?? '',
   })
 
   if (!parsed.success) {
@@ -106,7 +140,7 @@ export async function subscribeAction(
 ): Promise<NewsletterState> {
   const parsed = newsletterSchema.safeParse({
     email: formData.get('email'),
-    website: formData.get('website') ?? '',
+    zx9q: formData.get('zx9q') ?? '',
   })
 
   if (!parsed.success) {

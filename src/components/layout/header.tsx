@@ -142,18 +142,6 @@ export function Header() {
               {siteConfig.name}
               <span className="text-brand">{siteConfig.logoSuffix}</span>
             </span>
-            {/* Route dots — decorative, mirroring the pill's shape. */}
-            <span className="hidden items-center gap-1.5 sm:flex" aria-hidden="true">
-              {[0, 1, 2, 3].map((i) => (
-                <span
-                  key={i}
-                  className={cn(
-                    'size-1.5 rounded-full transition-colors duration-500',
-                    i === 3 ? 'bg-brand' : 'bg-foreground/40',
-                  )}
-                />
-              ))}
-            </span>
           </Link>
 
           <nav aria-label="Primary" className="hidden xl:block">

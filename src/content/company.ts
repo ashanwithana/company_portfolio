@@ -136,23 +136,23 @@ export type Engagement = {
 
 export const process: readonly Engagement[] = [
   {
-    title: 'See',
+    title: 'Discover',
     body: 'Two weeks embedded with your team. We read the code, watch the work, and talk to the people who use what you are building.',
   },
   {
-    title: 'Shape',
+    title: 'Plan',
     body: 'A written proposal with the approach, the risks, the sequence and the number. You approve the plan, not just a mood board.',
   },
   {
-    title: 'Ship',
+    title: 'Build',
     body: 'Short cycles with something demonstrable at the end of each. Performance and accessibility budgets enforced in CI from day one.',
   },
   {
-    title: 'Show',
+    title: 'Measure',
     body: 'Measured against the baseline we captured in week one. If a number did not move, we explain why — before anything changes hands.',
   },
   {
-    title: 'Shift',
+    title: 'Handover',
     body: 'Documentation, runbooks and paired working until your team is comfortable. Then we get out of the way.',
   },
 ] as const

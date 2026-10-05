@@ -40,11 +40,18 @@ export function ContactForm() {
 
   const [clientErrors, setClientErrors] = React.useState<FieldErrors>({})
   const [handledSuccess, setHandledSuccess] = React.useState<ContactState>(null)
+  const [sentSummary, setSentSummary] = React.useState<typeof values | null>(null)
+  // Snapshot of the fields at submit time, so the success panel can echo back
+  // exactly what was sent even after the form clears.
+  const [pendingSummary, setPendingSummary] = React.useState<typeof values | null>(null)
   const formRef = React.useRef<HTMLFormElement>(null)
+  const successRef = React.useRef<HTMLDivElement>(null)
   const fieldRefs = React.useRef<Record<string, HTMLElement | null>>({})
 
   if (state?.status === 'success' && state !== handledSuccess) {
     setHandledSuccess(state)
+    setSentSummary(pendingSummary)
+    setPendingSummary(null)
     setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
     setClientErrors({})
   }
@@ -52,6 +59,17 @@ export function ContactForm() {
   React.useEffect(() => {
     if (state?.status !== 'success') return
     formRef.current?.reset()
+  }, [state])
+
+  // Bring the confirmation (and its sent-message recap) into view on success —
+  // otherwise it renders below the fold where the submit button was.
+  React.useEffect(() => {
+    if (state?.status !== 'success') return
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    successRef.current?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
   }, [state])
 
   const errors: FieldErrors = {
@@ -92,16 +110,46 @@ export function ContactForm() {
     }
 
     setClientErrors({})
+    setPendingSummary({ ...values })
   }
 
   if (state?.status === 'success') {
     return (
-      <div className="rounded-[22px] border border-border bg-card/40 p-8 md:p-12">
+      <div
+        ref={successRef}
+        className="scroll-mt-24 rounded-[22px] border border-border bg-card/40 p-8 md:p-12"
+      >
         <p className="label text-brand">Enquiry sent</p>
         <h2 className="mt-4 display-md">We&apos;ll be in touch within two working days.</h2>
         <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground" role="status">
           {state.message}
         </p>
+
+        {sentSummary ? (
+          <div className="mt-8 border-t border-border pt-8">
+            <p className="label text-[0.6rem] text-muted-foreground">What you sent</p>
+            <dl className="mt-4 space-y-3 text-[15px] leading-relaxed">
+              <div className="flex gap-4">
+                <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">From</dt>
+                <dd>
+                  {sentSummary.name} · {sentSummary.email}
+                </dd>
+              </div>
+              {sentSummary.service ? (
+                <div className="flex gap-4">
+                  <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">Needs</dt>
+                  <dd>{sentSummary.service}</dd>
+                </div>
+              ) : null}
+              <div className="flex gap-4">
+                <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">Message</dt>
+                <dd className="max-w-xl whitespace-pre-wrap text-muted-foreground">
+                  {sentSummary.message}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        ) : null}
       </div>
     )
   }
@@ -110,8 +158,8 @@ export function ContactForm() {
     <form ref={formRef} action={action} onSubmit={handleSubmit} noValidate>
       {/* Honeypot: off-screen, unfocusable, rejected by the schema. */}
       <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
-        <label htmlFor="website">Website</label>
-        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        <label htmlFor="ledger-zx9q">Do not fill this in</label>
+        <input id="ledger-zx9q" name="zx9q" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="divide-y divide-border border-y border-border">

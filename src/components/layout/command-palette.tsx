@@ -41,7 +41,9 @@ export function CommandPalette() {
 
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
+      // Some keydown sources (autofill, IME composition) carry no key —
+      // without the guard, typing in a form crashes the whole page.
+      if (event.key?.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         setOpen((prev) => !prev)
       }
@@ -103,7 +105,7 @@ export function CommandPalette() {
         open={open}
         onOpenChange={setOpen}
         label="Command palette"
-        className="w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-3xl border border-border bg-popover shadow-elegant"
+        className="fixed top-[10%] left-1/2 z-[70] w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-3xl border border-border bg-popover shadow-elegant"
         overlayClassName="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm"
         contentClassName="outline-none"
       >

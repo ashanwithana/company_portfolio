@@ -256,17 +256,3 @@ export function filterCaseStudies(
 export function getCaseStudy(slug: string) {
   return caseStudies.find((study) => study.slug === slug)
 }
-
-/** Distinct technologies across all case studies, for the marquee. */
-export const workTechMarquee = [
-  'TypeScript',
-  'React',
-  'Next.js',
-  'Node.js',
-  'PostgreSQL',
-  'GraphQL',
-  'Tailwind CSS',
-  'Kubernetes',
-  'Terraform',
-  'OpenTelemetry',
-] as const

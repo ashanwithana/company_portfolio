@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New project enquiry — {{from_name}}</title>
+  </head>
+  <!--
+    Northlight enquiry template for the EmailJS dashboard.
+    1. EmailJS → Email Templates → New Template → paste this into Content.
+    2. Set To Email to your inbox and Reply-To to {{reply_to}}.
+    3. Template variables sent by the site: {{from_name}} {{reply_to}}
+       {{company}} {{service}} {{budget}} {{message}}
+  -->
+  <body style="margin: 0; padding: 0; background-color: #171717">
+    <table
+      role="presentation"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="background-color: #171717; padding: 32px 16px"
+    >
+      <tr>
+        <td align="center">
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            style="max-width: 600px; width: 100%"
+          >
+            <!-- Header -->
+            <tr>
+              <td style="padding-bottom: 24px">
+                <p
+                  style="
+                    margin: 0;
+                    font-family: monospace, monospace;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #f0f0f8;
+                  "
+                >
+                  Northlight<span style="color: #c2f853">.</span>
+                </p>
+                <p
+                  style="
+                    margin: 8px 0 0;
+                    font-family: monospace, monospace;
+                    font-size: 11px;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                    color: #8b8b96;
+                  "
+                >
+                  [ New project enquiry ]
+                </p>
+              </td>
+            </tr>
+
+            <!-- From -->
+            <tr>
+              <td
+                style="
+                  background-color: #1c1c1c;
+                  border: 1px solid #ffffff1a;
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    font-family: monospace, monospace;
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #f0f0f8;
+                  "
+                >
+                  {{from_name}}
+                </p>
+                <p
+                  style="
+                    margin: 6px 0 0;
+                    font-family: monospace, monospace;
+                    font-size: 13px;
+                    color: #c2f853;
+                  "
+                >
+                  {{reply_to}}
+                </p>
+                <p
+                  style="
+                    margin: 6px 0 0;
+                    font-family: monospace, monospace;
+                    font-size: 13px;
+                    color: #8b8b96;
+                  "
+                >
+                  {{company}}
+                </p>
+              </td>
+            </tr>
+
+            <!-- Details -->
+            <tr>
+              <td style="padding-top: 16px">
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="
+                    background-color: #1c1c1c;
+                    border: 1px solid #ffffff1a;
+                    border-radius: 12px;
+                  "
+                >
+                  <tr>
+                    <td
+                      style="
+                        padding: 16px 24px;
+                        border-bottom: 1px solid #ffffff1a;
+                        font-family: monospace, monospace;
+                        font-size: 11px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #8b8b96;
+                      "
+                      width="140"
+                    >
+                      Needs
+                    </td>
+                    <td
+                      style="
+                        padding: 16px 24px;
+                        border-bottom: 1px solid #ffffff1a;
+                        font-family: monospace, monospace;
+                        font-size: 14px;
+                        color: #f0f0f8;
+                      "
+                    >
+                      {{service}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 16px 24px;
+                        border-bottom: 1px solid #ffffff1a;
+                        font-family: monospace, monospace;
+                        font-size: 11px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #8b8b96;
+                      "
+                      width="140"
+                    >
+                      Budget
+                    </td>
+                    <td
+                      style="
+                        padding: 16px 24px;
+                        border-bottom: 1px solid #ffffff1a;
+                        font-family: monospace, monospace;
+                        font-size: 14px;
+                        color: #f0f0f8;
+                      "
+                    >
+                      {{budget}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="
+                        padding: 16px 24px 8px;
+                        font-family: monospace, monospace;
+                        font-size: 11px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        color: #8b8b96;
+                      "
+                    >
+                      The project
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="
+                        padding: 0 24px 24px;
+                        font-family: monospace, monospace;
+                        font-size: 14px;
+                        line-height: 1.7;
+                        color: #f0f0f8;
+                      "
+                    >
+                      {{message}}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding-top: 24px">
+                <p
+                  style="
+                    margin: 0;
+                    font-family: monospace, monospace;
+                    font-size: 11px;
+                    color: #8b8b96;
+                  "
+                >
+                  Reply directly to this email — it goes to {{reply_to}}. Sent from the Northlight
+                  contact form.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

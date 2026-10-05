@@ -7,7 +7,7 @@ import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { ClientLogos } from '@/components/sections/client-logos'
 import { modelProviders } from '@/content/ai'
-import { milestones, process, team, values } from '@/content/company'
+import { milestones, team, values } from '@/content/company'
 import { platforms } from '@/content/enterprise'
 import { studioStats } from '@/content/services'
 
@@ -16,6 +16,27 @@ export const metadata = {
   description:
     'Northlight is a seven-person product studio in Colombo. We design and build software, and we are deliberately small enough to know every project by name.',
 }
+
+/** Every technology the studio works with, PHP first: file slug and label. */
+const techStack = [
+  { slug: 'php', label: 'PHP' },
+  { slug: 'typescript', label: 'TypeScript' },
+  { slug: 'react', label: 'React' },
+  { slug: 'nextdotjs', label: 'Next.js' },
+  { slug: 'nodedotjs', label: 'Node.js' },
+  { slug: 'python', label: 'Python' },
+  { slug: 'postgresql', label: 'PostgreSQL' },
+  { slug: 'redis', label: 'Redis' },
+  { slug: 'tailwindcss', label: 'Tailwind CSS' },
+  { slug: 'graphql', label: 'GraphQL' },
+  { slug: 'docker', label: 'Docker' },
+  { slug: 'kubernetes', label: 'Kubernetes' },
+  { slug: 'odoo', label: 'Odoo' },
+  { slug: 'sap', label: 'SAP' },
+  { slug: 'salesforce', label: 'Salesforce' },
+  { slug: 'figma', label: 'Figma' },
+  { slug: 'playwright', label: 'Playwright' },
+] as const
 
 export default function AboutPage() {
   return (
@@ -114,27 +135,33 @@ export default function AboutPage() {
         </dl>
       </PageSection>
 
-      {/* Process */}
-      <PageSection tone="muted">
-        <h2 className="label text-muted-foreground">How an engagement runs</h2>
+      {/* Technologies we use — an endless slider, PHP first. */}
+      <PageSection tone="muted" className="overflow-hidden">
+        <h2 className="label text-muted-foreground">Technologies we use</h2>
 
-        <ol className="mt-10 space-y-8">
-          {process.map((step, index) => (
-            <Reveal key={step.title} as="li" delay={index * 60} y={16}>
-              <div className="grid gap-3 border-b border-border pb-8 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-10">
-                <p className="label text-brand tabular-nums">
-                  {(index + 1).toString().padStart(2, '0')}
-                </p>
-                <div>
-                  <h3 className="text-2xl">{step.title}</h3>
-                  <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-                    {step.body}
-                  </p>
-                </div>
+        <div className="relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+            {[0, 1].map((half) => (
+              <div key={half} aria-hidden={half === 1} className="flex shrink-0 items-center">
+                {techStack.map((tech) => (
+                  <span
+                    key={tech.slug}
+                    title={tech.label}
+                    className="group mr-3 flex size-16 items-center justify-center rounded-xl border border-border bg-card transition-colors duration-300 hover:border-border-strong sm:size-20"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/logos/${tech.slug}.svg`}
+                      alt={half === 0 ? tech.label : ''}
+                      loading="lazy"
+                      className="size-8 opacity-70 grayscale transition-[filter,opacity] duration-300 group-hover:opacity-100 group-hover:grayscale-0 sm:size-10"
+                    />
+                  </span>
+                ))}
               </div>
-            </Reveal>
-          ))}
-        </ol>
+            ))}
+          </div>
+        </div>
       </PageSection>
 
       {/* Values */}

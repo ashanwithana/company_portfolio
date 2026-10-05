@@ -38,14 +38,8 @@ export function NewsletterForm({ className }: { className?: string }) {
   return (
     <form action={action} className={cn('w-full max-w-md', className)}>
       <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
-        <label htmlFor="newsletter-website">Website</label>
-        <input
-          id="newsletter-website"
-          name="website"
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-        />
+        <label htmlFor="newsletter-zx9q">Do not fill this in</label>
+        <input id="newsletter-zx9q" name="zx9q" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">

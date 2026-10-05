@@ -5,6 +5,7 @@ import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-media-query'
 import { landCoverage } from '@/lib/land-mask'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@/components/providers/theme-provider'
 
 /**
  * Hero 3D visual — a dotted globe.
@@ -15,9 +16,13 @@ import { cn } from '@/lib/utils'
  *
  *   1. Depth attenuation. Each point's size and brightness scale with its z in
  *      camera space, so the limb brightens and the far side recedes.
- *   2. Two customer route arcs from the Colombo home node, traced in the same
- *      camera space. No rings, no orbits — the sphere carries no geometric
- *      circles at all.
+ *   2. Three customer route arcs from the Colombo home node, traced in the same
+ *      camera space and drawn in sequence after load. No rings, no orbits —
+ *      the sphere carries no geometric circles at all.
+ *
+ * Place labels (Colombo, Oman, UAE, Denmark) are HTML pills projected each
+ * frame from the same matrix as the pins, so they ride the globe exactly and
+ * fade as their node rounds the limb.
  *
  * Points are rasterised as small squares rather than a sprite atlas: at this
  * density the difference is invisible and it keeps the whole effect to one
@@ -70,7 +75,7 @@ void main() {
   // what a dense dot sphere looks like. The alpha trim below is what keeps the
   // outermost sliver from clipping into a hard wire.
   float atten = clamp(uPointScale / w, 0.5, 1.6);
-  float accSize = aAccent > 1.5 ? 1.9 : aAccent * 1.1;
+  float accSize = aAccent > 1.5 ? 2.6 : aAccent * 1.1;
   gl_PointSize = uPointScale * atten * (0.75 + 0.45 * aMask + accSize);
 }
 `
@@ -107,8 +112,9 @@ void main() {
 
   // Depth: near points brighter, far points dimmed toward the background.
   // The floor stays high — the reference globe reads as luminous white
-  // landmasses, not a dim dust field.
-  float depthGain = 0.55 + 0.45 * vDepth;
+  // landmasses, not a dim dust field. Light mode lifts the floor further:
+  // dark ink on cream loses less to distance than white on black.
+  float depthGain = mix(0.55 + 0.45 * vDepth, 0.70 + 0.30 * vDepth, uTheme);
 
   /*
    * Theme-aware ink. On the near-black ground the landmass is white and the sea
@@ -117,7 +123,7 @@ void main() {
    * disappears when the light theme is active.
    */
   vec3 land = mix(vec3(1.0, 1.0, 1.0), vec3(0.10, 0.09, 0.11), uTheme);
-  vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.42, 0.40, 0.46), uTheme);
+  vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.32, 0.30, 0.36), uTheme);
 
   vec3 col = mix(sea, land, vMask) * depthGain;
   /*
@@ -133,7 +139,7 @@ void main() {
    * the horizon closes.
    */
   float alpha = vMask * limb * (0.72 + 0.28 * vDepth)
-              + (1.0 - vMask) * limb * (0.20 + 0.16 * vDepth);
+              + (1.0 - vMask) * limb * mix(0.20 + 0.16 * vDepth, 0.36 + 0.20 * vDepth, uTheme);
 
   // A small number of accent nodes pulse in the site's pink. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
@@ -203,14 +209,35 @@ const GLOBE_RADIUS = 1
 /** Number of pink accent nodes scattered across the landmasses. */
 const ACCENT_TARGET = 8
 /**
- * Initial spin so the globe opens facing Europe and Africa, like the
- * reference. The camera looks down +z, which the Fibonacci distribution maps
- * to lon 90 — and rotationY carries lon L to the camera centre when
- * a = (L - 90)°, so the offset turns the planet to face lon 20.
+ * Initial spin with Sri Lanka dead centre: the Colombo home pin opens in the
+ * middle of the disc, Oman and the UAE beside it. The camera looks down +z,
+ * which the Fibonacci distribution maps to lon 90 — and rotationY carries lon
+ * L to the camera centre when a = (L - 90)°, so the offset faces Colombo's
+ * lon 79.9. Denmark starts around the limb and drifts in on the reverse spin.
  */
-const SPIN_INITIAL = ((20 - 90) * Math.PI) / 180
-/** Full rotational speed, reached after the load ramp eases in. */
-const SPIN_SPEED = 0.16
+const SPIN_INITIAL = ((79.9 - 90) * Math.PI) / 180
+/** Slow reverse drift, so Denmark rotates into full view within seconds while
+ *  the Colombo pin and its routes stay readable. Negative runs the spin
+ *  toward the western nodes rather than away from them. */
+const SPIN_SPEED = -0.05
+
+/** lon/lat in degrees → unit vector in globe object space. */
+function lonLatToVec(lon: number, lat: number): [number, number, number] {
+  const lo = (lon * Math.PI) / 180
+  const la = (lat * Math.PI) / 180
+  return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)]
+}
+
+/**
+ * Places named on the globe — the Colombo home pin and the three customer
+ * nodes. Positions double as the HTML label anchors projected each frame.
+ */
+const LABEL_DEFS = [
+  { name: 'Colombo', lon: 79.9, lat: 6.9 },
+  { name: 'Oman', lon: 58.4, lat: 23.6 },
+  { name: 'UAE', lon: 55.3, lat: 25.2 },
+  { name: 'Denmark', lon: 12.6, lat: 55.7 },
+] as const
 
 /** Backing-store resolution as a fraction of display size. */
 const RENDER_SCALE = 0.65
@@ -325,7 +352,17 @@ function scale(s: number): Mat4 {
 export function HeroVisual({ className }: { className?: string }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const wrapRef = React.useRef<HTMLDivElement>(null)
+  const labelRefs = React.useRef<(HTMLSpanElement | null)[]>([])
   const reducedMotion = useReducedMotion()
+  const { theme: themeName } = useTheme()
+
+  // 0 = dark ground, 1 = light ground. A ref, not state: the draw loop reads
+  // it every frame without re-running the whole GL setup on theme change.
+  // (A MutationObserver on <html> used to do this job, but it never fired.)
+  const themeRef = React.useRef(themeName === 'light' ? 1 : 0)
+  React.useEffect(() => {
+    themeRef.current = themeName === 'light' ? 1 : 0
+  }, [themeName])
 
   // Hydration-safe mounted flag: false on the server and during hydration, true
   // afterwards — so the canvas appears without a markup mismatch.
@@ -426,17 +463,17 @@ export function HeroVisual({ className }: { className?: string }) {
     }
 
     // Studio home in object space. Defined here so both the marker point
-    // (uploaded with the cloud below) and the route arcs (built after) share it.
-    const toVec = (lon: number, lat: number): [number, number, number] => {
-      const lo = (lon * Math.PI) / 180
-      const la = (lat * Math.PI) / 180
-      return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)]
-    }
-    const COLOMBO: [number, number, number] = toVec(79.9, 6.9)
+    // (uploaded with the cloud below) and the route arcs (built after) share
+    // it. Coordinates come from the shared label defs above.
+    const COLOMBO: [number, number, number] = lonLatToVec(LABEL_DEFS[0].lon, LABEL_DEFS[0].lat)
     const ROUTES: readonly (readonly [number, number, number])[] = [
-      toVec(58.4, 23.6), // Muscat, Oman
-      toVec(12.6, 55.7), // Copenhagen, Denmark
+      lonLatToVec(LABEL_DEFS[1].lon, LABEL_DEFS[1].lat), // Muscat, Oman
+      lonLatToVec(LABEL_DEFS[2].lon, LABEL_DEFS[2].lat), // Dubai, UAE
+      lonLatToVec(LABEL_DEFS[3].lon, LABEL_DEFS[3].lat), // Copenhagen, Denmark
     ]
+    // HTML label anchors ride slightly above the markers so the pills sit
+    // just off the surface.
+    const LABEL_POS = LABEL_DEFS.map((d) => lonLatToVec(d.lon, d.lat))
 
     // Colombo home marker: appended to the point cloud so it rides the globe
     // like every other dot. Accent value 2 marks it as the home node.
@@ -545,20 +582,12 @@ export function HeroVisual({ className }: { className?: string }) {
     let pointerY = 0
     let easedX = 0
     let easedY = 0
-    // 0 = dark ground, 1 = light ground. Drives the point and ring inks, which
-    // must invert or the globe vanishes against the cream background.
-    let theme = document.documentElement.classList.contains('light') ? 1 : 0
     const t0 = performance.now()
 
     // Spin state for the load ramp: the globe eases from rest to full speed
     // over the first seconds instead of snapping into motion with the fade-in.
     let spinAngle = SPIN_INITIAL
     let lastT = t0
-
-    const mo = new MutationObserver(() => {
-      theme = document.documentElement.classList.contains('light') ? 1 : 0
-    })
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     const applySize = () => {
       const rect = wrap.getBoundingClientRect()
@@ -632,6 +661,40 @@ export function HeroVisual({ className }: { className?: string }) {
       mvp = multiply(mvp, rotationX(tilt))
       mvp = multiply(mvp, rotationY(spinAngle + easedX * 0.34))
 
+      // HTML place labels track their 3D nodes. The two rotations are
+      // reapplied here in the same convention as rotationX/rotationY above:
+      // z2 > 0 means nearer than the globe's centre, so labels fade out as
+      // their node rounds the limb. Screen position comes from the same MVP
+      // already uploaded to the shaders, so labels cannot drift from the pins.
+      {
+        const w = wrap.clientWidth || 1
+        const h = wrap.clientHeight || 1
+        const a2 = spinAngle + easedX * 0.34
+        const c2 = Math.cos(a2)
+        const s2 = Math.sin(a2)
+        const cT = Math.cos(tilt)
+        const sT = Math.sin(tilt)
+        const labelIn = Math.min(Math.max((t - 1.6) / 0.9, 0), 1)
+        for (let li = 0; li < LABEL_POS.length; li++) {
+          const el = labelRefs.current[li]
+          if (!el) continue
+          const p = LABEL_POS[li]!
+          const x = p[0] * 1.03
+          const y = p[1] * 1.03
+          const z = p[2] * 1.03
+          const z1 = -s2 * x + c2 * z
+          const z2 = sT * y + cT * z1
+          const facing = Math.min(Math.max((z2 - 0.1) / 0.3, 0), 1)
+          const cx = mvp[0]! * x + mvp[4]! * y + mvp[8]! * z + mvp[12]!
+          const cy = mvp[1]! * x + mvp[5]! * y + mvp[9]! * z + mvp[13]!
+          const cw = mvp[3]! * x + mvp[7]! * y + mvp[11]! * z + mvp[15]!
+          const px = ((cx / cw) * 0.5 + 0.5) * w
+          const py = (1 - ((cy / cw) * 0.5 + 0.5)) * h
+          el.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) translate(-50%, -135%)`
+          el.style.opacity = (facing * labelIn).toFixed(2)
+        }
+      }
+
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -646,13 +709,19 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.vertexAttribPointer(lKind, 1, gl.FLOAT, false, 0, 0)
       gl.uniformMatrix4fv(lMvp, false, mvp)
       gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
-      gl.uniform1f(lTheme, theme)
+      gl.uniform1f(lTheme, themeRef.current)
 
-      // Every strip is drawn from its recorded offset and count, so the
-      // buffer layout cannot silently drift if a segment count changes.
-      for (const strip of strips) {
-        gl.drawArrays(gl.LINE_STRIP, strip.offset, strip.count)
-      }
+      // Every strip draws in after load: each route traces itself from
+      // Colombo outward in sequence, so the network reads as being built
+      // rather than pasted on. Strips are stored in route order with their
+      // buffer offsets, so a partial vertex count simply shortens the strip.
+      strips.forEach((strip, s) => {
+        const local = Math.min(Math.max((t - 1.0 - s * 0.45) / 1.4, 0), 1)
+        if (local <= 0) return
+        const eased = local * local * (3 - 2 * local)
+        const count = Math.max(2, Math.floor(strip.count * eased))
+        gl.drawArrays(gl.LINE_STRIP, strip.offset, count)
+      })
 
       // Points.
       gl.useProgram(points.prog)
@@ -672,7 +741,7 @@ export function HeroVisual({ className }: { className?: string }) {
       // halftone reads at the same visual density on any display.
       gl.uniform1f(pScale, canvas.height * 0.0042)
       gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
-      gl.uniform1f(pTheme, theme)
+      gl.uniform1f(pTheme, themeRef.current)
       gl.drawArrays(gl.POINTS, 0, placed)
 
       // Depth is only meaningful for the points; points are drawn unsorted, so
@@ -687,7 +756,6 @@ export function HeroVisual({ className }: { className?: string }) {
       cancelAnimationFrame(raf)
       ro.disconnect()
       io.disconnect()
-      mo.disconnect()
       window.removeEventListener('pointermove', onMove)
       gl.deleteProgram(points.prog)
       gl.deleteProgram(lines.prog)
@@ -738,7 +806,7 @@ export function HeroVisual({ className }: { className?: string }) {
         )}
         style={{
           backgroundImage:
-            'radial-gradient(circle at 38% 32%, rgba(240,240,248,0.9) 0.6px, transparent 1px), radial-gradient(circle at 38% 32%, rgba(139,139,150,0.5) 0.6px, transparent 1px)',
+            'radial-gradient(circle at 38% 32%, color-mix(in oklab, var(--foreground) 85%, transparent) 0.6px, transparent 1px), radial-gradient(circle at 38% 32%, color-mix(in oklab, var(--foreground) 40%, transparent) 0.6px, transparent 1px)',
           backgroundSize: '13px 13px, 19px 19px',
           backgroundPosition: '0 0, 6px 8px',
           maskImage: 'radial-gradient(circle, black 46%, transparent 68%)',
@@ -747,13 +815,34 @@ export function HeroVisual({ className }: { className?: string }) {
       />
 
       {mounted && !reducedMotion && !glFailed ? (
-        <canvas
-          ref={canvasRef}
-          className={cn(
-            'absolute inset-0 h-full w-full transition-[opacity,scale] duration-[1400ms] ease-out',
-            ready ? 'scale-100 opacity-100' : 'scale-[0.94] opacity-0',
-          )}
-        />
+        <>
+          <canvas
+            ref={canvasRef}
+            className={cn(
+              'absolute inset-0 h-full w-full transition-[opacity,scale] duration-[1400ms] ease-out',
+              ready ? 'scale-100 opacity-100' : 'scale-[0.94] opacity-0',
+            )}
+          />
+          {/*
+            Place labels — Colombo plus the three customer countries. Positioned
+            every frame by the draw loop from the same matrix as the pins, so
+            they ride the globe exactly; hidden on small screens, where four
+            pills would crowd the sphere.
+          */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden sm:block">
+            {LABEL_DEFS.map((def, i) => (
+              <span
+                key={def.name}
+                ref={(el) => {
+                  labelRefs.current[i] = el
+                }}
+                className="absolute top-0 left-0 rounded-full border border-border bg-card/70 px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] whitespace-nowrap text-muted-foreground uppercase opacity-0 backdrop-blur-sm will-change-transform"
+              >
+                {def.name}
+              </span>
+            ))}
+          </div>
+        </>
       ) : null}
 
       {/*

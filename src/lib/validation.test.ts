@@ -42,13 +42,11 @@ describe('contactSchema', () => {
   })
 
   it('rejects any honeypot value', () => {
-    expect(contactSchema.safeParse({ ...valid, website: 'http://spam.example' }).success).toBe(
-      false,
-    )
+    expect(contactSchema.safeParse({ ...valid, zx9q: 'http://spam.example' }).success).toBe(false)
   })
 
   it('defaults a missing honeypot to an empty string', () => {
-    expect(contactSchema.parse(valid).website).toBe('')
+    expect(contactSchema.parse(valid).zx9q).toBe('')
   })
 })
 
@@ -62,7 +60,7 @@ describe('newsletterSchema', () => {
   })
 
   it('rejects a filled honeypot', () => {
-    expect(newsletterSchema.safeParse({ email: 'a@b.com', website: 'x' }).success).toBe(false)
+    expect(newsletterSchema.safeParse({ email: 'a@b.com', zx9q: 'x' }).success).toBe(false)
   })
 })
 

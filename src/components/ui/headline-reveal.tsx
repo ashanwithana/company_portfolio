@@ -19,6 +19,9 @@ export type HeadlineRevealProps = {
  * appears to be drawn from behind a curtain rather than simply fading in. The
  * stagger is what sells it — a single fade reads as nothing happening.
  *
+ * `\n` in `text` forces a line break: each line renders as its own block so
+ * the break holds at every viewport width.
+ *
  * Three details that matter:
  *
  *   - The mask carries `padding-bottom` and a matching negative margin. Without
@@ -38,25 +41,33 @@ export function HeadlineReveal({
   stagger = 85,
   delay = 260,
 }: HeadlineRevealProps) {
-  const words = text.split(' ')
+  const lines = text.split('\n')
+  let order = 0
 
   return (
     <span className={cn('inline-block', className)}>
-      {words.map((word, index) => (
-        <Fragment key={`${word}-${index}`}>
-          <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
-            <span
-              className="inline-block will-change-transform"
-              style={{
-                animation: `word-rise .9s cubic-bezier(.16,1,.3,1) ${delay + index * stagger}ms both`,
-              }}
-            >
-              {word}
-            </span>
-          </span>
-          {/* Real whitespace between masks, outside the overflow box. */}
-          {index < words.length - 1 ? ' ' : null}
-        </Fragment>
+      {lines.map((line, lineIndex) => (
+        <span key={lineIndex} className="block">
+          {line.split(' ').map((word, index, words) => {
+            const at = delay + order++ * stagger
+            return (
+              <Fragment key={`${word}-${index}`}>
+                <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+                  <span
+                    className="inline-block will-change-transform"
+                    style={{
+                      animation: `word-rise .9s cubic-bezier(.16,1,.3,1) ${at}ms both`,
+                    }}
+                  >
+                    {word}
+                  </span>
+                </span>
+                {/* Real whitespace between masks, outside the overflow box. */}
+                {index < words.length - 1 ? ' ' : null}
+              </Fragment>
+            )
+          })}
+        </span>
       ))}
     </span>
   )

@@ -1,6 +1,6 @@
 import { Hero } from '@/components/sections/hero'
 import { Method } from '@/components/sections/method'
-import { WhyUs } from '@/components/sections/why-us'
+import { ServicesSnapshot } from '@/components/sections/services-snapshot'
 import { TalkToUs, CureBand } from '@/components/sections/talk-to-us'
 import { methodSteps } from '@/content/method'
 
@@ -20,7 +20,7 @@ export default function HomePage() {
         <Method steps={methodSteps} />
       </section>
 
-      <WhyUs />
+      <ServicesSnapshot />
 
       <TalkToUs />
 

@@ -25,16 +25,18 @@ export const contactSchema = z.object({
     .max(4000, 'Please keep this under 4000 characters.'),
   /**
    * Honeypot. Bots fill hidden fields; humans never see them. `max(0)` means any
-   * value at all fails validation.
+   * value at all fails validation. The field name is deliberately meaningless —
+   * a plausible name like "website" gets filled by browser autofill, which
+   * would trap real visitors with an error on a field they cannot see.
    */
-  website: z.string().max(0, 'Spam detected.').optional().default(''),
+  zx9q: z.string().max(0, 'Spam detected.').optional().default(''),
 })
 
 export type ContactInput = z.infer<typeof contactSchema>
 
 export const newsletterSchema = z.object({
   email: z.email('Please enter a valid email address.'),
-  website: z.string().max(0, 'Spam detected.').optional().default(''),
+  zx9q: z.string().max(0, 'Spam detected.').optional().default(''),
 })
 
 export type NewsletterInput = z.infer<typeof newsletterSchema>
