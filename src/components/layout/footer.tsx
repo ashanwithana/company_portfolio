@@ -114,7 +114,7 @@ export function Footer() {
           </span>
 
           <span className="inline-flex items-center rounded-full border border-border px-4 py-2.5 font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">
-            6+ years · 23+ projects · 7 people
+            6+ years · 25+ projects · 7 people
           </span>
 
           {Object.entries(siteConfig.socials).map(([network, href]) => (

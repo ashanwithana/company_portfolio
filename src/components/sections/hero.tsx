@@ -1,20 +1,17 @@
 import { StatusBadge } from '@/components/ui/badge'
 import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { HeroVisual } from '@/components/ui/hero-visual'
+import { Starfield } from '@/components/ui/starfield'
 import { siteConfig } from '@/content/site'
 
 /**
- * Home hero.
+ * Home hero — the galaxy centrepiece.
  *
- * The globe is trimmed just enough that the first line of "Software that…"
- * peeks into the first viewport. The headline overlaps the globe's lower limb
- * slightly, with a soft background fade behind it for legibility.
- *
- * Atmosphere around the sphere is a single circular mist halo in CSS only,
- * fading to transparent inside its own box so no edge ever shows, plus one
- * small moon circling the globe and two neighbours — Venus before Earth and
- * Mars after it — hovering off the limbs. Paused automatically for reduced
- * motion by the global reset.
+ * Behind the globe: a twinkling starfield with an occasional meteor, plus two
+ * faint drifting nebulas, all CSS and all theme-aware. Around the sphere: the
+ * mist halo, the circling moon with its glow, and neighbours Venus and Mars.
+ * The headline overlaps the globe's lower limb so its first line clears the
+ * fold. Everything pauses for reduced motion via the global reset.
  */
 export function Hero() {
   return (
@@ -22,6 +19,66 @@ export function Hero() {
       <div
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
         aria-hidden="true"
+      />
+      {/* Starfield + nebulas: the galaxy behind everything. Edge-masked like
+          the dot grid so no hard boundary ever shows. */}
+      <Starfield parallax count={150} className="mask-fade-radial opacity-90" />
+      {/* Aurora ribbons sweeping behind the globe — wide colour flow, drifting
+          vertical rays, and a flickering bright core. Top-masked so they
+          dissolve before the headline. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[62%] overflow-hidden opacity-70"
+        style={{
+          maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
+        }}
+      >
+        <div
+          className="absolute -inset-x-[10%] top-[-30%] h-[70%] rotate-[-14deg] blur-2xl"
+          style={{
+            background:
+              'linear-gradient(to right, transparent 5%, color-mix(in oklab, var(--brand) 16%, transparent) 30%, color-mix(in oklab, var(--primary) 20%, transparent) 55%, color-mix(in oklab, var(--brand) 10%, transparent) 75%, transparent 95%)',
+            backgroundSize: '220% 100%',
+            animation:
+              'aurora-sway 14s ease-in-out infinite alternate, aurora-flow 11s ease-in-out infinite alternate',
+          }}
+        />
+        <div
+          className="absolute -inset-x-[20%] top-[-25%] h-[65%] rotate-[-10deg] blur-xl"
+          style={{
+            background:
+              'repeating-linear-gradient(100deg, transparent 0 34px, color-mix(in oklab, var(--brand) 9%, transparent) 34px 62px, transparent 62px 112px, color-mix(in oklab, var(--primary) 11%, transparent) 112px 142px)',
+            animation: 'aurora-rays 12s ease-in-out infinite alternate',
+          }}
+        />
+        <div
+          className="absolute -inset-x-[10%] top-[-8%] h-[38%] rotate-[-12deg] blur-xl"
+          style={{
+            background:
+              'linear-gradient(to right, transparent 20%, color-mix(in oklab, var(--brand) 22%, transparent) 42%, color-mix(in oklab, var(--primary) 24%, transparent) 58%, transparent 82%)',
+            backgroundSize: '200% 100%',
+            animation:
+              'aurora-sway 9s ease-in-out infinite alternate-reverse, aurora-flow 7s ease-in-out infinite alternate, aurora-flicker 5s ease-in-out infinite',
+          }}
+        />
+      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -left-40 size-[30rem] animate-mist rounded-full blur-3xl"
+        style={{
+          background:
+            'radial-gradient(circle, color-mix(in oklab, var(--primary) 13%, transparent) 0%, transparent 70%)',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 bottom-0 size-[26rem] animate-mist rounded-full blur-3xl"
+        style={{
+          background:
+            'radial-gradient(circle, color-mix(in oklab, var(--brand) 10%, transparent) 0%, transparent 70%)',
+          animationDelay: '-5s',
+        }}
       />
       <div
         className="pointer-events-none absolute -top-44 left-1/2 h-[28rem] w-[64rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-35 blur-3xl"

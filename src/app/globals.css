@@ -139,6 +139,9 @@
   --animate-mist: mist-drift 11s ease-in-out infinite;
   --animate-lunar: lunar-orbit 48s linear infinite;
   --animate-float-soft: float-soft 7s ease-in-out infinite;
+  --animate-twinkle: twinkle 5s ease-in-out infinite;
+  --animate-shoot: shoot 11s linear infinite;
+  --animate-aurora: aurora-sway 14s ease-in-out infinite alternate;
 }
 
 @keyframes marquee {
@@ -197,6 +200,90 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Starfield breathing — never fully out, never glaring. */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Lone meteor: dark almost the whole loop, one quick diagonal streak. */
+@keyframes shoot {
+  0%,
+  86% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-32deg) scaleX(0.2);
+  }
+  88% {
+    opacity: 0.9;
+  }
+  94% {
+    opacity: 0;
+    transform: translate3d(-38vw, 19vw, 0) rotate(-32deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-32deg) scaleX(0.2);
+  }
+}
+
+/* Aurora ribbons breathing sideways — skew and drift, never leaving frame. */
+@keyframes aurora-sway {
+  from {
+    opacity: 0.65;
+    transform: translate3d(-4%, 2%, 0) skewX(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(4%, -2%, 0) skewX(8deg);
+  }
+}
+
+/* Aurora life: colour flowing along the ribbon. */
+@keyframes aurora-flow {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+/* Aurora rays: the vertical curtain texture drifting sideways. */
+@keyframes aurora-rays {
+  from {
+    opacity: 0.45;
+    transform: translate3d(-7%, 0, 0) skewX(-7deg);
+  }
+  to {
+    opacity: 0.9;
+    transform: translate3d(7%, 0, 0) skewX(7deg);
+  }
+}
+
+/* Aurora shimmer: quick brightness tremble on the bright core. */
+@keyframes aurora-flicker {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  55% {
+    opacity: 0.65;
+  }
+  80% {
+    opacity: 1;
   }
 }
 

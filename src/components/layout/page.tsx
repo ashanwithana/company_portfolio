@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 
 import { Eyebrow } from '@/components/ui/badge'
 import { GhostWord } from '@/components/ui/ghost-word'
+import { Starfield } from '@/components/ui/starfield'
 import { cn } from '@/lib/utils'
 
 export type Crumb = {
@@ -103,6 +104,28 @@ export function PageHeader({
         className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
         aria-hidden="true"
       />
+      {/* Galaxy dust behind every inner page header. */}
+      <Starfield count={70} className="mask-fade-radial opacity-50" />
+      {/* A breath of the hero aurora, scaled down for inner pages. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[70%] overflow-hidden opacity-50"
+        style={{
+          maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
+        }}
+      >
+        <div
+          className="absolute -inset-x-[10%] top-[-35%] h-[75%] rotate-[-14deg] blur-2xl"
+          style={{
+            background:
+              'linear-gradient(to right, transparent 10%, color-mix(in oklab, var(--brand) 12%, transparent) 35%, color-mix(in oklab, var(--primary) 15%, transparent) 60%, transparent 90%)',
+            backgroundSize: '220% 100%',
+            animation:
+              'aurora-sway 16s ease-in-out infinite alternate, aurora-flow 13s ease-in-out infinite alternate',
+          }}
+        />
+      </div>
 
       <div className="@container relative container-page">
         {ghost ? <GhostWord word={ghost} className="-top-[0.14em]" /> : null}

@@ -233,10 +233,12 @@ function lonLatToVec(lon: number, lat: number): [number, number, number] {
  * nodes. Positions double as the HTML label anchors projected each frame.
  */
 const LABEL_DEFS = [
-  { name: 'Colombo', lon: 79.9, lat: 6.9 },
-  { name: 'Oman', lon: 58.4, lat: 23.6 },
-  { name: 'UAE', lon: 55.3, lat: 25.2 },
-  { name: 'Denmark', lon: 12.6, lat: 55.7 },
+  { name: 'Colombo', lon: 79.9, lat: 6.9, dy: 0 },
+  // Oman and the UAE sit 3° apart on the globe, so their pills would stack —
+  // the vertical stagger keeps both readable while staying pinned to the nodes.
+  { name: 'Oman', lon: 58.4, lat: 23.6, dy: 22 },
+  { name: 'UAE', lon: 55.3, lat: 25.2, dy: -22 },
+  { name: 'Denmark', lon: 12.6, lat: 55.7, dy: 0 },
 ] as const
 
 /** Backing-store resolution as a fraction of display size. */
@@ -689,7 +691,7 @@ export function HeroVisual({ className }: { className?: string }) {
           const cy = mvp[1]! * x + mvp[5]! * y + mvp[9]! * z + mvp[13]!
           const cw = mvp[3]! * x + mvp[7]! * y + mvp[11]! * z + mvp[15]!
           const px = ((cx / cw) * 0.5 + 0.5) * w
-          const py = (1 - ((cy / cw) * 0.5 + 0.5)) * h
+          const py = (1 - ((cy / cw) * 0.5 + 0.5)) * h + LABEL_DEFS[li]!.dy
           el.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) translate(-50%, -135%)`
           el.style.opacity = (facing * labelIn).toFixed(2)
         }

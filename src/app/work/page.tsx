@@ -6,7 +6,7 @@ import { caseStudyFilters, publishedCaseStudies } from '@/content/case-studies'
 export const metadata = {
   title: 'Work',
   description:
-    'Selected engagements from Northlight — platform rebuilds, product design, design systems and AI integration, each with the measured outcome.',
+    'Selected engagements from the studio — websites, platforms, AI and enterprise systems, each named and described.',
 }
 
 export default function WorkPage() {
@@ -15,8 +15,8 @@ export default function WorkPage() {
       <PageHeader
         ghost="Work"
         eyebrow="Selected work"
-        title="Every engagement listed here comes with the numbers."
-        lede="We capture a baseline in week one and report against it at the end. If a metric did not move, the case study says so and explains why."
+        title="Every project, told plainly."
+        lede="The problem it started with, what we did about it, and what we can honestly say changed."
       />
 
       <div className="container-page pb-24 md:pb-32">

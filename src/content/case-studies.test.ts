@@ -56,11 +56,14 @@ describe('filterCaseStudies', () => {
     expect(filterCaseStudies('all')).toHaveLength(publishedCaseStudies().length)
   })
 
-  it.each(['product', 'platform', 'brand'] as const)('returns only %s studies', (category) => {
-    const result = filterCaseStudies(category)
-    expect(result.length).toBeGreaterThan(0)
-    expect(result.every((s) => s.category === category)).toBe(true)
-  })
+  it.each(['web', 'platform', 'enterprise', 'ai', 'brand'] as const)(
+    'returns only %s studies',
+    (category) => {
+      const result = filterCaseStudies(category)
+      expect(result.length).toBeGreaterThan(0)
+      expect(result.every((s) => s.category === category)).toBe(true)
+    },
+  )
 
   it('never loses a study across the filters', () => {
     const union = caseStudyCategories
