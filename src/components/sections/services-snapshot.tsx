@@ -7,7 +7,7 @@ import { services } from '@/content/services'
 /**
  * "What we do."
  *
- * The homepage's services snapshot between the method and the contact beat:
+ * The homepage's services snapshot between the discipline and the contact beat:
  * one ruled row per capability in the site's editorial voice — number, title,
  * summary, arrow. No cards, no colour washes; the hairline rules and hover
  * nudge match the rest of the page.

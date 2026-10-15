@@ -1,6 +1,5 @@
 import Link from 'next/link'
 
-import { NewsletterForm } from '@/components/sections/newsletter-form'
 import { OfficeTime } from '@/components/sections/office-time'
 import { services } from '@/content/services'
 import { siteConfig } from '@/content/site'
@@ -23,7 +22,7 @@ export function Footer() {
         { href: '/services', label: 'Services' },
         { href: '/work', label: 'Case studies' },
         { href: '/insights', label: 'Blog' },
-        { href: '/#method', label: 'Method' },
+        { href: '/#discipline', label: 'Discipline' },
         { href: '/about', label: 'About' },
         { href: '/contact', label: 'Contact' },
       ],
@@ -102,7 +101,6 @@ export function Footer() {
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
             {siteConfig.tagline}
           </p>
-          <NewsletterForm className="mt-6" />
         </div>
 
         {/* Status strip */}

@@ -1,9 +1,18 @@
 'use client'
 
 import * as React from 'react'
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from 'motion/react'
 
 import { Eyebrow } from '@/components/ui/badge'
-import { useReducedMotion } from '@/hooks/use-media-query'
+import { GhostWord } from '@/components/ui/ghost-word'
 import { cn } from '@/lib/utils'
 
 export type MethodStep = {
@@ -19,228 +28,284 @@ export type MethodStep = {
   points: readonly string[]
   /** The concrete artifact the phase hands over — the accountability hook. */
   endsWith: string
+  /**
+   * The longer telling, rendered only where there is room for it — the
+   * /discipline page. The home journey stays with the short version.
+   */
+  detail: string
 }
 
+/** Every panel is exactly this wide, so the horizontal travel is exact. */
+const PANEL_VW = 85
+
 /**
- * The six-phase method, staged as a sticky rail beside scrolling phases.
+ * The six-phase discipline as cards on a horizontal sliding track.
  *
- * A deliberate departure from the sideways-pinned reference: the left rail
- * pins a giant numeral that flips as each phase crosses the viewport centre,
- * with a progress spine and an anchor list of the six phases. The phases
- * themselves scroll naturally on the right, each closing with an "Ends with"
- * line — the concrete artifact that makes the phase accountable.
- *
- * The active phase is derived from an IntersectionObserver (no rAF loop, no
- * scroll math), and without JavaScript every phase is simply readable in
- * order. Reduced motion collapses the numeral crossfade via the global reset.
+ * A pinned viewport scrubs sideways through the journey — intro plus one open
+ * card per phase — while each card choreographs its own entrance, ghost
+ * numerals drift behind at a lag, and a glowing traveler dot rides the
+ * progress spine. Every card stays fully open, so nothing needs clicking.
+ * Reduced-motion users get the same phases as calm ruled articles instead.
  */
 export function Method({
   steps,
   showIntro = true,
 }: {
   steps: readonly MethodStep[]
-  /** The /method page carries its own PageHeader, so it suppresses this one. */
+  /** The /discipline page carries its own PageHeader, so it suppresses this one. */
   showIntro?: boolean
 }) {
-  const [active, setActive] = React.useState(0)
-  const articleRefs = React.useRef<(HTMLElement | null)[]>([])
   const reducedMotion = useReducedMotion()
 
-  React.useEffect(() => {
-    const articles = articleRefs.current.filter((el): el is HTMLElement => el !== null)
-    if (articles.length === 0) return
-    if (typeof IntersectionObserver === 'undefined') return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          const index = articles.indexOf(entry.target as HTMLElement)
-          if (index >= 0) setActive(index)
-        }
-      },
-      // A band around the viewport centre: the phase crossing it is current.
-      { rootMargin: '-40% 0px -40% 0px', threshold: 0 },
-    )
-
-    for (const article of articles) observer.observe(article)
-    return () => observer.disconnect()
-  }, [])
-
-  const goToPhase = (index: number) => {
-    articleRefs.current[index]?.scrollIntoView({
-      behavior: reducedMotion ? 'auto' : 'smooth',
-      block: 'center',
-    })
+  if (reducedMotion) {
+    return <PlainStack steps={steps} showIntro={showIntro} />
   }
+  return <Journey steps={steps} showIntro={showIntro} />
+}
+
+function Journey({ steps, showIntro }: { steps: readonly MethodStep[]; showIntro: boolean }) {
+  const targetRef = React.useRef<HTMLDivElement>(null)
+  const panelCount = (showIntro ? 1 : 0) + steps.length
+
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ['start start', 'end end'],
+  })
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    // Panels are 85vw in a 100vw viewport, so the track runs offset by half
+    // the leftover (7.5vw): panel 0 opens dead-centre and the last panel
+    // closes dead-centre. Without the offset every panel sits 7.5vw left.
+    ['7.5vw', `-${(panelCount - 1) * PANEL_VW - 7.5}vw`],
+  )
+  const scaleX = scrollYProgress
+  // Traveler dot rides the spine.
+  const dotLeft = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+
+  const [active, setActive] = React.useState(0)
+  const [pastIntro, setPastIntro] = React.useState(false)
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    // Panel boundaries sit at even slices of progress (intro is panel 0).
+    const panel = Math.floor(v * panelCount)
+    setActive(Math.min(steps.length - 1, Math.max(0, panel - (showIntro ? 1 : 0))))
+    setPastIntro(panel >= (showIntro ? 1 : 0))
+  })
 
   return (
-    <div className="relative bg-background">
-      <div
-        className={cn(
-          'container-page',
-          // Without the intro (the /method page has its own header), the
-          // wrapper keeps only bottom rhythm — otherwise a full section of
-          // empty padding sits between the header and the first phase.
-          showIntro ? 'py-24 md:py-32' : 'pt-2 pb-24 md:pb-32',
-        )}
-      >
-        {showIntro ? (
-          <div className="mx-auto max-w-3xl text-center">
-            <Eyebrow className="justify-center">The method</Eyebrow>
-            <h2 className="mx-auto mt-5 display-lg">How every engagement runs.</h2>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Every engagement runs the same six phases. Each one ends with something you can hold
-              us to — that is the whole method.
-            </p>
-          </div>
-        ) : null}
-
+    <div
+      ref={targetRef}
+      className="relative bg-background"
+      style={{ height: `${panelCount * 100}vh` }}
+    >
+      <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
+        {/*
+          One fixed ghost numeral for the whole viewport, keyed to the active
+          phase — the number always matches the screen, and there is no 00.
+        */}
         <div
-          className={cn(
-            'grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20',
-            // Without the intro there is no heading to separate from, so the
-            // grid tucks up under the page header instead of holding a full
-            // section gap of dead air.
-            showIntro ? 'mt-16 md:mt-20' : 'mt-8 md:mt-10',
-          )}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
         >
-          {/* Sticky rail: flipping numeral, progress spine, phase anchors. */}
-          <div className="hidden lg:block">
-            <div className="sticky top-32">
-              <div
-                className="relative font-display text-[clamp(8rem,18vw,15rem)] leading-[0.85] font-extrabold tracking-[-0.04em] tabular-nums"
-                aria-hidden="true"
+          <AnimatePresence mode="wait" initial={false}>
+            {pastIntro ? (
+              <motion.span
+                key={steps[active]?.numeral}
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.01 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="font-display text-[30vw] leading-none font-extrabold tracking-[-0.04em] whitespace-nowrap text-foreground/[0.05] tabular-nums select-none"
               >
-                {steps.map((step, i) => (
-                  <span
-                    key={step.numeral}
-                    className={cn(
-                      'block transition-[opacity,transform] duration-500 ease-out',
-                      i === active
-                        ? 'relative opacity-100'
-                        : 'pointer-events-none absolute inset-0 translate-y-4 opacity-0',
-                    )}
-                  >
-                    <span className={i === active ? 'text-foreground' : ''}>{step.numeral}</span>
-                    <span className="text-brand">.</span>
-                  </span>
-                ))}
-              </div>
-
-              <p className="mt-6 label text-muted-foreground">
-                Phase {active + 1} of {steps.length} — {steps[active]?.label}
-              </p>
-
-              {/* Progress spine. */}
-              <div
-                className="mt-4 h-px w-full bg-border-strong"
-                role="progressbar"
-                aria-valuemin={1}
-                aria-valuemax={steps.length}
-                aria-valuenow={active + 1}
-                aria-label="Method progress"
-              >
-                <div
-                  className="h-full origin-left bg-brand transition-transform duration-500 ease-out"
-                  style={{ transform: `scaleX(${(active + 1) / steps.length})` }}
-                />
-              </div>
-
-              {/* Anchor list. */}
-              <ul className="mt-8 space-y-1">
-                {steps.map((step, i) => (
-                  <li key={step.word}>
-                    <button
-                      type="button"
-                      onClick={() => goToPhase(i)}
-                      aria-current={i === active ? 'true' : undefined}
-                      className={cn(
-                        'group flex min-h-10 w-full items-center gap-4 rounded-xl px-3 text-left transition-colors',
-                        i === active
-                          ? 'text-foreground'
-                          : 'text-muted-foreground hover:text-foreground',
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          'font-mono text-[11px] tabular-nums',
-                          i === active ? 'text-brand' : 'text-muted-foreground/60',
-                        )}
-                      >
-                        {step.numeral}
-                      </span>
-                      <span className="text-[15px]">{step.label}</span>
-                      <span
-                        aria-hidden="true"
-                        className={cn(
-                          'ml-auto transition-transform duration-300',
-                          i === active ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0',
-                        )}
-                      >
-                        →
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Phases. */}
-          <div>
-            {steps.map((step, i) => (
-              <article
-                key={step.word}
-                ref={(el) => {
-                  articleRefs.current[i] = el
-                }}
-                aria-label={`Phase ${step.numeral}: ${step.word}`}
-                className="border-t border-border py-14 first:border-t-0 first:pt-0 md:py-20 lg:min-h-[62vh] lg:first:pt-14"
-              >
-                {/* Inline numeral for narrow screens, where the rail is hidden. */}
-                <p className="label text-brand tabular-nums lg:hidden">
-                  {step.numeral} / {String(steps.length).padStart(2, '0')}
-                </p>
-
-                <h3 className="mt-4 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[1] font-bold tracking-normal text-balance lg:mt-0">
-                  {step.word}
-                  <span aria-hidden="true" className="text-brand">
-                    .
-                  </span>
-                </h3>
-
-                <p className="mt-6 max-w-md text-[15px] leading-[1.7] font-light text-foreground/90">
-                  {step.lead}
-                </p>
-
-                <ul className="mt-6 max-w-md space-y-2.5">
-                  {step.points.map((point) => (
-                    <li
-                      key={point}
-                      className="relative pl-7 text-[12px] leading-relaxed font-light text-muted-foreground"
-                    >
-                      <span aria-hidden="true" className="absolute top-0 left-0">
-                        —
-                      </span>
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="mt-8 flex max-w-md items-baseline gap-3 border-t border-border pt-5 text-[13px]">
-                  <span className="shrink-0 label text-[0.6rem] text-brand">Ends with</span>
-                  <span className="text-foreground">{step.endsWith}</span>
-                </p>
-              </article>
-            ))}
-          </div>
+                {steps[active]?.numeral}
+              </motion.span>
+            ) : null}
+          </AnimatePresence>
         </div>
 
-        {/* Screen-reader status for the rail state. */}
-        <p className="sr-only" role="status">
-          Phase {active + 1} of {steps.length}: {steps[active]?.word}
+        <motion.div style={{ x }} className="flex w-max items-center">
+          {showIntro ? <IntroPanel /> : null}
+
+          {steps.map((step, i) => (
+            <PhaseCard
+              key={step.word}
+              step={step}
+              index={(showIntro ? 1 : 0) + i}
+              total={panelCount}
+              progress={scrollYProgress}
+              count={steps.length}
+            />
+          ))}
+        </motion.div>
+
+        {/* Journey chrome: live counter, traveler dot, progress spine. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-8">
+          <div className="container-page flex items-center gap-6">
+            <p className="shrink-0 label text-muted-foreground tabular-nums" role="status">
+              {String(active + 1).padStart(2, '0')} — {steps[active]?.label}
+            </p>
+            <div
+              className="relative h-px flex-1 bg-border-strong"
+              role="progressbar"
+              aria-valuemin={1}
+              aria-valuemax={steps.length}
+              aria-valuenow={active + 1}
+              aria-label="Discipline progress"
+            >
+              <motion.div className="absolute inset-0 origin-left bg-brand" style={{ scaleX }} />
+              <motion.span
+                aria-hidden="true"
+                style={{ left: dotLeft }}
+                className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand shadow-[0_0_14px_3px_var(--brand)]"
+              />
+            </div>
+            <p className="shrink-0 label text-muted-foreground tabular-nums">
+              {String(steps.length).padStart(2, '0')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Shared visibility choreography: each panel peaks as its slice centers and
+ * crossfades with its neighbours — at any scroll position at least one panel
+ * is substantially visible, so the travel never crosses an empty screen. The
+ * rise is derived from the same value, so motion and opacity stay in sync.
+ */
+function usePanelVisibility(
+  progress: MotionValue<number>,
+  index: number,
+  total: number,
+  fadeIn = true,
+) {
+  const center = (index + 0.5) / total
+  const half = 0.9 / total
+  const opacity = useTransform(progress, (p: number) => {
+    // The opening frame skips its fade-in: it must be solid on arrival.
+    if (!fadeIn && p <= center) return 1
+    return Math.min(1, Math.max(0, 1 - Math.abs(p - center) / half))
+  })
+  const y = useTransform(opacity, [0, 1], [70, 0])
+  return { opacity, y }
+}
+
+function IntroPanel() {
+  // Deliberately static: this is the opening frame, so the whole set stays
+  // together, centred, and fully legible — it only fades out on departure,
+  // handled by the fixed crossfade below.
+  return (
+    <div className="relative flex h-svh w-[85vw] shrink-0 items-center justify-center px-[6vw]">
+      <div className="@container relative w-full max-w-4xl text-center">
+        <GhostWord word="Discipline" placement="center" className="-top-[0.14em]" />
+        <p className="relative text-center label-wide text-muted-foreground">
+          <span aria-hidden="true">[</span> <span className="text-foreground">Discipline</span>{' '}
+          <span aria-hidden="true">]</span>
         </p>
+        <h2 className="relative mt-5 display-lg">How every engagement runs.</h2>
+        <p className="mt-6 label text-muted-foreground" aria-hidden="true">
+          Scroll to travel <span className="text-brand">→</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function PhaseCard({
+  step,
+  index,
+  total,
+  progress,
+  count,
+}: {
+  step: MethodStep
+  /** Panel position in the whole track (intro counts as panel 0). */
+  index: number
+  total: number
+  progress: MotionValue<number>
+  count: number
+}) {
+  const { opacity, y } = usePanelVisibility(progress, index, total)
+
+  return (
+    <div className="relative flex h-svh w-[85vw] shrink-0 items-center justify-center px-[5vw]">
+      <motion.div
+        aria-label={`Phase ${step.numeral}: ${step.word}`}
+        style={{ opacity, y }}
+        className="relative flex h-full w-full max-w-3xl flex-col items-center justify-between py-[13svh] text-center"
+      >
+        <p className="label text-brand tabular-nums">
+          Phase {step.numeral} / {String(count).padStart(2, '0')}
+        </p>
+
+        <div>
+          <h3 className="mx-auto font-display text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] font-extrabold tracking-[-0.04em] text-balance">
+            {step.word}
+            <span aria-hidden="true" className="text-brand">
+              .
+            </span>
+          </h3>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-[1.65] font-light text-foreground/90">
+            {step.lead}
+          </p>
+        </div>
+
+        <div className="w-full">
+          <ul className="mx-auto grid max-w-xl gap-x-10 gap-y-2.5 text-left sm:grid-cols-2">
+            {step.points.map((point) => (
+              <li
+                key={point}
+                className="relative pl-7 text-[13px] leading-relaxed font-light text-muted-foreground"
+              >
+                <span aria-hidden="true" className="absolute top-0 left-0 text-brand">
+                  —
+                </span>
+                {point}
+              </li>
+            ))}
+          </ul>
+          <p className="mx-auto mt-5 flex max-w-md items-baseline justify-center gap-3 border-t border-border pt-4 text-[13px]">
+            <span className="shrink-0 label text-[0.6rem] text-brand">Ends with</span>
+            <span className="text-foreground">{step.endsWith}</span>
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+/** No-motion fallback: the same phases as ruled articles. */
+function PlainStack({ steps, showIntro }: { steps: readonly MethodStep[]; showIntro: boolean }) {
+  return (
+    <div className="relative bg-background">
+      <div className={cn('container-page', showIntro ? 'py-24 md:py-32' : 'pt-2 pb-24 md:pb-32')}>
+        {showIntro ? (
+          <div className="mx-auto max-w-3xl text-center">
+            <Eyebrow className="justify-center">The discipline</Eyebrow>
+            <h2 className="mx-auto mt-5 display-lg">How every engagement runs.</h2>
+          </div>
+        ) : null}
+        <div className={cn('mx-auto max-w-4xl', showIntro ? 'mt-16' : 'mt-8')}>
+          {steps.map((step) => (
+            <article
+              key={step.word}
+              aria-label={`Phase ${step.numeral}: ${step.word}`}
+              className="border-t border-border py-10 last:border-b"
+            >
+              <p className="label text-brand tabular-nums">
+                {step.numeral} / {String(steps.length).padStart(2, '0')}
+              </p>
+              <h3 className="mt-3 display-md">{step.word}.</h3>
+              <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">{step.lead}</p>
+              <p className="mt-4 text-[13px]">
+                <span className="label text-[0.6rem] text-brand">Ends with </span>
+                <span className="text-foreground">{step.endsWith}</span>
+              </p>
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   )

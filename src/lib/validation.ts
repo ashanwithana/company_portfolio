@@ -34,13 +34,6 @@ export const contactSchema = z.object({
 
 export type ContactInput = z.infer<typeof contactSchema>
 
-export const newsletterSchema = z.object({
-  email: z.email('Please enter a valid email address.'),
-  zx9q: z.string().max(0, 'Spam detected.').optional().default(''),
-})
-
-export type NewsletterInput = z.infer<typeof newsletterSchema>
-
 export type ContactResult =
   | { status: 'success'; message: string }
   | { status: 'error'; message: string; fieldErrors: Record<string, string[]> }

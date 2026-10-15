@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { contactSchema, firstErrors, newsletterSchema, toFieldErrors } from './validation'
+import { contactSchema, firstErrors, toFieldErrors } from './validation'
 
 const valid = {
   name: 'Alex Parker',
@@ -47,20 +47,6 @@ describe('contactSchema', () => {
 
   it('defaults a missing honeypot to an empty string', () => {
     expect(contactSchema.parse(valid).zx9q).toBe('')
-  })
-})
-
-describe('newsletterSchema', () => {
-  it('accepts a valid email', () => {
-    expect(newsletterSchema.safeParse({ email: 'a@b.com' }).success).toBe(true)
-  })
-
-  it('rejects an invalid email', () => {
-    expect(newsletterSchema.safeParse({ email: 'nope' }).success).toBe(false)
-  })
-
-  it('rejects a filled honeypot', () => {
-    expect(newsletterSchema.safeParse({ email: 'a@b.com', zx9q: 'x' }).success).toBe(false)
   })
 })
 

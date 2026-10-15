@@ -2,7 +2,6 @@
 
 import {
   contactSchema,
-  newsletterSchema,
   toFieldErrors,
   type ContactInput,
   type ContactResult,
@@ -17,7 +16,6 @@ import {
  */
 
 export type ContactState = ContactResult | null
-export type NewsletterState = ContactResult | null
 
 const TIMEOUT_MS = 10_000
 
@@ -131,45 +129,4 @@ export async function submitContactAction(
   }
 
   return deliverEnquiry(parsed.data)
-}
-
-/** Newsletter signups. */
-export async function subscribeAction(
-  _previousState: NewsletterState,
-  formData: FormData,
-): Promise<NewsletterState> {
-  const parsed = newsletterSchema.safeParse({
-    email: formData.get('email'),
-    zx9q: formData.get('zx9q') ?? '',
-  })
-
-  if (!parsed.success) {
-    return { status: 'error', ...toFieldErrors(parsed.error) }
-  }
-
-  const endpoint = process.env.NEWSLETTER_ENDPOINT
-
-  if (!endpoint) {
-    if (process.env.NODE_ENV !== 'development') {
-      return {
-        status: 'error',
-        message: 'Subscriptions are not configured right now.',
-        fieldErrors: {},
-      }
-    }
-
-    console.warn('[newsletter] NEWSLETTER_ENDPOINT is not set.')
-    return { status: 'success', message: 'Subscribed! (Dev mode — nothing was actually sent.)' }
-  }
-
-  try {
-    const ok = await postJson(endpoint, parsed.data, AbortSignal.timeout(TIMEOUT_MS))
-
-    return ok
-      ? { status: 'success', message: 'Subscribed — thank you.' }
-      : { status: 'error', message: 'Could not subscribe. Please try again.', fieldErrors: {} }
-  } catch (error) {
-    console.error('[newsletter] subscription failed:', error)
-    return { status: 'error', message: 'Could not subscribe. Please try again.', fieldErrors: {} }
-  }
 }

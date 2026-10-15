@@ -6,7 +6,7 @@ import { methodSteps } from '@/content/method'
 
 /**
  * Home page composition, mirroring the reference section for section:
- * globe hero, the sticky-rail six-phase method,
+ * globe hero, the six-phase discipline,
  * what's-slowing-you-down scatter, and the closing CTA. Services, work,
  * insights and company detail live on their own routes, reached through the
  * nav dropdowns and the footer — which is where the reference puts them too.
@@ -16,7 +16,7 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section id="method" aria-label="Our method">
+      <section id="discipline" aria-label="Our discipline">
         <Method steps={methodSteps} />
       </section>
 

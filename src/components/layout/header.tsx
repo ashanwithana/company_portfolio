@@ -15,7 +15,7 @@ type NavEntry = { href: string; label: string; children?: readonly NavChild[] }
 
 /**
  * Desktop navigation with dropdowns, mirroring the reference's structure:
- * a services index, a plain method anchor, a work index and a "more" bucket.
+ * a services index, a plain discipline anchor, a work index and a "more" bucket.
  * The lists are derived from the same content modules as the pages, so a
  * dropdown can never offer a route that does not exist.
  */
@@ -31,7 +31,7 @@ const navEntries: readonly NavEntry[] = [
       })),
     ],
   },
-  { href: '/method', label: 'Method' },
+  { href: '/discipline', label: 'Discipline' },
   // No dropdown here by design: the work index lists every case study, and a
   // dropdown would duplicate it while growing without bound as studies are
   // added. One link, one page.

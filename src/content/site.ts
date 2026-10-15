@@ -8,17 +8,17 @@
 
 export const siteConfig = {
   /** Short name used in the header and footer lockup. */
-  name: 'Northlight',
-  nameWithSuffix: 'Northlight Studio',
+  name: 'SketchLabs',
+  nameWithSuffix: 'SketchLabs',
   /** Appended after the name in the logo lockup, e.g. "Northlight." */
   logoSuffix: '.',
-  title: 'Northlight — Product studio & software engineering',
+  title: 'SketchLabs — Product studio & software engineering',
   tagline: 'We design and build software that earns its place.',
   description:
-    'Northlight is a product studio and software engineering partner. We take ambitious ideas from first sketch to production, and ship software that holds up in the real world.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://northlight.example.com',
+    'SketchLabs is a product studio and software engineering partner. We take ambitious ideas from first sketch to production, and ship software that holds up in the real world.',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',
   locale: 'en_LK',
-  email: 'hello@northlight.example.lk',
+  email: 'hello@sketchlabs.example.lk',
   phone: '+94 11 234 5678',
   /** HQ used in the footer and contact page. */
   location: 'Colombo, Sri Lanka',
@@ -32,10 +32,10 @@ export const siteConfig = {
   },
   foundedYear: 2019,
   socials: {
-    github: 'https://github.com/northlight-studio',
-    linkedin: 'https://www.linkedin.com/company/northlight-studio',
-    x: 'https://x.com/northlighthq',
-    dribbble: 'https://dribbble.com/northlight-studio',
+    github: 'https://github.com/sketchlabs-studio',
+    linkedin: 'https://www.linkedin.com/company/sketchlabs-studio',
+    x: 'https://x.com/sketchlabshq',
+    dribbble: 'https://dribbble.com/sketchlabs-studio',
   },
 } as const
 
@@ -66,7 +66,7 @@ export const primaryNav: readonly NavItem[] = [
 
 /** Routes surfaced in the command palette, ordered by group. */
 export const practiceRoutes: readonly NavItem[] = [
-  { href: '/method', label: 'Method', shortcut: 'M' },
+  { href: '/discipline', label: 'Discipline', shortcut: 'D' },
   { href: '/enterprise', label: 'Enterprise systems', shortcut: 'E' },
   { href: '/ai', label: 'AI engineering', shortcut: 'I' },
   { href: '/careers', label: 'Careers', shortcut: 'C' },

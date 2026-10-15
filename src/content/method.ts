@@ -1,8 +1,8 @@
 import type { MethodStep } from '@/components/sections/method'
 
 /**
- * The studio's six-phase method, shared by the home page section and the
- * dedicated /method page. One source so the two can never disagree about what
+ * The studio's six-phase discipline, shared by the home page section and the
+ * dedicated /discipline page. One source so the two can never disagree about what
  * the phases are called or what each one hands over.
  *
  * Every phase ends with a concrete artifact — that is the "one number" idea:
@@ -10,9 +10,9 @@ import type { MethodStep } from '@/components/sections/method'
  */
 export const methodSteps: readonly MethodStep[] = [
   {
-    word: 'Brief',
+    word: 'Observe',
     numeral: '01',
-    label: 'Brief',
+    label: 'Observe',
     lead: 'Most software failures are decided before the first line of code is written.',
     points: [
       'two weeks embedded: we read the code and watch the work',
@@ -20,11 +20,13 @@ export const methodSteps: readonly MethodStep[] = [
       'the problem written down in your words, not ours',
     ],
     endsWith: 'a written brief of what is actually wrong',
+    detail:
+      'Two weeks inside your team: reading the codebase, shadowing the people who use the software, and interviewing the ones who pay for it. What comes out is a brief written in your words — the actual problem, who feels it, and what done looks like — so everything downstream argues with reality instead of assumptions.',
   },
   {
-    word: 'Map',
+    word: 'Reason',
     numeral: '02',
-    label: 'Map',
+    label: 'Reason',
     lead: 'A written plan with risks, sequence and a fixed number — before you commit.',
     points: [
       'architecture, data flows and dependencies in writing',
@@ -32,11 +34,13 @@ export const methodSteps: readonly MethodStep[] = [
       'you approve the plan, not just a mood board',
     ],
     endsWith: 'the number — fixed, in writing',
+    detail:
+      'The brief becomes architecture: data flows, dependencies, the risky unknowns named with their mitigations, and the build sequence. Then a fixed number attached to that scope — not an estimate with drift built in. You approve a plan you could hand to another studio, which is exactly why the number holds.',
   },
   {
-    word: 'Prototype',
+    word: 'Imagine',
     numeral: '03',
-    label: 'Prototype',
+    label: 'Imagine',
     lead: 'Something you can click, before we build anything on top of it.',
     points: [
       'the risky part first, not the easy part',
@@ -44,11 +48,13 @@ export const methodSteps: readonly MethodStep[] = [
       'sign-off on behaviour, not on static screens',
     ],
     endsWith: 'a working prototype you have used',
+    detail:
+      'We prototype the highest-uncertainty flow first, loaded with your real content and wired to the systems it will depend on. You click through the behaviour that could sink the project while changing course still costs days, not sprints — and sign off on how it behaves, not how a screenshot looks.',
   },
   {
-    word: 'Build',
+    word: 'Craft',
     numeral: '04',
-    label: 'Build',
+    label: 'Craft',
     lead: 'Short cycles, each ending with something demonstrable — never a big bang.',
     points: [
       'something you can click at the end of every cycle',
@@ -56,11 +62,13 @@ export const methodSteps: readonly MethodStep[] = [
       'the codebase handed over clean, not archived',
     ],
     endsWith: 'working software, every cycle',
+    detail:
+      'Build runs in short cycles against staging that mirrors production, each ending with something you can use — not a progress report. Enterprise data migrates in rehearsed phases with a rollback for every step, and the codebase stays clean throughout: boring file structures, explicit data flow, documented for the next developer.',
   },
   {
-    word: 'Harden',
+    word: 'Temper',
     numeral: '05',
-    label: 'Harden',
+    label: 'Temper',
     lead: 'The unglamorous work that decides whether it survives its first year.',
     points: [
       'performance and accessibility budgets enforced in CI',
@@ -68,11 +76,13 @@ export const methodSteps: readonly MethodStep[] = [
       'load, failure and rollback paths tested before launch',
     ],
     endsWith: 'a launch checklist with nothing open on it',
+    detail:
+      'Before launch we measure everything against the baseline captured in week one: Core Web Vitals on real devices, keyboard and screen-reader passes, load and failure drills, rollback rehearsals. AI features ship only with measured accuracy and a human-escalation path for low-confidence answers. Nothing launches with an open item.',
   },
   {
-    word: 'Hand over',
+    word: 'Release',
     numeral: '06',
-    label: 'Hand over',
+    label: 'Release',
     lead: 'Docs, runbooks and paired working until your team is comfortable. Then we leave.',
     points: [
       'documentation your team will actually read',
@@ -80,5 +90,7 @@ export const methodSteps: readonly MethodStep[] = [
       'handover, not lock-in',
     ],
     endsWith: 'a team that does not need us',
+    detail:
+      'Release is a transfer, not a farewell party: runbooks for everything that can page someone at 3am, pairing sessions until your team has shipped without us watching, and training against the migrated staging data they will actually operate. Then we leave — the engagement is only done when you stop needing us.',
   },
 ]

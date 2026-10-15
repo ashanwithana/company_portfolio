@@ -24,7 +24,7 @@ export function CureBand() {
         <h2 className="mt-7 display-xl">
           Bring us the problem.
           <br />
-          We&apos;ll bring the <span className="text-brand">method.</span>
+          We&apos;ll bring the <span className="text-brand">cure.</span>
         </h2>
       </div>
     </section>
