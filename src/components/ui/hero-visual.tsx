@@ -584,6 +584,17 @@ export function HeroVisual({ className }: { className?: string }) {
     let pointerY = 0
     let easedX = 0
     let easedY = 0
+    // Drag state. userOffset is the hand-added spin on top of the ambient
+    // auto-spin; userVel carries fling inertia in rad/sec; tiltUser is the
+    // hand-added tip, clamped so the planet cannot be turned inside out.
+    let userOffset = 0
+    let userVel = 0
+    let tiltUser = 0
+    let dragging = false
+    let lastPX = 0
+    let lastPY = 0
+    let lastMoveT = 0
+    let lastInteract = -Infinity
     const t0 = performance.now()
 
     // Spin state for the load ramp: the globe eases from rest to full speed
@@ -629,6 +640,52 @@ export function HeroVisual({ className }: { className?: string }) {
     }
     window.addEventListener('pointermove', onMove, { passive: true })
 
+    // Drag to spin. Horizontal drags rotate the planet (a full-width drag is
+    // roughly a half turn) and vertical drags tip it; releasing with speed
+    // flings it with decaying inertia. Pointer capture keeps the gesture even
+    // if the pointer slides off the canvas mid-drag.
+    const onDown = (event: PointerEvent) => {
+      dragging = true
+      lastPX = event.clientX
+      lastPY = event.clientY
+      lastMoveT = performance.now()
+      userVel = 0
+      lastInteract = lastMoveT
+      try {
+        canvas.setPointerCapture(event.pointerId)
+      } catch {
+        // Best-effort: without capture a fast fling can still end mid-gesture.
+      }
+      canvas.style.cursor = 'grabbing'
+    }
+    const onDragMove = (event: PointerEvent) => {
+      if (!dragging) return
+      const now = performance.now()
+      const rect = wrap.getBoundingClientRect()
+      const wpx = Math.max(rect.width, 1)
+      const dx = event.clientX - lastPX
+      const dy = event.clientY - lastPY
+      const dtm = Math.max((now - lastMoveT) / 1000, 0.001)
+      const dA = (dx / wpx) * Math.PI
+      userOffset += dA
+      userVel = Math.max(-3, Math.min(3, 0.7 * userVel + 0.3 * (dA / dtm)))
+      tiltUser = Math.max(-0.5, Math.min(0.6, tiltUser + (dy / wpx) * 1.2))
+      lastPX = event.clientX
+      lastPY = event.clientY
+      lastMoveT = now
+      lastInteract = now
+    }
+    const endDrag = () => {
+      if (!dragging) return
+      dragging = false
+      lastInteract = performance.now()
+      canvas.style.cursor = ''
+    }
+    canvas.addEventListener('pointerdown', onDown)
+    canvas.addEventListener('pointermove', onDragMove)
+    canvas.addEventListener('pointerup', endDrag)
+    canvas.addEventListener('pointercancel', endDrag)
+
     const draw = () => {
       if (!running) return
       raf = requestAnimationFrame(draw)
@@ -644,7 +701,14 @@ export function HeroVisual({ className }: { className?: string }) {
       const ramp = Math.min(t / 2.6, 1)
       const eased = ramp * ramp * (3 - 2 * ramp)
       const dt = Math.min((now - lastT) / 1000, 0.05)
-      spinAngle += dt * SPIN_SPEED * eased
+      // Ambient auto-spin yields while the visitor is driving, then resumes
+      // after a beat. Fling inertia always decays, even right after release.
+      if (!dragging && now - lastInteract > 1500) {
+        spinAngle += dt * SPIN_SPEED * eased
+      }
+      userOffset += userVel * dt
+      userVel *= Math.exp(-2.5 * dt)
+      if (Math.abs(userVel) < 0.0005) userVel = 0
       lastT = now
 
       // Signal the first painted frame so the canvas fades and scales in.
@@ -655,13 +719,15 @@ export function HeroVisual({ className }: { className?: string }) {
 
       const aspect = canvas.width / Math.max(canvas.height, 1)
 
-      // Slow constant spin with a nod to the pointer.
-      const tilt = -0.34 + easedY * 0.22
+      // Slow constant spin with a nod to the pointer, plus the visitor's
+      // hand-added offset and tip from dragging.
+      const tilt = -0.34 + easedY * 0.22 + tiltUser
+      const spinTotal = spinAngle + userOffset + easedX * 0.34
 
       let mvp = perspective(Math.PI / 5.2, aspect, 0.1, 100)
       mvp = multiply(mvp, translation(0, 0, -3.15))
       mvp = multiply(mvp, rotationX(tilt))
-      mvp = multiply(mvp, rotationY(spinAngle + easedX * 0.34))
+      mvp = multiply(mvp, rotationY(spinTotal))
 
       // HTML place labels track their 3D nodes. The two rotations are
       // reapplied here in the same convention as rotationX/rotationY above:
@@ -671,7 +737,7 @@ export function HeroVisual({ className }: { className?: string }) {
       {
         const w = wrap.clientWidth || 1
         const h = wrap.clientHeight || 1
-        const a2 = spinAngle + easedX * 0.34
+        const a2 = spinTotal
         const c2 = Math.cos(a2)
         const s2 = Math.sin(a2)
         const cT = Math.cos(tilt)
@@ -759,6 +825,10 @@ export function HeroVisual({ className }: { className?: string }) {
       ro.disconnect()
       io.disconnect()
       window.removeEventListener('pointermove', onMove)
+      canvas.removeEventListener('pointerdown', onDown)
+      canvas.removeEventListener('pointermove', onDragMove)
+      canvas.removeEventListener('pointerup', endDrag)
+      canvas.removeEventListener('pointercancel', endDrag)
       gl.deleteProgram(points.prog)
       gl.deleteProgram(lines.prog)
       gl.deleteShader(points.vs)
@@ -821,7 +891,7 @@ export function HeroVisual({ className }: { className?: string }) {
           <canvas
             ref={canvasRef}
             className={cn(
-              'absolute inset-0 h-full w-full transition-[opacity,scale] duration-[1400ms] ease-out',
+              'pointer-events-auto absolute inset-0 h-full w-full cursor-grab touch-pan-y transition-[opacity,scale] duration-[1400ms] ease-out select-none',
               ready ? 'scale-100 opacity-100' : 'scale-[0.94] opacity-0',
             )}
           />

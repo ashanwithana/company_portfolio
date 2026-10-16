@@ -8,10 +8,10 @@ import { services } from '@/content/services'
 import { cn } from '@/lib/utils'
 
 const BUDGET_OPTIONS = [
-  { value: '', label: 'Not sure yet' },
-  { value: 'under-25k', label: 'Under 25k' },
-  { value: '25k-60k', label: '25k – 60k' },
-  { value: '60k-150k', label: '60k and up' },
+  { value: 'under-1k', label: 'Under $1k' },
+  { value: '1k-2.5k', label: '$1k – $2.5k' },
+  { value: 'over-2.5k', label: 'More than $2.5k' },
+  { value: 'lets-talk', label: "Let's talk about it" },
 ] as const
 
 /**

@@ -91,7 +91,7 @@ export function TalkToUs() {
           </a>
 
           <Link
-            href="/contact"
+            href="/start-a-project"
             className="group flex items-center gap-5 rounded-[22px] border border-border bg-card/40 p-6 transition-colors duration-300 hover:border-border-strong sm:p-8"
           >
             <span

@@ -15,7 +15,7 @@ export function CtaBand({
   title,
   body,
   ghost,
-  href = '/contact',
+  href = '/start-a-project',
   actionLabel = 'Start a project',
   secondary,
   className,

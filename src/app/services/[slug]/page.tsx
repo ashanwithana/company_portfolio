@@ -108,7 +108,7 @@ export default async function ServiceDetailPage({ params }: Params) {
               ) : null}
 
               <Link
-                href="/contact"
+                href="/start-a-project"
                 className="mt-8 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
               >
                 Discuss this

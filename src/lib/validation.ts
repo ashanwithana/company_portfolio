@@ -17,7 +17,7 @@ export const contactSchema = z.object({
   company: z.string().trim().max(120, 'Please keep this under 120 characters.').optional(),
   /** Which service the enquiry relates to. Optional — free-form enquiries exist. */
   service: z.string().trim().max(80).optional(),
-  budget: z.enum(['', 'under-25k', '25k-60k', '60k-150k']).optional(),
+  budget: z.enum(['', 'under-1k', '1k-2.5k', 'over-2.5k', 'lets-talk']).optional(),
   message: z
     .string()
     .trim()

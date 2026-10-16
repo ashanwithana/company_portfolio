@@ -347,7 +347,7 @@ export default function InsightsPage() {
         body="No drip sequences. If there is nothing interesting, we do not write."
         actionLabel="Read the latest"
         href={`/insights/${featured?.slug ?? ''}`}
-        secondary={{ href: '/contact', label: 'Talk to us' }}
+        secondary={{ href: '/faq', label: 'Talk to us' }}
       />
     </>
   )

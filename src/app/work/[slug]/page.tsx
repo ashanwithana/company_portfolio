@@ -171,7 +171,7 @@ export default async function CaseStudyPage({ params }: Params) {
             </ul>
 
             <Link
-              href="/contact"
+              href="/start-a-project"
               className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
             >
               Start a similar project

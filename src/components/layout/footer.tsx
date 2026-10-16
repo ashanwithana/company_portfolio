@@ -24,7 +24,7 @@ export function Footer() {
         { href: '/insights', label: 'Blog' },
         { href: '/#discipline', label: 'Discipline' },
         { href: '/about', label: 'About' },
-        { href: '/contact', label: 'Contact' },
+        { href: '/faq', label: 'FAQ' },
       ],
     },
     {
@@ -32,7 +32,7 @@ export function Footer() {
       links: [
         { href: '/about', label: 'About' },
         { href: '/careers', label: 'Careers' },
-        { href: '/enterprise', label: 'Enterprise systems' },
+        { href: '/start-a-project', label: 'Start a project' },
         { href: '/sitemap.xml', label: 'Sitemap' },
       ],
     },

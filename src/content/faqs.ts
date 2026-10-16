@@ -56,6 +56,26 @@ export const contactFaqs: readonly Faq[] = [
     answer:
       'Occasionally, for early-stage companies with no funding and a genuinely strong team, but rarely. Fees keep the advice honest — we would rather be able to tell you something is wrong.',
   },
+  {
+    question: 'Where is the studio based?',
+    answer:
+      'Colombo, Sri Lanka. We work async-first across time zones and keep overlapping hours with clients in Europe, the Gulf and Asia — agreed per engagement, announced in advance, and actually kept.',
+  },
+  {
+    question: 'Do you sign NDAs?',
+    answer:
+      'Yes. Send yours over before the first call and we will sign it — or talk freely on the call and formalise afterwards, whichever you prefer. Either way, your material stays yours.',
+  },
+  {
+    question: 'What budgets do you work with?',
+    answer:
+      'The enquiry form lists our typical ranges — under $1k, $1k–$2.5k, and above that. Smaller fixes and audits sit at the lower end; full builds and enterprise implementations sit higher. If none of the ranges fits, choose “Let’s talk about it” and describe the work instead.',
+  },
+  {
+    question: 'Do you offer ongoing maintenance?',
+    answer:
+      'Yes, as a lightweight care arrangement after handover — monitoring, dependency updates and a monthly allowance of small fixes. No lock-in: everything is documented so your team can take it over whenever you like.',
+  },
 ]
 
 export const servicesFaqs: readonly Faq[] = [

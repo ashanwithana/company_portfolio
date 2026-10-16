@@ -66,9 +66,10 @@ async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
   }
 
   const budgetLabels: Record<string, string> = {
-    'under-25k': 'Under 25k',
-    '25k-60k': '25k – 60k',
-    '60k-150k': '60k and up',
+    'under-1k': 'Under $1k',
+    '1k-2.5k': '$1k – $2.5k',
+    'over-2.5k': 'More than $2.5k',
+    'lets-talk': "Let's talk about it",
   }
 
   try {

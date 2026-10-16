@@ -61,7 +61,7 @@ export const primaryNav: readonly NavItem[] = [
   { href: '/work', label: 'Work', shortcut: 'W' },
   { href: '/about', label: 'About', shortcut: 'A' },
   { href: '/insights', label: 'Insights', shortcut: 'B' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/faq', label: 'FAQ' },
 ] as const
 
 /** Routes surfaced in the command palette, ordered by group. */
@@ -80,7 +80,7 @@ export const footerNav = {
     { href: '/about', label: 'About' },
     { href: '/careers', label: 'Careers' },
     { href: '/insights', label: 'Insights' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/faq', label: 'FAQ' },
   ],
   /** Specialist practice tracks, linked from the services page too. */
   practices: [
@@ -97,11 +97,11 @@ export const contactContent = {
   directLabel: 'Direct',
   formTitle: 'Start a project',
   socialsTitle: 'Elsewhere',
-  /** Rendered inside the availability card on /contact. */
+  /** Rendered inside the availability card on /start-a-project. */
   availability: {
-    badge: 'Currently taking new work',
+    badge: 'Currently booked',
     window: 'Q3 2026',
-    body: 'We take on a small number of engagements each quarter. Tell us what you are building and we will come back within two working days.',
+    body: 'We are fully committed to current engagements right now. You are still welcome to send an enquiry — we will reply with honest timelines, or point you somewhere better.',
   },
   responseTime: 'Most enquiries get a reply within 2 working days.',
 } as const

@@ -7,7 +7,7 @@ const valid = {
   email: 'alex@example.com',
   company: 'Example Ltd',
   service: 'Web engineering',
-  budget: '60k-150k' as const,
+  budget: '1k-2.5k' as const,
   message: 'We are rebuilding our platform and need help.',
 }
 

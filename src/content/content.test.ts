@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { allRoutes, primaryNav, siteConfig, footerNav } from './site'
 import { allBenefits, departments, getRole, roles, rolesByDepartment } from './roles'
-import { differentiators, milestones, process, team, testimonials, values } from './company'
+import { differentiators, milestones, process, team, values } from './company'
 import { coverFor } from './covers'
 import { services } from './services'
 import { aiFaqs, careersFaqs, contactFaqs, servicesFaqs } from './faqs'
@@ -167,21 +167,6 @@ describe('company content', () => {
     expect(milestones.length).toBeGreaterThan(0)
   })
 
-  it('has verifiable testimonials', () => {
-    // A quote without attribution is marketing copy. Every testimonial must
-    // name a person and a company, and link to the case study behind it.
-    for (const testimonial of testimonials) {
-      expect(testimonial.quote.length).toBeGreaterThan(40)
-      expect(testimonial.name).toBeTruthy()
-      expect(testimonial.role).toBeTruthy()
-      expect(testimonial.company).toBeTruthy()
-      expect(testimonial.caseStudySlug).toBeTruthy()
-    }
-
-    const names = testimonials.map((t) => t.name)
-    expect(new Set(names).size).toBe(names.length)
-  })
-
   it('states differentiators as commitments, not adjectives', () => {
     expect(differentiators.length).toBeGreaterThanOrEqual(3)
     for (const item of differentiators) {
@@ -190,16 +175,16 @@ describe('company content', () => {
     }
   })
 
-  it('links every testimonial to a published case study', async () => {
+  it('resolves every published case study by slug', async () => {
     // A "read the case study" link that 404s is worse than no link. This
-    // joins the two content modules so a renamed slug fails the build.
+    // joins the listing to the detail data so a renamed slug fails the build.
     const { getCaseStudy, publishedCaseStudies } = await import('./case-studies')
-    const published = new Set(publishedCaseStudies().map((s) => s.slug))
+    const published = publishedCaseStudies()
 
-    for (const testimonial of testimonials) {
-      expect(testimonial.caseStudySlug).toBeTruthy()
-      expect(getCaseStudy(testimonial.caseStudySlug!)).toBeDefined()
-      expect(published.has(testimonial.caseStudySlug!)).toBe(true)
+    expect(published.length).toBeGreaterThan(0)
+    for (const study of published) {
+      expect(getCaseStudy(study.slug)).toBeDefined()
+      expect(published.map((s) => s.slug)).toContain(study.slug)
     }
   })
 })

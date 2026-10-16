@@ -1,6 +1,6 @@
-import { StatusBadge } from '@/components/ui/badge'
 import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { HeroVisual } from '@/components/ui/hero-visual'
+import { OfficeTime } from '@/components/sections/office-time'
 import { Starfield } from '@/components/ui/starfield'
 import { siteConfig } from '@/content/site'
 
@@ -167,8 +167,15 @@ export function Hero() {
             />
           </div>
 
-          <div className="absolute top-[7%] right-[0%] z-10 hidden sm:block" aria-hidden="true">
-            <StatusBadge tone="brand">Online · Colombo</StatusBadge>
+          <div className="absolute top-[7%] right-[0%] z-10 hidden sm:block">
+            <span className="relative inline-flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 label backdrop-blur-sm">
+              <span className="relative flex size-2 items-center justify-center" aria-hidden="true">
+                <span className="absolute size-2 animate-pulse-ring rounded-full text-brand" />
+                <span className="size-1.5 rounded-full bg-brand" />
+              </span>
+              Colombo&nbsp;·&nbsp;
+              <OfficeTime timeZone="Asia/Colombo" />
+            </span>
           </div>
         </div>
 
