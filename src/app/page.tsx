@@ -1,4 +1,6 @@
 import { Hero } from '@/components/sections/hero'
+import { Manifesto } from '@/components/sections/manifesto'
+import { siteConfig } from '@/content/site'
 import { Method } from '@/components/sections/method'
 import { ServicesSnapshot } from '@/components/sections/services-snapshot'
 import { TalkToUs, CureBand } from '@/components/sections/talk-to-us'
@@ -15,6 +17,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+
+      <Manifesto text={`${siteConfig.tagline} ${methodSteps[0]?.lead ?? ''}`.trim()} />
 
       <section id="discipline" aria-label="Our discipline">
         <Method steps={methodSteps} />

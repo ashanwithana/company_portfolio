@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist_Mono, JetBrains_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { cookies } from 'next/headers'
 
 import { Header } from '@/components/layout/header'
@@ -13,23 +13,15 @@ import { parseTheme, THEME_COOKIE } from '@/lib/theme'
 import './globals.css'
 
 /*
- * Monospace throughout. Geist Mono carries display and body copy; JetBrains Mono
- * handles the tracked micro-labels, where its slightly wider glyphs keep small
- * uppercase text legible. Both are self-hosted by next/font — no runtime request
- * to a third party.
+ * Inter, self-hosted by next/font (no runtime request to a third party). It is
+ * loaded as a variable font so the thin and light weights the display type
+ * relies on are available without extra files. Small tracked labels use the
+ * system monospace stack, which needs no download.
  */
-const geistMono = Geist_Mono({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
-  variable: '--font-geist-mono',
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  display: 'swap',
-  variable: '--font-jetbrains-mono',
+  variable: '--font-inter',
 })
 
 export const metadata: Metadata = {
@@ -86,8 +78,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#faf7f2' },
-    { media: '(prefers-color-scheme: dark)', color: '#171717' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f3ee' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
   colorScheme: 'light dark',
   width: 'device-width',
@@ -127,7 +119,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     // The class comes from the theme cookie above, so server and client markup
     // agree and no suppressHydrationWarning is needed.
     <html lang="en-GB" className={theme} style={{ colorScheme: theme }}>
-      <body className={`${geistMono.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
           <a
             href="#main"

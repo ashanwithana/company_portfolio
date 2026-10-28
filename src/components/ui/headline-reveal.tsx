@@ -10,6 +10,8 @@ export type HeadlineRevealProps = {
   stagger?: number
   /** Delay before the first word, in milliseconds. */
   delay?: number
+  /** Set the final line in bold against the thin lines above it. */
+  emphasizeLast?: boolean
 }
 
 /**
@@ -40,6 +42,7 @@ export function HeadlineReveal({
   className,
   stagger = 85,
   delay = 260,
+  emphasizeLast = false,
 }: HeadlineRevealProps) {
   const lines = text.split('\n')
   let order = 0
@@ -47,7 +50,10 @@ export function HeadlineReveal({
   return (
     <span className={cn('inline-block', className)}>
       {lines.map((line, lineIndex) => (
-        <span key={lineIndex} className="block">
+        <span
+          key={lineIndex}
+          className={cn('block', emphasizeLast && lineIndex === lines.length - 1 && 'font-bold')}
+        >
           {line.split(' ').map((word, index, words) => {
             const at = delay + order++ * stagger
             return (

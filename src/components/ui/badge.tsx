@@ -40,7 +40,7 @@ export function StatusBadge({
 }
 
 /**
- * Bracketed section label — `[ LABEL ]`.
+ * Section label, set as tracked uppercase text with an optional ordinal.
  *
  * The one way a section announces itself. It was previously hand-written in
  * three places with slightly different markup, which is how two spellings of
@@ -73,9 +73,7 @@ export function Eyebrow({
       )}
     >
       {leading}
-      <span aria-hidden="true">[</span>
       <span className={!accent && !soft ? 'text-foreground' : undefined}>{children}</span>
-      <span aria-hidden="true">]</span>
     </p>
   )
 }

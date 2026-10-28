@@ -5,91 +5,88 @@
 /* ---------------------------------------------------------------------------
  * Design tokens
  *
- * Dark is the default theme (see DEFAULT_THEME in lib/theme) and the palette is
- * deliberately narrow: a near-black ground, off-white ink, one hot-pink accent
- * and two supporting hues used sparingly for taxonomy. Sections stay on the
- * dark ground in dark mode — muted bands give separation without ever
- * flipping to a light ground.
+ * Monochrome. A true-black ground, white ink at stepped opacities, hairline
+ * rules, and one signal yellow used sparingly. Dark is the default theme (see
+ * DEFAULT_THEME in lib/theme); the light theme swaps to warm paper and ink.
  *
- * Authored in hex rather than OKLCH: the accent hues are specified brand values
- * and converting them introduced visible drift between the two themes.
+ * `brand` and `primary` are kept as token names so existing components keep
+ * working, but both now resolve to the ink colour: the accent is no longer a
+ * hue, it is contrast. `amber` carries the single yellow signal.
  * ------------------------------------------------------------------------- */
 
 :root {
   --radius: 0.75rem;
 
   /* Ground and ink */
-  --background: #171717;
-  --foreground: #f0f0f8;
+  --background: #000000;
+  --foreground: #ffffff;
 
-  --card: #1c1c1c;
-  --card-foreground: #f0f0f8;
-  --elevated: #232323;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --elevated: #111111;
 
-  --popover: #1c1c1c;
-  --popover-foreground: #f0f0f8;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
 
-  /* Accents — signal lime leads, violet supports, amber tags the third category. */
-  --primary: #7c5bff;
-  --primary-foreground: #f5f2ff;
-  --brand: #c2f853;
-  /* Lime is light, so anything sitting on it takes ink, not white. */
-  --brand-foreground: #171717;
-  --amber: #ff9f1c;
-  --muted: #1c1c1c;
-  --muted-foreground: #8b8b96;
-  --accent: #232323;
-  --accent-foreground: #f0f0f8;
+  /* Ink-as-accent. Anything sitting on a white fill takes black. */
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --brand: #ffffff;
+  --brand-foreground: #000000;
+  --amber: #f2c811;
+  --muted: #0a0a0a;
+  --muted-foreground: #ffffff94;
+  --accent: #141414;
+  --accent-foreground: #ffffff;
 
   --destructive: #ff4d4d;
   --destructive-foreground: #ffffff;
 
-  /* Hairlines — always white-alpha in dark, ink-alpha in light. */
-  --border: #ffffff1a;
-  --border-strong: #ffffff33;
-  --input: #ffffff1f;
-  --ring: #c2f853;
+  /* Hairlines — white-alpha in dark, ink-alpha in light. */
+  --border: #ffffff1f;
+  --border-strong: #ffffff40;
+  --input: #ffffff26;
+  --ring: #ffffff99;
 
-  --gradient-editorial: linear-gradient(135deg, #c2f853 0%, #7c5bff 100%);
-  --gradient-brand: linear-gradient(135deg, #c2f853 0%, #ff9f1c 100%);
-  --gradient-glow: radial-gradient(ellipse at center, #c2f85326 0%, transparent 70%);
-  --shadow-elegant: 0 30px 80px -20px #00000080;
+  --gradient-editorial: linear-gradient(135deg, #ffffff 0%, #ffffff80 100%);
+  --gradient-brand: linear-gradient(135deg, #ffffff 0%, #f2c811 100%);
+  --gradient-glow: radial-gradient(ellipse at center, #ffffff14 0%, transparent 70%);
+  --shadow-elegant: 0 30px 80px -20px #000000cc;
 }
 
 .light {
-  --background: #faf7f2;
-  --foreground: #161310;
+  --background: #f4f3ee;
+  --foreground: #141414;
 
   --card: #ffffff;
-  --card-foreground: #161310;
+  --card-foreground: #141414;
   --elevated: #ffffff;
 
   --popover: #ffffff;
-  --popover-foreground: #161310;
+  --popover-foreground: #141414;
 
-  --primary: #6a3ff0;
-  --primary-foreground: #ffffff;
-  /* Darkened for the cream ground — the raw lime washes out on light. */
-  --brand: #5c7f0a;
-  --brand-foreground: #ffffff;
-  --amber: #b06000;
-  --muted: #f4f1ea;
-  --muted-foreground: #6b6558;
-  --accent: #f1ede4;
-  --accent-foreground: #161310;
+  --primary: #141414;
+  --primary-foreground: #f4f3ee;
+  --brand: #141414;
+  --brand-foreground: #f4f3ee;
+  --amber: #8a6d00;
+  --muted: #ebe9e2;
+  --muted-foreground: #14141499;
+  --accent: #ebe9e2;
+  --accent-foreground: #141414;
 
   --destructive: #c62828;
   --destructive-foreground: #ffffff;
 
-  --border: #1613101f;
-  --border-strong: #16131033;
-  --input: #16131026;
-  --ring: #5c7f0a;
+  --border: #1414141f;
+  --border-strong: #14141440;
+  --input: #14141426;
+  --ring: #141414aa;
 
-  --gradient-editorial: linear-gradient(135deg, #5c7f0a 0%, #6a3ff0 100%);
-  --gradient-brand: linear-gradient(135deg, #5c7f0a 0%, #b06000 100%);
-  --gradient-glow: radial-gradient(ellipse at center, #5c7f0a26 0%, transparent 70%);
-  --shadow-elegant: 0 30px 80px -24px #16131033;
+  --gradient-editorial: linear-gradient(135deg, #141414 0%, #14141480 100%);
+  --gradient-brand: linear-gradient(135deg, #141414 0%, #8a6d00 100%);
+  --gradient-glow: radial-gradient(ellipse at center, #14141410 0%, transparent 70%);
+  --shadow-elegant: 0 30px 80px -24px #14141433;
 }
 
 @theme inline {
@@ -117,14 +114,12 @@
   --color-ring: var(--ring);
 
   /*
-   * Two mono voices. JetBrains Mono carries everything functional — body copy,
-   * navigation, labels, buttons — at weight 400 with tight tracking. Geist Mono
-   * is display-only: the oversized headings at weight 800. Body must not be
-   * Geist; the reference sets its entire interface in JetBrains.
+   * Inter carries the whole interface, kept light. The system monospace stack
+   * is reserved for small tracked labels, so no webfont is loaded for it.
    */
-  --font-sans: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
-  --font-mono: var(--font-jetbrains-mono), var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -342,9 +337,9 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-    letter-spacing: -0.04em;
-    font-weight: 800;
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+    font-weight: 300;
     text-wrap: balance;
   }
 
@@ -353,8 +348,8 @@
   }
 
   ::selection {
-    background-color: var(--brand);
-    color: #fff;
+    background-color: color-mix(in oklab, var(--foreground) 25%, transparent);
+    color: var(--foreground);
   }
 
   :focus-visible {
@@ -433,10 +428,10 @@
  */
 @utility label-wide {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   line-height: 1.4;
   font-weight: 400;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
@@ -448,35 +443,37 @@
  * system rather than a hero with smaller content below it.
  */
 @utility display-xl {
-  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 7.2vw, 6.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 100;
+  text-transform: uppercase;
 }
 
 @utility display-lg {
-  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
-  font-size: clamp(2.75rem, 8.5vw, 6.9375rem);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 7.2vw, 6.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 100;
+  text-transform: uppercase;
 }
 
 @utility display-md {
-  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.5vw, 2.5rem);
   line-height: 1.1;
-  letter-spacing: -0.035em;
-  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-weight: 300;
 }
 
 @utility display-sm {
-  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--font-display);
   font-size: clamp(1.25rem, 2.2vw, 1.75rem);
   line-height: 1.2;
-  letter-spacing: -0.03em;
-  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-weight: 300;
 }
 
 /*
@@ -486,8 +483,8 @@
  * stroke reads as noise.
  */
 @utility text-ghost {
-  color: color-mix(in oklab, var(--foreground) 8%, transparent);
-  font-weight: 800;
+  color: color-mix(in oklab, var(--foreground) 6%, transparent);
+  font-weight: 200;
   line-height: 0.82;
   letter-spacing: -0.04em;
   white-space: nowrap;

@@ -49,12 +49,12 @@ const navEntries: readonly NavEntry[] = [
 ]
 
 /**
- * Floating pill navigation.
+ * Floating text navigation.
  *
- * The bar is a single rounded-full island that floats over the page rather than
- * sitting in a bordered header strip. The scroll state only tightens its padding
- * and shadow — it never changes what is rendered, so there is no layout shift as
- * the page moves underneath it.
+ * Over the hero the bar has no fill at all: just the wordmark, the links and
+ * the call to action on the ground. Once the page scrolls it picks up a blurred
+ * ground and a hairline underneath. The scroll state only changes those paint
+ * properties, never what is rendered, so there is no layout shift.
  *
  * Active state comes from `usePathname` rather than a scroll observer, so the
  * highlight is correct the moment a route changes — and correct without
@@ -115,36 +115,35 @@ export function Header() {
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href))
 
   return (
-    <header className="no-print fixed inset-x-0 top-0 z-50">
-      {/*
-        Compact centred island: capped well inside the page container so it
-        reads as a floating control rather than a second header bar.
-      */}
-      <div className="mx-auto w-full max-w-[64rem] px-4 pt-3 sm:px-6">
+    <header
+      className={cn(
+        'no-print fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]',
+        scrolled && 'border-border bg-background/70 backdrop-blur-[24px]',
+      )}
+    >
+      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-8">
         <div
           className={cn(
-            // Full-width floating island: 32px inset, 32px radius, near-black at
-            // 70% over a 24px blur so the page reads through it.
-            // The pill floats over both grounds, so its fill comes from the token rather
-            // than a fixed near-black: a hardcoded dark fill left the logo
-            // unreadable in the light theme.
-            'flex h-16 items-center justify-between gap-4 rounded-full border border-border bg-background/80 px-5 backdrop-blur-[24px] transition-shadow duration-500',
-            scrolled && 'border-border-strong shadow-[0_18px_50px_-28px_rgba(0,0,0,0.95)]',
+            'relative flex items-center justify-between gap-4 transition-[height] duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]',
+            scrolled ? 'h-16' : 'h-20 md:h-24',
           )}
         >
           <Link
             href="/"
             aria-label={`${siteConfig.name} — home`}
-            className="flex shrink-0 items-center gap-3 rounded-full"
+            className="flex shrink-0 items-center gap-3"
           >
-            <span className="text-base font-bold tracking-tight">
+            <span className="text-base font-light tracking-tight">
               {siteConfig.name}
-              <span className="text-brand">{siteConfig.logoSuffix}</span>
+              <span className="text-amber">{siteConfig.logoSuffix}</span>
             </span>
           </Link>
 
-          <nav aria-label="Primary" className="hidden xl:block">
-            <ul className="flex items-center gap-2">
+          <nav
+            aria-label="Primary"
+            className="hidden xl:absolute xl:left-1/2 xl:block xl:-translate-x-1/2"
+          >
+            <ul className="flex items-center gap-4 px-2 lg:gap-6">
               {navEntries.map((entry) => (
                 <li key={entry.label} className="group relative">
                   <Link
@@ -153,13 +152,20 @@ export function Header() {
                     aria-haspopup={entry.children ? 'true' : undefined}
                     className={cn(
                       // min-h keeps the hit area at 32px+ despite small type.
-                      'flex min-h-9 items-center gap-1.5 rounded-full px-3 label transition-colors',
+                      'relative flex min-h-9 items-center gap-1 text-sm font-normal tracking-tight transition-colors duration-300',
                       isActive(entry.href)
-                        ? 'text-brand'
-                        : 'text-muted-foreground group-hover:text-foreground hover:text-foreground',
+                        ? 'text-foreground'
+                        : 'text-foreground/70 group-hover:text-foreground hover:text-foreground',
                     )}
                   >
                     {entry.label}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        'absolute right-0 -bottom-2 left-0 h-px origin-left bg-foreground transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-x-100',
+                        isActive(entry.href) ? 'scale-x-100' : 'scale-x-0',
+                      )}
+                    />
                     {entry.children ? (
                       <span
                         aria-hidden="true"
@@ -172,7 +178,7 @@ export function Header() {
 
                   {entry.children ? (
                     <div className="invisible absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                      <ul className="w-64 overflow-hidden rounded-[22px] border border-border bg-popover p-2 shadow-elegant">
+                      <ul className="w-64 overflow-hidden rounded-xl border border-border bg-popover p-2 shadow-elegant">
                         {entry.children.map((child) => (
                           <li key={child.href + child.label}>
                             <Link
@@ -212,7 +218,7 @@ export function Header() {
 
             <Link
               href="/start-a-project"
-              className="hidden h-9 items-center rounded-full border border-border-strong px-4 font-mono text-[12px] font-medium tracking-[-0.01em] transition-colors hover:border-brand hover:text-brand sm:inline-flex"
+              className="hidden h-10 items-center bg-foreground px-6 text-[13px] font-medium tracking-tight text-background transition-opacity duration-300 hover:opacity-85 md:inline-flex"
             >
               Start a project
             </Link>
@@ -252,11 +258,11 @@ export function Header() {
         id="mobile-nav"
         ref={menuPanelRef}
         hidden={!menuOpen}
-        className="mx-auto w-full max-w-[64rem] px-4 pt-2 sm:px-6 xl:hidden"
+        className="mx-auto w-full max-w-[1600px] px-4 pt-2 md:px-8 xl:hidden"
       >
         <nav
           aria-label="Mobile"
-          className="overflow-hidden rounded-3xl border border-border bg-popover p-2 shadow-elegant"
+          className="overflow-hidden rounded-xl border border-border bg-popover p-2 shadow-elegant"
         >
           <ul className="flex flex-col">
             {navEntries.map((entry) => (
@@ -265,9 +271,9 @@ export function Header() {
                   href={entry.href}
                   aria-current={isActive(entry.href) ? 'page' : undefined}
                   className={cn(
-                    'flex min-h-12 items-center justify-between rounded-2xl px-4 font-mono text-xs tracking-[0.18em] uppercase transition-colors',
+                    'flex min-h-12 items-center justify-between rounded-lg px-4 text-xs tracking-[0.18em] uppercase transition-colors',
                     isActive(entry.href)
-                      ? 'bg-accent text-brand'
+                      ? 'bg-accent text-foreground'
                       : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                   )}
                 >

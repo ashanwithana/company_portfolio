@@ -123,7 +123,7 @@ void main() {
    * disappears when the light theme is active.
    */
   vec3 land = mix(vec3(1.0, 1.0, 1.0), vec3(0.10, 0.09, 0.11), uTheme);
-  vec3 sea = mix(vec3(0.60, 0.65, 0.80), vec3(0.32, 0.30, 0.36), uTheme);
+  vec3 sea = mix(vec3(0.58, 0.58, 0.60), vec3(0.34, 0.34, 0.34), uTheme);
 
   vec3 col = mix(sea, land, vMask) * depthGain;
   /*
@@ -141,7 +141,7 @@ void main() {
   float alpha = vMask * limb * (0.72 + 0.28 * vDepth)
               + (1.0 - vMask) * limb * mix(0.20 + 0.16 * vDepth, 0.36 + 0.20 * vDepth, uTheme);
 
-  // A small number of accent nodes pulse in the site's pink. They are scattered
+  // A small number of accent nodes pulse in the site's signal yellow. They are scattered
   // by attribute rather than derived from depth, so they stay sparse and evenly
   // distributed instead of pooling on the near face. Value 2 is the Colombo
   // home node: brighter and steadier than the rest.
@@ -206,7 +206,7 @@ function mulberry32(seed: number) {
 
 const POINT_COUNT = 24000
 const GLOBE_RADIUS = 1
-/** Number of pink accent nodes scattered across the landmasses. */
+/** Number of signal-yellow accent nodes scattered across the landmasses. */
 const ACCENT_TARGET = 8
 /**
  * Initial spin with Sri Lanka dead centre: the Colombo home pin opens in the
@@ -776,7 +776,7 @@ export function HeroVisual({ className }: { className?: string }) {
       gl.enableVertexAttribArray(lKind)
       gl.vertexAttribPointer(lKind, 1, gl.FLOAT, false, 0, 0)
       gl.uniformMatrix4fv(lMvp, false, mvp)
-      gl.uniform3f(lAccent, 0.89, 0.06, 0.51)
+      gl.uniform3f(lAccent, 0.949, 0.784, 0.067)
       gl.uniform1f(lTheme, themeRef.current)
 
       // Every strip draws in after load: each route traces itself from
@@ -808,7 +808,7 @@ export function HeroVisual({ className }: { className?: string }) {
       // Dot size in device pixels, derived from the backing-store height so the
       // halftone reads at the same visual density on any display.
       gl.uniform1f(pScale, canvas.height * 0.0042)
-      gl.uniform3f(pAccent, 0.89, 0.06, 0.51)
+      gl.uniform3f(pAccent, 0.949, 0.784, 0.067)
       gl.uniform1f(pTheme, themeRef.current)
       gl.drawArrays(gl.POINTS, 0, placed)
 

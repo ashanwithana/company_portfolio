@@ -4,21 +4,19 @@ import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
 /*
- * Buttons speak quietly: sentence case, 500 weight, no letter-spacing. The
- * reference reserves wide-tracked caps for eyebrows and labels; its buttons
- * ("Start a project") are small, tight pills. Shouty uppercase CTAs belonged
- * to the old design.
+ * Buttons are small, uppercase and tracked, with hairline outlines. The solid
+ * variant is plain ink on ground (white on black, black on paper): contrast is
+ * the only emphasis, so there is no coloured glow.
  */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2.5 rounded-full font-mono text-[12px] leading-[1.5] font-medium tracking-[-0.01em] transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
+  'inline-flex items-center justify-center gap-2.5 rounded-full font-sans text-[11px] leading-[1.5] font-normal tracking-[0.14em] uppercase transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
   {
     variants: {
       variant: {
-        primary:
-          'bg-brand text-brand-foreground shadow-[0_10px_30px_-12px_var(--brand)] hover:shadow-[0_16px_44px_-12px_var(--brand)] hover:brightness-110',
-        secondary: 'bg-primary text-primary-foreground hover:brightness-110',
+        primary: 'bg-foreground text-background hover:bg-foreground/85',
+        secondary: 'bg-accent text-foreground hover:bg-foreground/15',
         outline:
-          'border border-border-strong bg-transparent text-foreground hover:border-brand hover:text-brand',
+          'border border-border-strong bg-transparent text-foreground hover:border-foreground hover:bg-foreground/5',
         ghost: 'text-muted-foreground hover:bg-accent hover:text-foreground',
       },
       size: {
