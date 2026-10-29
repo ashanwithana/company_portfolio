@@ -42,7 +42,6 @@ export default function AboutPage() {
   return (
     <>
       <PageHeader
-        ghost="About"
         eyebrow="About"
         title="Seven people who would rather be right than fast."
         lede="Northlight is an independent product studio in Colombo. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."

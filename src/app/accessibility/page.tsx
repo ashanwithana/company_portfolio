@@ -48,7 +48,6 @@ export default function AccessibilityPage() {
   return (
     <>
       <PageHeader
-        ghost="A11y"
         eyebrow="Legal"
         title="Accessibility"
         lede="An inaccessible product is a broken product, so this is a standard we hold our own work to rather than a policy we wrote afterwards."

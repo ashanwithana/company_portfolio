@@ -3,7 +3,7 @@ import { Manifesto, type ManifestoLine } from '@/components/sections/manifesto'
 import { siteConfig } from '@/content/site'
 import { Method } from '@/components/sections/method'
 import { ServicesSnapshot } from '@/components/sections/services-snapshot'
-import { TalkToUs, CureBand } from '@/components/sections/talk-to-us'
+import { CureBand } from '@/components/sections/talk-to-us'
 import { methodSteps } from '@/content/method'
 
 /**
@@ -54,8 +54,6 @@ export default function HomePage() {
       </section>
 
       <ServicesSnapshot />
-
-      <TalkToUs />
 
       <CureBand />
     </>

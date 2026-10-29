@@ -31,7 +31,6 @@ export default function EnterprisePage() {
       <FaqSchema items={servicesFaqs} />
 
       <PageHeader
-        ghost="Enterprise"
         eyebrow="Enterprise systems"
         title="Start with the data, not the configuration."
         lede={enterpriseService.summary}

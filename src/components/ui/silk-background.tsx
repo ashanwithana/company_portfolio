@@ -43,6 +43,7 @@ uniform vec2 uMouse;
 uniform float uPointerVel;
 uniform float uScroll;
 uniform float uTheme; // 0 = dark, 1 = light
+uniform float uSeed; // shifts the pattern so neighbouring instances differ
 uniform float uFlip; // 0 = fade into the ground at the bottom, 1 = at the top
 
 vec3 permute(vec3 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -91,7 +92,7 @@ void main() {
   // Distance from the edge that dissolves into the page ground.
   float edgeY = mix(uv.y, 1.0 - uv.y, uFlip);
 
-  float t = uTime * 0.12;
+  float t = uTime * 0.12 + uSeed * 7.0;
 
   // Cursor pull: a soft, wide falloff that deepens when the pointer moves fast.
   float dist = length(p - uMouse);
@@ -188,10 +189,13 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
 export function SilkBackground({
   className,
   fadeEdge = 'bottom',
+  seed = 0,
 }: {
   className?: string
   /** Which edge dissolves into the page ground: bottom for a hero, top for a footer. */
   fadeEdge?: 'top' | 'bottom'
+  /** Offsets the pattern so several instances on one page do not look identical. */
+  seed?: number
 }) {
   const mounted = useIsMounted()
   const reducedMotion = useReducedMotion()
@@ -244,6 +248,8 @@ export function SilkBackground({
     const uScroll = gl.getUniformLocation(program, 'uScroll')
     const uTheme = gl.getUniformLocation(program, 'uTheme')
     const uFlip = gl.getUniformLocation(program, 'uFlip')
+    const uSeed = gl.getUniformLocation(program, 'uSeed')
+    gl.uniform1f(uSeed, seed)
     gl.uniform1f(uFlip, fadeEdge === 'top' ? 1 : 0)
 
     const resize = () => {
@@ -327,7 +333,7 @@ export function SilkBackground({
       gl.deleteShader(vs)
       gl.deleteShader(fs)
     }
-  }, [mounted, reducedMotion, fadeEdge])
+  }, [mounted, reducedMotion, fadeEdge, seed])
 
   const showCanvas = mounted && !reducedMotion && !failed
 

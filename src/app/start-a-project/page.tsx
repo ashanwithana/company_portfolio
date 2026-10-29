@@ -13,7 +13,6 @@ export default function StartAProjectPage() {
   return (
     <>
       <PageHeader
-        ghost="Start"
         eyebrow="Start a project"
         title="Tell us what you are building."
         lede="The more specific you are about the problem, the more useful our first reply will be. We will tell you honestly whether we are the right studio for it."

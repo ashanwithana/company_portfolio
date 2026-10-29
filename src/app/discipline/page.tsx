@@ -20,7 +20,6 @@ export default function MethodPage() {
   return (
     <>
       <PageHeader
-        ghost="Discipline"
         eyebrow="Discipline"
         title="How every engagement runs."
         className="pb-10 md:pb-14"
@@ -50,7 +49,6 @@ export default function MethodPage() {
       </PageSection>
 
       <CtaBand
-        ghost="Discovery"
         eyebrow="Discovery"
         title="Ready to see what is actually wrong?"
         body="Two weeks embedded with your team. You get the truth in writing, a plan with a fixed number — and the option to walk away with both."

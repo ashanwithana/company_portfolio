@@ -48,7 +48,6 @@ export default async function ServiceDetailPage({ params }: Params) {
 
   // Sibling services, so the page is a hub rather than a dead end.
   // Canonical practice pages are used where they exist.
-  const ghost = service.title.split(' ')[0] ?? service.title
   const others = services.filter((item) => item.slug !== service.slug)
   const paragraphs = service.body.split('\n\n')
 
@@ -57,7 +56,7 @@ export default async function ServiceDetailPage({ params }: Params) {
       <BreadcrumbSchema items={crumbs} />
       <FaqSchema items={servicesFaqs} />
 
-      <PageHeader ghost={ghost} eyebrow="Services" title={service.title} lede={service.summary} />
+      <PageHeader eyebrow="Services" title={service.title} lede={service.summary} />
 
       {/* Standing description plus the deliverables and stack card. */}
       <PageSection className="pt-0">

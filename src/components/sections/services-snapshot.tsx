@@ -26,10 +26,10 @@ export function ServicesSnapshot() {
     <section
       id="services"
       aria-labelledby="services-title"
-      className="relative border-t border-border py-24 md:py-32"
+      className="relative border-t border-border py-24 md:flex md:min-h-svh md:items-center md:py-16"
     >
-      <div className="container-page">
-        <div className="mb-10 flex flex-col gap-4 md:mb-14 md:gap-5">
+      <div className="container-page w-full">
+        <div className="mb-10 flex flex-col gap-4 md:mb-8 md:gap-4">
           <div className="flex items-center gap-4">
             <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
               04 / Services
@@ -44,7 +44,12 @@ export function ServicesSnapshot() {
           </h2>
         </div>
 
-        <ServicesIndex items={items} />
+        {/* Once the layout is side by side (container >= 1000px, i.e. viewport >=
+            1064px) the list and panel share one viewport-based height, so the whole
+            section fits on screen; narrower, it flows at natural height. */}
+        <div className="min-[1064px]:h-[clamp(28rem,calc(100svh-20rem),48rem)]">
+          <ServicesIndex items={items} />
+        </div>
       </div>
     </section>
   )

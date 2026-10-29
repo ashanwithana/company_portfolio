@@ -11,7 +11,6 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHeader
-        ghost="Privacy"
         eyebrow="Legal"
         title="Privacy"
         lede="Written to be read rather than to be legally impenetrable. If something here is unclear, ask and we will explain it."

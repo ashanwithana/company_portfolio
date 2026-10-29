@@ -18,7 +18,6 @@ export default function ContactPage() {
       <FaqSchema items={contactFaqs} />
 
       <PageHeader
-        ghost="Answers"
         eyebrow="FAQ"
         title="Questions, answered."
         lede="Starting a project instead? That lives on its own page."

@@ -17,7 +17,6 @@ export default function ServicesPage() {
   return (
     <>
       <PageHeader
-        ghost="Services"
         eyebrow="Services"
         title="A deliberately narrow practice."
         lede="We could offer everything. We do not, because the value of working with us is that everyone here has done the specific thing you need before. Each service below has been delivered dozens of times, not once."

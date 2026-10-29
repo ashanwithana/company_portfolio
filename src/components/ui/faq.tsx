@@ -55,11 +55,6 @@ export function FaqSection({
 }) {
   return (
     <section aria-labelledby="faq-heading" className="relative overflow-hidden py-24 md:py-28">
-      <div
-        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
-        aria-hidden="true"
-      />
-
       <div className="relative container-page grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
         <div>
           <p className="flex items-center gap-3 label text-muted-foreground">

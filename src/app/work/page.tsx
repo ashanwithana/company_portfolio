@@ -13,7 +13,6 @@ export default function WorkPage() {
   return (
     <>
       <PageHeader
-        ghost="Work"
         eyebrow="Selected work"
         title="Every project, told plainly."
         lede="The problem it started with, what we did about it, and what we can honestly say changed."

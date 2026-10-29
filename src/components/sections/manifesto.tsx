@@ -4,6 +4,8 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import type { MotionValue } from 'motion/react'
 import * as React from 'react'
 
+import { cn } from '@/lib/utils'
+
 export type ManifestoLine = {
   /** One line of the statement. */
   text: string
@@ -17,6 +19,12 @@ type ManifestoProps = {
   label?: string
   /** Short terms listed beside the label; each lights up as the scroll passes it. */
   keywords?: readonly string[]
+  /** Anchor id. Must be unique per page when the component is used more than once. */
+  id?: string
+  /** Accessible name of the section. */
+  ariaLabel?: string
+  /** Height of the scroll track; the pinned stage is one viewport of it. */
+  trackClassName?: string
 }
 
 /** Share of the track used for the reveal; the rest is a beat on the finished text. */
@@ -37,7 +45,14 @@ const REVEAL_SPAN = 0.85
  * readable without JavaScript and by assistive technology. With reduced motion
  * the statement is shown solid and the track collapses to an ordinary section.
  */
-export function Manifesto({ lines, label = '02 / Manifesto', keywords = [] }: ManifestoProps) {
+export function Manifesto({
+  lines,
+  label = '02 / Manifesto',
+  keywords = [],
+  id = 'manifesto',
+  ariaLabel = 'Manifesto',
+  trackClassName = 'h-[250vh]',
+}: ManifestoProps) {
   const track = React.useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({
@@ -48,10 +63,10 @@ export function Manifesto({ lines, label = '02 / Manifesto', keywords = [] }: Ma
 
   return (
     <section
-      id="manifesto"
+      id={id}
       ref={track}
-      aria-label="Manifesto"
-      className={reduced ? 'relative border-t border-border py-24' : 'relative h-[250vh]'}
+      aria-label={ariaLabel}
+      className={reduced ? 'relative border-t border-border py-24' : cn('relative', trackClassName)}
     >
       {/* Page rails */}
       <div

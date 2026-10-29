@@ -26,7 +26,6 @@ export default function AiPage() {
       <FaqSchema items={aiFaqs} />
 
       <PageHeader
-        ghost="AI"
         eyebrow="AI engineering"
         title="We build the evaluation harness first."
         lede="Most AI projects fail quietly. A retrieval system produces a confident, fluent, wrong answer and nobody notices until a customer does. Our approach is to make that impossible: measure before you ship, keep every answer traceable, and let the system say it does not know."

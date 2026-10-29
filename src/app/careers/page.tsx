@@ -24,7 +24,6 @@ export default function CareersPage() {
       <FaqSchema items={careersFaqs} />
 
       <PageHeader
-        ghost="Careers"
         eyebrow="Careers"
         title="Seven people, deliberately not seventy."
         lede="We stay small enough that everyone knows every project, which means we can hire slowly and well. Everything here is async-first, with two weeks a year in the studio together."

@@ -11,6 +11,7 @@ import {
   type MotionValue,
 } from 'motion/react'
 
+import { SilkBackground } from '@/components/ui/silk-background'
 import { cn } from '@/lib/utils'
 
 export type MethodStep = {
@@ -183,6 +184,36 @@ function useSheetFill(progress: MotionValue<number>, index: number, count: numbe
 type FillSource = { progress: MotionValue<number>; index: number; count: number }
 
 /**
+ * Renders its children only while the box is within about a screen of the
+ * viewport, and unmounts them again once it is well clear. The silk layer owns
+ * a WebGL context, and a page with a dozen live ones wastes memory even when
+ * each is paused, so cards far from view hold no context at all.
+ */
+function WhenNear({ children }: { children: React.ReactNode }) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const [near, setNear] = React.useState(false)
+
+  React.useEffect(() => {
+    const node = ref.current
+    if (!node || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver(
+      ([entry]) => setNear(entry?.isIntersecting ?? false),
+      {
+        rootMargin: '50% 100% 50% 100%',
+      },
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      {near ? children : null}
+    </div>
+  )
+}
+
+/**
  * One phase as a sheet. Title and numeral are drawn as outlines; when a
  * `fill` source is supplied they fill with ink left to right as the sheet
  * arrives. Without one (the /discipline page, the reduced-motion stack) the
@@ -206,10 +237,22 @@ export function PhaseSheet({
     <article
       aria-label={`Phase ${step.numeral}: ${step.word}`}
       className={cn(
-        'group relative flex min-h-[300px] flex-col justify-between overflow-hidden border border-border bg-foreground/[0.02] p-6 transition-colors duration-700 hover:border-border-strong md:p-8 lg:p-10',
+        'group relative isolate flex min-h-[300px] flex-col justify-between overflow-hidden border border-border p-6 transition-colors duration-700 hover:border-border-strong md:p-8 lg:p-10',
         className,
       )}
     >
+      {/* Silk only on the home rail (the cards that carry a scroll fill). The
+          /discipline page and the reduced-motion stack stay plain. */}
+      {fill ? (
+        <WhenNear>
+          <SilkBackground className="opacity-80" seed={Number.parseInt(step.numeral, 10) || 0} />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/5 to-transparent"
+          />
+        </WhenNear>
+      ) : null}
+
       <div className="flex items-start justify-between gap-6">
         <span
           aria-hidden="true"

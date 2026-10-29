@@ -37,7 +37,6 @@ export default function InsightsPage() {
   return (
     <>
       <PageHeader
-        ghost="Insights"
         eyebrow="Insights"
         title="Notes from the work."
         lede="Written when we learn something worth passing on. No drip sequences, no content calendar — if there is nothing interesting, we do not write."

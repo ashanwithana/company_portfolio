@@ -2,8 +2,6 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { Eyebrow } from '@/components/ui/badge'
-import { GhostWord } from '@/components/ui/ghost-word'
-import { Starfield } from '@/components/ui/starfield'
 import { cn } from '@/lib/utils'
 
 export type Crumb = {
@@ -79,57 +77,25 @@ export function BreadcrumbSchema({ items }: { items: Crumb[] }) {
 /**
  * Page-level hero used at the top of every inner page.
  *
- * `ghost` repeats the eyebrow as oversized background type, which ties every
- * inner page to the home page's visual language without a bespoke illustration.
- * It is sized against the content box (see GhostWord) so it never crops.
+ * Plain on the page ground: no background effects, so inner pages stay quiet and
+ * the type does the work.
  */
 export function PageHeader({
   eyebrow,
   title,
   lede,
-  ghost,
   children,
   className,
 }: {
   eyebrow: string
   title: string
   lede?: string
-  ghost?: string
   children?: ReactNode
   className?: string
 }) {
   return (
     <header className={cn('relative overflow-hidden pt-36 pb-16 md:pt-44 md:pb-24', className)}>
-      <div
-        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-50"
-        aria-hidden="true"
-      />
-      {/* Galaxy dust behind every inner page header. */}
-      <Starfield count={70} className="mask-fade-radial opacity-50" />
-      {/* A breath of the hero aurora, scaled down for inner pages. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[70%] overflow-hidden opacity-50"
-        style={{
-          maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
-        }}
-      >
-        <div
-          className="absolute -inset-x-[10%] top-[-35%] h-[75%] rotate-[-14deg] blur-2xl"
-          style={{
-            background:
-              'linear-gradient(to right, transparent 10%, color-mix(in oklab, var(--brand) 12%, transparent) 35%, color-mix(in oklab, var(--primary) 15%, transparent) 60%, transparent 90%)',
-            backgroundSize: '220% 100%',
-            animation:
-              'aurora-sway 16s ease-in-out infinite alternate, aurora-flow 13s ease-in-out infinite alternate',
-          }}
-        />
-      </div>
-
-      <div className="@container relative container-page">
-        {ghost ? <GhostWord word={ghost} className="-top-[0.14em]" /> : null}
-
+      <div className="relative container-page">
         <Eyebrow accent className="relative">
           {eyebrow}
         </Eyebrow>
@@ -153,22 +119,13 @@ export function PageSection({
   children,
   className,
   tone = 'default',
-  dotGrid = false,
 }: {
   children: ReactNode
   className?: string
   tone?: 'default' | 'muted'
-  dotGrid?: boolean
 }) {
   return (
     <section className={cn('relative py-20 md:py-28', tone === 'muted' && 'bg-muted', className)}>
-      {dotGrid ? (
-        <div
-          className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
-          aria-hidden="true"
-        />
-      ) : null}
-
       <div className="relative container-page">{children}</div>
     </section>
   )

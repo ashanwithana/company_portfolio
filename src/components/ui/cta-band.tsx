@@ -1,6 +1,5 @@
 import { Eyebrow } from '@/components/ui/badge'
 import { ButtonLink } from '@/components/ui/button'
-import { GhostWord } from '@/components/ui/ghost-word'
 import { cn } from '@/lib/utils'
 
 /**
@@ -14,7 +13,6 @@ export function CtaBand({
   eyebrow,
   title,
   body,
-  ghost,
   href = '/start-a-project',
   actionLabel = 'Start a project',
   secondary,
@@ -23,7 +21,6 @@ export function CtaBand({
   eyebrow: string
   title: string
   body: string
-  ghost?: string
   href?: string
   actionLabel?: string
   secondary?: { href: string; label: string }
@@ -34,16 +31,11 @@ export function CtaBand({
       className={cn('relative overflow-hidden border-t border-border py-28 md:py-36', className)}
     >
       <div
-        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-70"
-        aria-hidden="true"
-      />
-      <div
         className="pointer-events-none absolute -top-40 left-1/2 h-96 w-[60rem] -translate-x-1/2 bg-[var(--gradient-glow)] opacity-50 blur-3xl"
         aria-hidden="true"
       />
 
-      <div className="@container relative container-page text-center">
-        {ghost ? <GhostWord word={ghost} placement="center" className="-bottom-[0.12em]" /> : null}
+      <div className="relative container-page text-center">
         <div className="mx-auto max-w-3xl">
           <Eyebrow accent className="justify-center">
             {eyebrow}
