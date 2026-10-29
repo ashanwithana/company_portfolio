@@ -54,7 +54,7 @@ export function Hero() {
       {/* Content, centred in the space above the footer row */}
       <div className="relative z-20 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-4 pt-24 md:px-8">
         <h1 className="text-[clamp(3rem,8vw,9rem)] leading-[0.85] font-thin tracking-tighter uppercase">
-          <HeadlineReveal text={'Get it built right\nthe first time.'} emphasizeLast />
+          <HeadlineReveal text={'Elegantly designed.\nRigorously built.'} emphasizeLast />
         </h1>
 
         <div className="mt-8 flex flex-col items-start gap-12 md:mt-16 md:pl-2">

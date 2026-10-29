@@ -15,7 +15,7 @@ export const siteConfig = {
   title: 'SketchLabs — Product studio & software engineering',
   tagline: 'Sketched with intent. Engineered to endure.',
   description:
-    'SketchLabs is a product studio and software engineering partner. We take ambitious ideas from first sketch to production, and ship software that holds up in the real world.',
+    'A Colombo studio for product design, software and AI engineering. Considered work, from first sketch to production, for teams that hold their software to a higher standard.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',
   locale: 'en_LK',
   email: 'hello@sketchlabs.example.lk',
