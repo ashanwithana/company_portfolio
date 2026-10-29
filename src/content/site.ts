@@ -13,7 +13,7 @@ export const siteConfig = {
   /** Appended after the name in the logo lockup, e.g. "Northlight." */
   logoSuffix: '.',
   title: 'SketchLabs — Product studio & software engineering',
-  tagline: 'We design and build software that earns its place.',
+  tagline: 'Sketched with intent. Engineered to endure.',
   description:
     'SketchLabs is a product studio and software engineering partner. We take ambitious ideas from first sketch to production, and ship software that holds up in the real world.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',

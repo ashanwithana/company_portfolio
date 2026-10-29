@@ -64,7 +64,7 @@ export default async function OpengraphImage() {
             letterSpacing: '-0.03em',
           }}
         >
-          Software that earns its place.
+          {siteConfig.tagline}
         </div>
         <div style={{ display: 'flex', fontSize: 28, color: '#a1a1aa' }}>
           Product studio &amp; software engineering · {siteConfig.address.city}

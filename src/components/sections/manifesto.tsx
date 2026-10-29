@@ -202,7 +202,7 @@ function Line({
           key={`${word}-${i}`}
           className={
             tone === 'outline'
-              ? `mr-[0.26em] inline-block text-transparent ${strong ? 'font-bold' : 'font-thin'}`
+              ? `mr-[0.26em] inline-block text-background ${strong ? 'font-bold' : 'font-thin'}`
               : `mr-[0.26em] inline-block ${strong ? 'font-bold text-foreground' : 'font-thin text-foreground/50'}`
           }
         >
@@ -219,7 +219,7 @@ function Line({
     <span className="relative block">
       <span
         aria-hidden="true"
-        className="block [-webkit-text-stroke:1px_color-mix(in_oklab,var(--foreground)_28%,transparent)]"
+        className="block [-webkit-text-stroke:2px_color-mix(in_oklab,var(--foreground)_34%,transparent)] [paint-order:stroke_fill]"
       >
         {renderWords('outline')}
       </span>

@@ -117,11 +117,15 @@ export function Footer() {
     { href: '/faq', label: 'FAQ' },
   ]
 
-  // Tagline split so its last two words take the heavier weight, as DAQ sets
-  // "Intelligence Architects." with the second word emphasised.
+  // The tagline's closing sentence takes the heavier weight, as DAQ sets
+  // "Intelligence Architects." with its second word emphasised. A one-sentence
+  // tagline falls back to emphasising its last two words.
+  const sentences = siteConfig.tagline.split(/(?<=[.!?])\s+/)
   const taglineWords = siteConfig.tagline.split(' ')
-  const taglineLead = taglineWords.slice(0, -2).join(' ')
-  const taglineTail = taglineWords.slice(-2).join(' ')
+  const taglineLead =
+    sentences.length > 1 ? sentences.slice(0, -1).join(' ') : taglineWords.slice(0, -2).join(' ')
+  const taglineTail =
+    sentences.length > 1 ? (sentences.at(-1) ?? '') : taglineWords.slice(-2).join(' ')
 
   return (
     <footer className="no-print relative isolate flex min-h-svh flex-col overflow-hidden border-t border-border selection:bg-foreground selection:text-background">

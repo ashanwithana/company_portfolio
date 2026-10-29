@@ -15,7 +15,7 @@ import { SilkBackground } from '@/components/ui/silk-background'
 import { cn } from '@/lib/utils'
 
 export type MethodStep = {
-  /** Display word, e.g. "Observe". */
+  /** Display word, e.g. "Immerse". */
   word: string
   /** Two-digit numeral, e.g. "01". */
   numeral: string
@@ -144,9 +144,9 @@ function Journey({ steps, showIntro }: { steps: readonly MethodStep[]; showIntro
               </SectionLabel>
             </div>
             <h2 className="text-[clamp(2.4rem,5.6vw,5.6rem)] leading-[0.92] font-thin tracking-tighter uppercase">
-              How every engagement
+              Six phases.
               <br />
-              <span className="font-bold">runs.</span>
+              <span className="font-bold">One standard.</span>
             </h2>
           </div>
         ) : null}
@@ -371,9 +371,9 @@ function PlainStack({ steps, showIntro }: { steps: readonly MethodStep[]; showIn
               <SectionLabel>03 / Discipline</SectionLabel>
             </div>
             <h2 className="text-[clamp(2.4rem,5.6vw,5.6rem)] leading-[0.92] font-thin tracking-tighter uppercase">
-              How every engagement
+              Six phases.
               <br />
-              <span className="font-bold">runs.</span>
+              <span className="font-bold">One standard.</span>
             </h2>
           </div>
         ) : null}
