@@ -49,7 +49,7 @@ export function Footer() {
       {/* Invitation: the email address set as display type. */}
       <div className="relative container-page pt-20 pb-14 sm:pt-28 sm:pb-20">
         <p className="label text-muted-foreground">
-          <span className="text-foreground">04</span> / Contact
+          <span className="text-foreground">05</span> / Contact
         </p>
         <a href={`mailto:${siteConfig.email}`} className="group mt-8 block">
           <span className="block display-md text-muted-foreground">Write to us</span>

@@ -4,32 +4,47 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import type { MotionValue } from 'motion/react'
 import * as React from 'react'
 
-type ManifestoProps = {
-  /** The statement. Split on whitespace; each word lights up in turn. */
+export type ManifestoLine = {
+  /** One line of the statement. */
   text: string
-  /** Small ordinal + label above the statement, e.g. "02 / Manifesto". */
-  label?: string
+  /** How many trailing words are set bold against the thin rest. */
+  strongWords?: number
 }
+
+type ManifestoProps = {
+  lines: readonly ManifestoLine[]
+  /** Section label, e.g. "02 / Manifesto". */
+  label?: string
+  /** Short terms listed beside the label; each lights up as the scroll passes it. */
+  keywords?: readonly string[]
+}
+
+/** Share of the track used for the reveal; the rest is a beat on the finished text. */
+const REVEAL_SPAN = 0.85
 
 /**
  * Scroll-pinned manifesto.
  *
- * A tall track holds a sticky, viewport-high stage. As the track scrolls past,
- * the statement's words go from dim to full ink one after another, so reading
- * speed is set by scroll speed. The text is real, selectable DOM the whole
- * time (only opacity changes), so it is readable without JavaScript and by
- * assistive technology. With reduced motion the statement is shown at full
- * strength and the track collapses to a normal section.
+ * A 250vh track holds a sticky, viewport-high stage, framed by faint vertical
+ * rails. The statement is set thin and uppercase as outlined type; a solid
+ * copy of each line is revealed over it by a mask that sweeps left to right,
+ * one line after another, as the track scrolls past. Trailing words are bold.
+ * Above it, the label's rule fills with progress and the keyword list lights
+ * up in turn.
+ *
+ * The solid layer holds the real text and is always in the DOM; the outline
+ * layer is aria-hidden. Only a mask and opacities change, so the statement is
+ * readable without JavaScript and by assistive technology. With reduced motion
+ * the statement is shown solid and the track collapses to an ordinary section.
  */
-export function Manifesto({ text, label = '02 / Manifesto' }: ManifestoProps) {
+export function Manifesto({ lines, label = '02 / Manifesto', keywords = [] }: ManifestoProps) {
   const track = React.useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({
     target: track,
     offset: ['start start', 'end end'],
   })
-
-  const words = text.split(/\s+/).filter(Boolean)
+  const ruleScale = useTransform(scrollYProgress, [0, REVEAL_SPAN], [0, 1], { clamp: true })
 
   return (
     <section
@@ -38,27 +53,70 @@ export function Manifesto({ text, label = '02 / Manifesto' }: ManifestoProps) {
       aria-label="Manifesto"
       className={reduced ? 'relative border-t border-border py-24' : 'relative h-[250vh]'}
     >
+      {/* Page rails */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 mx-auto flex w-full max-w-[1600px] justify-center px-4 md:px-8"
+      >
+        <div className="h-full w-full border-x border-foreground/5" />
+      </div>
+
       <div
         className={
           reduced
-            ? 'container-page'
-            : 'sticky top-0 flex h-[100svh] items-center border-t border-border'
+            ? 'relative z-10 mx-auto w-full max-w-[1600px] px-4 md:px-8'
+            : 'sticky top-0 h-[100svh] w-full overflow-hidden border-t border-border'
         }
       >
-        <div className={reduced ? '' : 'container-page'}>
-          <p className="mb-10 label text-muted-foreground">{label}</p>
+        <div
+          className={
+            reduced
+              ? ''
+              : 'relative z-10 mx-auto flex h-full w-full max-w-[1600px] flex-col justify-center px-4 md:px-8'
+          }
+        >
+          <div className="mb-6 flex items-center justify-between gap-6 md:mb-10">
+            <div className="flex flex-1 items-center gap-4">
+              <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+                {label}
+              </span>
+              <span aria-hidden="true" className="relative h-px max-w-[280px] flex-1 bg-border">
+                {reduced ? null : (
+                  <motion.span
+                    style={{ scaleX: ruleScale }}
+                    className="absolute inset-0 origin-left bg-foreground/40"
+                  />
+                )}
+              </span>
+            </div>
 
-          <p className="max-w-6xl text-[clamp(1.75rem,4.4vw,4rem)] leading-[1.08] font-extralight tracking-[-0.03em]">
-            {words.map((word, index) => (
-              <Word
-                key={`${word}-${index}`}
+            {keywords.length > 0 ? (
+              <ol aria-hidden="true" className="hidden items-center gap-7 xl:flex">
+                {keywords.map((keyword, index) => (
+                  <Keyword
+                    key={keyword}
+                    progress={scrollYProgress}
+                    index={index}
+                    total={keywords.length}
+                    settled={Boolean(reduced)}
+                  >
+                    {keyword}
+                  </Keyword>
+                ))}
+              </ol>
+            ) : null}
+          </div>
+
+          <p className="max-w-[1400px] text-[clamp(1.7rem,4.8vw,4.8rem)] leading-[1.04] tracking-tight text-balance uppercase">
+            {lines.map((line, index) => (
+              <Line
+                key={line.text}
+                line={line}
                 progress={scrollYProgress}
                 index={index}
-                total={words.length}
+                total={lines.length}
                 settled={Boolean(reduced)}
-              >
-                {word}
-              </Word>
+              />
             ))}
           </p>
         </div>
@@ -67,7 +125,7 @@ export function Manifesto({ text, label = '02 / Manifesto' }: ManifestoProps) {
   )
 }
 
-function Word({
+function Keyword({
   children,
   progress,
   index,
@@ -80,16 +138,82 @@ function Word({
   total: number
   settled: boolean
 }) {
-  // Reveal across the first 80% of the track so the last words finish before
-  // the stage unpins and the reader has a beat with the full statement.
-  const span = 0.8
-  const start = (index / total) * span
-  const end = start + span / total
-  const opacity = useTransform(progress, [start, end], [0.14, 1])
+  const start = (index / total) * REVEAL_SPAN
+  const end = ((index + 1) / total) * REVEAL_SPAN
+  const opacity = useTransform(progress, [start, end], [0.25, 1])
 
   return (
-    <>
-      <motion.span style={settled ? undefined : { opacity }}>{children}</motion.span>{' '}
-    </>
+    <motion.li
+      style={settled ? undefined : { opacity }}
+      className="flex items-center gap-3 font-mono text-[10px] tracking-[0.22em] uppercase"
+    >
+      <span aria-hidden="true" className="h-px w-5 bg-foreground" />
+      {children}
+    </motion.li>
+  )
+}
+
+function Line({
+  line,
+  progress,
+  index,
+  total,
+  settled,
+}: {
+  line: ManifestoLine
+  progress: MotionValue<number>
+  index: number
+  total: number
+  settled: boolean
+}) {
+  const words = line.text.split(/\s+/).filter(Boolean)
+  const strongFrom = words.length - (line.strongWords ?? 1)
+
+  // Each line owns an equal slice of the reveal span. Within its slice the
+  // mask edge travels from just left of the line to just past its right end.
+  const start = (index / total) * REVEAL_SPAN
+  const end = ((index + 1) / total) * REVEAL_SPAN
+  const edge = useTransform(progress, [start, end], [-12, 112], { clamp: true })
+  const mask = useTransform(
+    edge,
+    (e: number) => `linear-gradient(100deg, #000 ${e}%, transparent ${e + 9}%)`,
+  )
+
+  const renderWords = (tone: 'outline' | 'solid') =>
+    words.map((word, i) => {
+      const strong = i >= strongFrom
+      return (
+        <span
+          key={`${word}-${i}`}
+          className={
+            tone === 'outline'
+              ? `mr-[0.26em] inline-block text-transparent ${strong ? 'font-bold' : 'font-thin'}`
+              : `mr-[0.26em] inline-block ${strong ? 'font-bold text-foreground' : 'font-thin text-foreground/50'}`
+          }
+        >
+          {word}
+        </span>
+      )
+    })
+
+  if (settled) {
+    return <span className="block">{renderWords('solid')}</span>
+  }
+
+  return (
+    <span className="relative block">
+      <span
+        aria-hidden="true"
+        className="block [-webkit-text-stroke:1px_color-mix(in_oklab,var(--foreground)_28%,transparent)]"
+      >
+        {renderWords('outline')}
+      </span>
+      <motion.span
+        style={{ maskImage: mask, WebkitMaskImage: mask }}
+        className="absolute inset-0 block"
+      >
+        {renderWords('solid')}
+      </motion.span>
+    </span>
   )
 }

@@ -42,7 +42,7 @@ export default function AiPage() {
               <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{principle.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{principle.body}</p>
-                <p className="mt-5 border-t border-border pt-4 label leading-relaxed text-brand">
+                <p className="mt-5 border-t border-border pt-4 text-[13px] leading-relaxed font-light text-foreground/80">
                   {principle.evidence}
                 </p>
               </div>

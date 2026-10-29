@@ -1,60 +1,50 @@
-import Link from 'next/link'
-
-import { GhostWord } from '@/components/ui/ghost-word'
-import { Reveal } from '@/components/ui/reveal'
+import { ServicesIndex, type ServicesIndexItem } from '@/components/sections/services-index'
 import { services } from '@/content/services'
+
+/** How many tags the reading panel shows per service. */
+const TAG_LIMIT = 5
 
 /**
  * "What we do."
  *
- * The homepage's services snapshot between the discipline and the contact beat:
- * one ruled row per capability in the site's editorial voice — number, title,
- * summary, arrow. No cards, no colour washes; the hairline rules and hover
- * nudge match the rest of the page.
+ * The home page's services section: a numbered label with a hairline rule, a
+ * large light heading, then the services index (a list of subjects beside a
+ * reading panel). Everything is read from the same `services` content module as
+ * the services pages and the nav, so the list can never drift from the routes.
+ * Services without a tool stack fall back to their deliverables for the tag row.
  */
 export function ServicesSnapshot() {
+  const items: ServicesIndexItem[] = services.map((service) => ({
+    slug: service.slug,
+    title: service.title,
+    summary: service.summary,
+    href: service.canonicalHref ?? `/services/${service.slug}`,
+    tags: (service.stack ?? service.deliverables).slice(0, TAG_LIMIT),
+  }))
+
   return (
-    <section aria-label="What we do" className="relative overflow-hidden bg-muted py-24 md:py-32">
-      <div
-        className="pointer-events-none absolute inset-0 dot-grid mask-fade-radial opacity-60"
-        aria-hidden="true"
-      />
-
-      <div className="relative container-page">
-        <header className="@container relative text-center">
-          <GhostWord word="Services" placement="center" className="-top-[0.14em]" />
-          <p className="relative text-center label-wide text-muted-foreground">
-            <span aria-hidden="true">[</span> <span className="text-foreground">Services</span>{' '}
-            <span aria-hidden="true">]</span>
-          </p>
-
-          <h2 className="relative mx-auto mt-5 max-w-3xl display-lg">What we do.</h2>
-        </header>
-
-        <div className="mx-auto mt-14 max-w-4xl md:mt-20">
-          {services.map((service, i) => (
-            <Reveal key={service.slug} delay={i * 50}>
-              <Link
-                href={service.canonicalHref ?? `/services/${service.slug}`}
-                className="group grid items-baseline gap-2 border-t border-border py-7 transition-transform duration-500 ease-out last:border-b hover:translate-x-2 md:grid-cols-[minmax(0,4rem)_minmax(0,1fr)_minmax(0,1fr)_auto] md:gap-8 md:py-8"
-              >
-                <span className="label text-[0.6rem] text-brand tabular-nums">
-                  {(i + 1).toString().padStart(2, '0')}
-                </span>
-                <span className="display-sm">{service.title}</span>
-                <span className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                  {service.summary}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="hidden text-xl text-muted-foreground transition-[transform,color] duration-300 group-hover:translate-x-1 group-hover:text-foreground md:block"
-                >
-                  →
-                </span>
-              </Link>
-            </Reveal>
-          ))}
+    <section
+      id="services"
+      aria-labelledby="services-title"
+      className="relative border-t border-border py-24 md:py-32"
+    >
+      <div className="container-page">
+        <div className="mb-10 flex flex-col gap-4 md:mb-14 md:gap-5">
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+              04 / Services
+            </span>
+            <span aria-hidden="true" className="h-px max-w-[240px] flex-1 bg-border" />
+          </div>
+          <h2
+            id="services-title"
+            className="text-[clamp(2.1rem,4.6vw,4.25rem)] leading-[0.95] font-light tracking-tight"
+          >
+            What we do.
+          </h2>
         </div>
+
+        <ServicesIndex items={items} />
       </div>
     </section>
   )

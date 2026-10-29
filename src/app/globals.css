@@ -325,6 +325,8 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
+    /* Light by default, as the reference sets it; emphasis is opted into. */
+    font-weight: 300;
     overflow-x: clip;
   }
 
@@ -345,6 +347,12 @@
 
   p {
     text-wrap: pretty;
+  }
+
+  /* `bolder` from a 300 body only reaches 400; state the emphasis weight. */
+  b,
+  strong {
+    font-weight: 600;
   }
 
   ::selection {
@@ -384,19 +392,12 @@
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 88rem;
-  padding-inline: 1.25rem;
+  /* Same column as the header and the home sections: 1600px, 16px / 32px gutters. */
+  max-width: 100rem;
+  padding-inline: 1rem;
 
-  @media (width >= 40rem) {
+  @media (width >= 48rem) {
     padding-inline: 2rem;
-  }
-
-  @media (width >= 64rem) {
-    padding-inline: 3rem;
-  }
-
-  @media (width >= 80rem) {
-    padding-inline: 4.5rem;
   }
 }
 

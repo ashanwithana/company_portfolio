@@ -200,7 +200,7 @@ export default function InsightsPage() {
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
                     {pattern.summary}
                   </p>
-                  <p className="mt-4 border-t border-border pt-4 label leading-relaxed text-brand">
+                  <p className="mt-4 border-t border-border pt-4 text-[13px] leading-relaxed font-light text-foreground/80">
                     {pattern.tradeoff}
                   </p>
                 </Link>
