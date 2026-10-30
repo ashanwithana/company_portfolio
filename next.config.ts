@@ -1,4 +1,8 @@
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 import type { NextConfig } from 'next'
+
+// Lets `next dev` read Cloudflare bindings; a no-op for the build itself.
+initOpenNextCloudflareForDev()
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

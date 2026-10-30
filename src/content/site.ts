@@ -18,7 +18,7 @@ export const siteConfig = {
     'A Colombo studio for product design, software and AI engineering. Considered work, from first sketch to production, for teams that hold their software to a higher standard.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',
   locale: 'en_LK',
-  email: 'hello@sketchlabs.example.lk',
+  email: 'hello@thesketchlabs.com',
   phone: '+94 11 234 5678',
   /** HQ used in the footer and contact page. */
   location: 'Colombo, Sri Lanka',
