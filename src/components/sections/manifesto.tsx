@@ -25,6 +25,8 @@ type ManifestoProps = {
   ariaLabel?: string
   /** Height of the scroll track; the pinned stage is one viewport of it. */
   trackClassName?: string
+  /** Optional content set under the statement, inside the pinned stage. */
+  children?: React.ReactNode
 }
 
 /** Share of the track used for the reveal; the rest is a beat on the finished text. */
@@ -52,6 +54,7 @@ export function Manifesto({
   id = 'manifesto',
   ariaLabel = 'Manifesto',
   trackClassName = 'h-[250vh]',
+  children,
 }: ManifestoProps) {
   const track = React.useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
@@ -134,6 +137,8 @@ export function Manifesto({
               />
             ))}
           </p>
+
+          {children}
         </div>
       </div>
     </section>

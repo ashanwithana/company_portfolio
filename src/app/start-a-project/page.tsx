@@ -26,7 +26,7 @@ export default function StartAProjectPage() {
           {/* Availability */}
           <aside className="space-y-8 lg:pt-2">
             <Reveal>
-              <div className="rounded-3xl border border-border bg-card/40 p-7">
+              <div className="border border-border bg-card/40 p-7">
                 <p className="label text-brand">{contactContent.availability.badge}</p>
                 <p className="mt-5 leading-relaxed text-muted-foreground">
                   {contactContent.availability.body}

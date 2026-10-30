@@ -23,7 +23,7 @@ export default function NotFound() {
       </p>
 
       <nav aria-label="Site sections" className="mt-12">
-        <ul className="grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {primaryNav.map((item) => (
             <li key={item.href}>
               <Link
@@ -47,7 +47,7 @@ export default function NotFound() {
             <li key={service.slug}>
               <Link
                 href={`/services/${service.slug}`}
-                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 label transition-colors hover:border-border-strong"
+                className="inline-flex min-h-9 items-center border border-border px-4 label transition-colors hover:border-border-strong"
               >
                 {service.title}
               </Link>

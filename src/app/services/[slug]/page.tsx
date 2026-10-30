@@ -77,7 +77,7 @@ export default async function ServiceDetailPage({ params }: Params) {
           </Prose>
 
           <aside className="lg:sticky lg:top-28 lg:self-start">
-            <div className="rounded-3xl border border-border bg-card/40 p-7">
+            <div className="border border-border bg-card/40 p-7">
               <h2 className="label text-muted-foreground">What you get</h2>
               <ul className="mt-4 space-y-3">
                 {service.deliverables.map((item) => (
@@ -161,7 +161,7 @@ export default async function ServiceDetailPage({ params }: Params) {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {service.wrongWhen.map((item, index) => (
               <Reveal key={item.title} delay={index * 50}>
-                <div className="h-full rounded-3xl border border-border bg-background p-7">
+                <div className="h-full border border-border bg-background p-7">
                   <h3 className="text-xl leading-snug">{item.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
                 </div>
@@ -182,7 +182,7 @@ export default async function ServiceDetailPage({ params }: Params) {
         <div className="container-page py-14">
           <h2 className="label text-muted-foreground">Other services</h2>
 
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-3">
+          <ul className="mt-8 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-3">
             {others.map((other, index) => (
               <li key={other.slug}>
                 <Reveal delay={index * 50} y={12}>

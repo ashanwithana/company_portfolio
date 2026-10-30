@@ -5,7 +5,7 @@ import { clients } from '@/content/company'
 export function ClientLogos() {
   return (
     <Reveal>
-      <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+      <ul className="grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
         {clients.map((client) => (
           <li
             key={client.name}

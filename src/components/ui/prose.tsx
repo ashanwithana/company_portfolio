@@ -24,8 +24,8 @@ export function Prose({ children, className }: { children: ReactNode; className?
         // Unordered items get a brand rule instead of a disc, matching the
         // bracketed labels used elsewhere in the design system.
         "[&_ul>li]:relative [&_ul>li]:pl-6 [&_ul>li]:before:absolute [&_ul>li]:before:top-[0.8em] [&_ul>li]:before:left-0 [&_ul>li]:before:h-px [&_ul>li]:before:w-3 [&_ul>li]:before:bg-brand/60 [&_ul>li]:before:content-['']",
-        '[&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:text-foreground',
-        '[&_pre]:my-7 [&_pre]:overflow-x-auto [&_pre]:rounded-2xl [&_pre]:border [&_pre]:border-border [&_pre]:bg-muted/40 [&_pre]:p-5 [&_pre]:font-mono [&_pre]:text-sm',
+        '[&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:text-foreground',
+        '[&_pre]:my-7 [&_pre]:overflow-x-auto [&_pre]:border [&_pre]:border-border [&_pre]:bg-muted/40 [&_pre]:p-5 [&_pre]:font-mono [&_pre]:text-sm',
         '[&_pre_code]:bg-transparent [&_pre_code]:p-0',
         '[&_blockquote]:my-8 [&_blockquote]:border-l-2 [&_blockquote]:border-brand [&_blockquote]:pl-6 [&_blockquote]:text-lg [&_blockquote]:text-foreground/90',
         '[&_hr]:my-12 [&_hr]:border-border',

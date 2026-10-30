@@ -112,7 +112,7 @@ export default async function RolePage({ params }: Params) {
 
         <a
           href={`mailto:careers@northlight.example.com?subject=${applySubject}`}
-          className="mt-10 inline-flex h-14 items-center justify-center rounded-full bg-brand px-8 font-mono text-sm tracking-[0.2em] text-white uppercase shadow-[0_10px_30px_-12px_var(--brand)] transition-shadow hover:shadow-[0_16px_40px_-10px_var(--brand)]"
+          className="mt-10 inline-flex h-12 items-center justify-center bg-foreground px-8 font-mono text-[11px] tracking-[0.25em] text-background uppercase transition-colors hover:bg-foreground/85"
         >
           Apply for this role
           <span aria-hidden="true" className="ml-2">
@@ -189,7 +189,7 @@ export default async function RolePage({ params }: Params) {
               {role.benefits.map((benefit) => (
                 <li
                   key={benefit}
-                  className="flex gap-3 rounded-xl border border-border bg-background p-5 text-sm leading-relaxed"
+                  className="flex gap-3 border border-border bg-background p-5 text-sm leading-relaxed"
                 >
                   <span aria-hidden="true" className="text-brand">
                     →
@@ -206,7 +206,7 @@ export default async function RolePage({ params }: Params) {
       <nav aria-label="Other roles" className="border-t border-border">
         <div className="container-page py-14">
           <h2 className="label text-muted-foreground">Other open roles</h2>
-          <ul className="mt-8 grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2">
+          <ul className="mt-8 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2">
             {others.map((other) => (
               <li key={other.slug}>
                 <Link

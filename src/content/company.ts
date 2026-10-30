@@ -36,7 +36,7 @@ export const team: readonly TeamMember[] = [
     name: 'Bathiya Gamage',
     role: 'UI/UX Mobile',
     bio: 'Owns mobile design — interaction, motion and the constraints of small screens — and keeps it consistent with the product’s identity.',
-    initials: 'AG',
+    initials: 'BG',
   },
   {
     name: 'Imesh Pamoditha',

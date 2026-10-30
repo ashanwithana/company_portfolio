@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
  * the only emphasis, so there is no coloured glow.
  */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2.5 rounded-full font-sans text-[11px] leading-[1.5] font-normal tracking-[0.14em] uppercase transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
+  'inline-flex items-center justify-center gap-2.5 font-sans text-[11px] leading-[1.5] font-normal tracking-[0.14em] uppercase transition-[transform,background-color,color,box-shadow,border-color] duration-300 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97]',
   {
     variants: {
       variant: {
@@ -23,7 +23,7 @@ const buttonVariants = cva(
         sm: 'h-9 px-4',
         md: 'h-11 px-6',
         lg: 'h-[52px] px-7',
-        icon: 'size-10',
+        icon: 'size-10 rounded-full',
       },
     },
     defaultVariants: { variant: 'primary', size: 'md' },

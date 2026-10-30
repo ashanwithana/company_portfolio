@@ -45,7 +45,7 @@ export default function EnterprisePage() {
             ))}
           </div>
 
-          <aside className="rounded-3xl border border-border bg-card/40 p-7">
+          <aside className="border border-border bg-card/40 p-7">
             <h2 className="label text-muted-foreground">What you get</h2>
             <ul className="mt-4 space-y-3">
               {enterpriseService.deliverables.map((item) => (
@@ -73,7 +73,7 @@ export default function EnterprisePage() {
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {platforms.map((platform, index) => (
             <Reveal key={platform.name} delay={index * 40}>
-              <div className="flex h-full flex-col rounded-3xl border border-border bg-background p-6">
+              <div className="flex h-full flex-col border border-border bg-background p-6">
                 <h3 className="text-lg leading-tight">{platform.name}</h3>
 
                 <p className={`mt-2 label ${DEPTH_TONE[platform.depth]}`}>
@@ -106,7 +106,7 @@ export default function EnterprisePage() {
           there is the one whose trade-offs match your situation.
         </p>
 
-        <div className="mt-10 overflow-x-auto rounded-3xl border border-border">
+        <div className="mt-10 overflow-x-auto border border-border">
           <table className="w-full min-w-[42rem] border-collapse text-left text-sm">
             <caption className="sr-only">
               Comparison of Odoo, Dynamics 365, SAP Business One and Salesforce
@@ -216,7 +216,7 @@ export default function EnterprisePage() {
             },
           ].map((step, index) => (
             <Reveal key={step.title} as="li" delay={index * 40}>
-              <div className="flex h-full gap-4 rounded-3xl border border-border bg-card/40 p-7">
+              <div className="flex h-full gap-4 border border-border bg-card/40 p-7">
                 <span className="font-mono text-xs text-brand tabular-nums">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>

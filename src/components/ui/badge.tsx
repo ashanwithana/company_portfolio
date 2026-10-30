@@ -26,7 +26,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        'relative inline-flex items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 label backdrop-blur-sm',
+        'relative inline-flex items-center gap-2.5 border border-border px-4 py-2.5 label',
         className,
       )}
     >
@@ -83,7 +83,7 @@ export function Tag({ children, className, ...props }: ComponentProps<'span'>) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-border px-3 py-1.5 label text-[0.55rem] text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground',
+        'inline-flex items-center border border-border px-3 py-1.5 label text-[0.55rem] text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground',
         className,
       )}
       {...props}

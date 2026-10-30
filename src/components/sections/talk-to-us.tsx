@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Manifesto } from '@/components/sections/manifesto'
+import { StudioStats } from '@/components/sections/studio-stats'
 import { Eyebrow } from '@/components/ui/badge'
 import { siteConfig } from '@/content/site'
 
@@ -10,7 +11,7 @@ import { siteConfig } from '@/content/site'
  * bold, a numbered label with a filling rule, and the faint page rails. It
  * reuses that component rather than copying its styles, so the two cannot
  * drift apart. A shorter track than the opening manifesto, since it is two
- * lines. No buttons: the "Talk to us" cards are in the footer just below.
+ * lines, followed by the studio's four figures. No buttons: the "Talk to us" cards are in the footer just below.
  */
 export function CureBand() {
   return (
@@ -23,7 +24,9 @@ export function CureBand() {
         { text: 'Bring us the problem.', strongWords: 0 },
         { text: "We'll bring the breakthrough.", strongWords: 1 },
       ]}
-    />
+    >
+      <StudioStats embedded className="mt-10 md:mt-16" />
+    </Manifesto>
   )
 }
 
@@ -42,42 +45,23 @@ export function TalkToUs() {
         Talk to us
       </Eyebrow>
 
-      <div className="mt-10 grid gap-5 md:grid-cols-2">
+      <div className="mt-10 grid gap-px border border-border-strong bg-border-strong md:grid-cols-2">
         <a
           href={`mailto:${siteConfig.email}`}
-          className="group flex items-center gap-5 rounded-[22px] border border-border bg-card/40 p-6 transition-colors duration-300 hover:border-border-strong sm:p-8"
+          className="group flex items-center gap-5 bg-background p-6 transition-colors duration-300 hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background sm:p-8"
         >
-          <span
-            aria-hidden="true"
-            className="flex size-14 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="m3 7 9 6 9-6" />
-            </svg>
-          </span>
-
           <span className="min-w-0 flex-1">
-            <span className="block font-display text-xl font-bold tracking-tight text-foreground">
-              email
+            <span className="block font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase group-hover:text-background/60">
+              Email us
             </span>
-            <span className="mt-1 block text-sm break-all text-muted-foreground">
-              email us · {siteConfig.email}
+            <span className="mt-3 block text-xl font-light tracking-tight break-all md:text-2xl">
+              {siteConfig.email}
             </span>
           </span>
 
           <span
             aria-hidden="true"
-            className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand"
+            className="shrink-0 text-3xl font-thin transition-transform duration-300 group-hover:translate-x-1.5"
           >
             →
           </span>
@@ -85,27 +69,20 @@ export function TalkToUs() {
 
         <Link
           href="/start-a-project"
-          className="group flex items-center gap-5 rounded-[22px] border border-border bg-card/40 p-6 transition-colors duration-300 hover:border-border-strong sm:p-8"
+          className="group flex items-center gap-5 bg-background p-6 transition-colors duration-300 hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background sm:p-8"
         >
-          <span
-            aria-hidden="true"
-            className="flex size-14 shrink-0 items-center justify-center rounded-full border border-border font-display text-xl font-bold text-muted-foreground"
-          >
-            →
-          </span>
-
           <span className="min-w-0 flex-1">
-            <span className="block font-display text-xl font-bold tracking-tight text-foreground">
-              start a project
+            <span className="block font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase group-hover:text-background/60">
+              Start a project
             </span>
-            <span className="mt-1 block text-sm text-muted-foreground">
-              tell us what you are building
+            <span className="mt-3 block text-xl font-light tracking-tight md:text-2xl">
+              Tell us what you are building
             </span>
           </span>
 
           <span
             aria-hidden="true"
-            className="shrink-0 text-xl text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand"
+            className="shrink-0 text-3xl font-thin transition-transform duration-300 group-hover:translate-x-1.5"
           >
             →
           </span>

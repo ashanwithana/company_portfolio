@@ -126,7 +126,7 @@ export default function ServicesPage() {
             },
           ].map((model, index) => (
             <Reveal key={model.title} delay={index * 70}>
-              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col border border-border bg-card/40 p-7">
                 <h3 className="text-xl">{model.title}</h3>
                 <p className="mt-2 label text-[0.6rem] text-brand">{model.price}</p>
                 <p className="mt-4 leading-relaxed text-muted-foreground">{model.body}</p>

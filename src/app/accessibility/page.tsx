@@ -54,7 +54,7 @@ export default function AccessibilityPage() {
       />
 
       <PageSection className="pt-0">
-        <dl className="grid gap-px overflow-hidden rounded-3xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {checks.map((check) => (
             <div key={check.label} className="bg-background p-7">
               <dt className="label text-[0.55rem] text-brand">{check.label}</dt>
@@ -91,7 +91,7 @@ export default function AccessibilityPage() {
             </p>
             <a
               href="mailto:hello@northlight.example.com?subject=Accessibility%20barrier"
-              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border-strong px-6 label transition-colors hover:border-border-strong"
+              className="mt-6 inline-flex h-12 items-center justify-center gap-2 border border-border-strong px-6 label transition-colors hover:border-border-strong"
             >
               Report a barrier
               <span aria-hidden="true" className="ml-2">

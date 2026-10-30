@@ -86,7 +86,7 @@ export default function CareersPage() {
           {/* Benefits + speculative applications */}
           <aside className="space-y-8 lg:sticky lg:top-28 lg:self-start">
             <Reveal>
-              <div className="rounded-3xl border border-border bg-card/40 p-7">
+              <div className="border border-border bg-card/40 p-7">
                 <h2 className="label text-muted-foreground">What we offer</h2>
                 <ul className="mt-5 space-y-3">
                   {benefits.map((benefit) => (
@@ -105,7 +105,7 @@ export default function CareersPage() {
             </Reveal>
 
             <Reveal delay={60}>
-              <div className="rounded-3xl border border-border bg-muted/30 p-7">
+              <div className="border border-border bg-muted/30 p-7">
                 <h2 className="text-lg">Nothing that fits?</h2>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   We keep a shortlist of people we would like to work with when the right role

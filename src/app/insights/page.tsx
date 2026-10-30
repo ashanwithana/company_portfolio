@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { PageHeader } from '@/components/layout/page'
 import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
+import { SectionHead } from '@/components/ui/section-head'
 import { CtaBand } from '@/components/ui/cta-band'
 import { aiCaseStudies, aiPrinciples, modelProviders, ragPatterns } from '@/content/ai'
 import { coverFor, coverSize } from '@/content/covers'
@@ -309,21 +310,6 @@ export default function InsightsPage() {
         secondary={{ href: '/faq', label: 'Talk to us' }}
       />
     </>
-  )
-}
-
-/** Numbered section label with a rule, as used by the other page heroes. */
-function SectionHead({ id, index, title }: { id: string; index: string; title: string }) {
-  return (
-    <div className="flex items-center gap-4">
-      <h2
-        id={id}
-        className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase"
-      >
-        {index} / {title}
-      </h2>
-      <span aria-hidden="true" className="h-px max-w-[280px] flex-1 bg-border-strong" />
-    </div>
   )
 }
 

@@ -115,10 +115,7 @@ export function ContactForm() {
 
   if (state?.status === 'success') {
     return (
-      <div
-        ref={successRef}
-        className="scroll-mt-24 rounded-[22px] border border-border bg-card/40 p-8 md:p-12"
-      >
+      <div ref={successRef} className="scroll-mt-24 border border-border bg-card/40 p-8 md:p-12">
         <p className="label text-brand">Enquiry sent</p>
         <h2 className="mt-4 display-md">We&apos;ll be in touch within two working days.</h2>
         <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground" role="status">
@@ -227,7 +224,7 @@ export function ContactForm() {
                 aria-pressed={values.service === option.value}
                 onClick={() => set({ service: option.value })}
                 className={cn(
-                  'min-h-10 rounded-full border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
+                  'min-h-10 border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
                   values.service === option.value
                     ? 'border-brand bg-brand text-brand-foreground'
                     : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
@@ -249,7 +246,7 @@ export function ContactForm() {
                 aria-pressed={values.budget === option.value}
                 onClick={() => set({ budget: option.value })}
                 className={cn(
-                  'min-h-10 rounded-full border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
+                  'min-h-10 border px-4 font-mono text-[11px] tracking-[0.08em] uppercase transition-colors',
                   values.budget === option.value
                     ? 'border-brand bg-brand text-brand-foreground'
                     : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
@@ -284,7 +281,7 @@ export function ContactForm() {
           type="submit"
           disabled={pending}
           aria-disabled={pending}
-          className="inline-flex h-[52px] items-center justify-center gap-2.5 rounded-full bg-brand px-8 font-mono text-[12px] font-medium tracking-[-0.01em] text-brand-foreground shadow-[0_10px_30px_-12px_var(--brand)] transition-shadow hover:shadow-[0_16px_44px_-12px_var(--brand)] disabled:pointer-events-none disabled:opacity-50"
+          className="inline-flex h-[52px] items-center justify-center gap-2.5 bg-foreground px-8 font-mono text-[11px] tracking-[0.25em] text-background uppercase transition-colors hover:bg-foreground/85 disabled:pointer-events-none disabled:opacity-50"
         >
           {pending ? 'Sending…' : 'Send enquiry'}
           <span aria-hidden="true">→</span>

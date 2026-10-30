@@ -38,7 +38,7 @@ export default function AiPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {aiPrinciples.map((principle, index) => (
             <Reveal key={principle.title} delay={index * 50}>
-              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col border border-border bg-card/40 p-7">
                 <h3 className="text-xl leading-snug">{principle.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{principle.body}</p>
                 <p className="mt-5 border-t border-border pt-4 text-[13px] leading-relaxed font-light text-foreground/80">
@@ -110,7 +110,7 @@ export default function AiPage() {
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {modelProviders.map((provider, index) => (
             <Reveal key={provider.vendor} delay={index * 50}>
-              <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
+              <div className="flex h-full flex-col border border-border bg-card/40 p-7">
                 <h3 className="text-xl">{provider.vendor}</h3>
 
                 <ul className="mt-4 flex flex-wrap gap-1.5">
@@ -151,7 +151,7 @@ export default function AiPage() {
           why we track cost per resolved task from week one.
         </p>
 
-        <div className="mt-10 overflow-x-auto rounded-3xl border border-border">
+        <div className="mt-10 overflow-x-auto border border-border">
           <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
             <caption className="sr-only">Indicative monthly cost by retrieval pattern</caption>
             <thead>
@@ -240,7 +240,7 @@ export default function AiPage() {
             },
           ].map((item, index) => (
             <Reveal key={item.title} delay={index * 50}>
-              <div className="h-full rounded-3xl border border-border bg-background p-7">
+              <div className="h-full border border-border bg-background p-7">
                 <h3 className="text-xl leading-snug">{item.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
               </div>
