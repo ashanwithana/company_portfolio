@@ -70,13 +70,8 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '48x48' },
-      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
-      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
-    ],
-    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-touch-icon.png' }],
   },
   formatDetection: { telephone: false },
 }
@@ -123,14 +118,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     // The class comes from the theme cookie above, so server and client markup
     // agree and no suppressHydrationWarning is needed.
-    <html
-      lang="en-GB"
-      className={theme}
-      style={{ colorScheme: theme }}
-      data-scroll-behavior="smooth"
-    >
-      {/* Extensions such as Grammarly add attributes to <body> before React hydrates. */}
-      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+    <html lang="en-GB" className={theme} style={{ colorScheme: theme }}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider initialTheme={theme}>
           <a
             href="#main"
