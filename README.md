@@ -1,6 +1,6 @@
-# Northlight Studio — Company Website
+# SketchLabs Studio — Company Website
 
-A production-ready multi-page company website built with Next.js 16 (App Router), React 19, TypeScript and Tailwind CSS v4. Originally recreated from the design of [nikhilkumar.codes](https://nikhilkumar.codes), then transformed into a full company site for a fictional product studio ("Northlight" — rename in one file, see below).
+A production-ready multi-page company website built with Next.js 16 (App Router), React 19, TypeScript and Tailwind CSS v4. Originally recreated from the design of [nikhilkumar.codes](https://nikhilkumar.codes), then transformed into a full company site for a fictional product studio ("SketchLabs" — rename in one file, see below).
 
 ## Pages
 

@@ -14,7 +14,7 @@ import { studioStats } from '@/content/services'
 export const metadata = {
   title: 'About',
   description:
-    'Northlight is a seven-person product studio in Colombo. We design and build software, and we are deliberately small enough to know every project by name.',
+    'SketchLabs is a seven-person product studio in Colombo. We design and build software, and we are deliberately small enough to know every project by name.',
 }
 
 /** Every technology the studio works with, PHP first: file slug and label. */
@@ -44,7 +44,7 @@ export default function AboutPage() {
       <PageHeader
         eyebrow="About"
         title="Seven people who would rather be right than fast."
-        lede="Northlight is an independent product studio in Colombo. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
+        lede="SketchLabs is an independent product studio in Colombo. We design and build software for teams that cannot afford to get it wrong twice — usually because the software is load-bearing for something regulated, expensive or irreversible."
       />
 
       {/* Platforms and models — concrete capability rather than adjectives. */}

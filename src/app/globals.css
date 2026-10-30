@@ -2,6 +2,15 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * `stack:` applies only on screens big enough to show a whole discipline card
+ * beneath its stuck header strips (at least 72rem wide and 54rem tall). Below
+ * that the cards would be taller than the room under the strips, so their
+ * lower halves could never be scrolled into view; they fall back to a plain
+ * vertical list instead.
+ */
+@custom-variant stack (@media (width >= 72rem) and (height >= 54rem));
+
 /* ---------------------------------------------------------------------------
  * Design tokens
  *

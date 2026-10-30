@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/reveal'
 import { Tag } from '@/components/ui/badge'
 import { CtaBand } from '@/components/ui/cta-band'
 import { aiCaseStudies, aiPrinciples, modelProviders, ragPatterns } from '@/content/ai'
-import { coverFor, coverPortraitSize, coverSize } from '@/content/covers'
+import { coverFor, coverSize } from '@/content/covers'
 import { enterpriseCases, platforms } from '@/content/enterprise'
 import { publishedCaseStudies } from '@/content/case-studies'
 import { getAllPosts } from '@/content/posts-index'
@@ -43,13 +43,13 @@ export default function InsightsPage() {
       />
 
       {/* Tag index — plain links, so it works without JavaScript. */}
-      <section aria-label="Browse by topic" className="container-page pb-4">
-        <ul className="flex flex-wrap gap-2">
+      <section aria-label="Browse by topic" className="border-b border-border">
+        <ul className="mx-auto flex w-full max-w-[1600px] flex-wrap gap-x-7 gap-y-2 px-4 py-4 md:px-8">
           {allTags.map((tag) => (
             <li key={tag}>
               <Link
                 href={`/insights?tag=${encodeURIComponent(tag)}`}
-                className="inline-flex min-h-9 items-center rounded-full border border-border px-4 label transition-colors hover:border-border-strong hover:text-foreground"
+                className="inline-flex min-h-9 items-center border-b border-transparent font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase transition-colors hover:border-foreground hover:text-foreground"
               >
                 {tag}
               </Link>
@@ -60,96 +60,106 @@ export default function InsightsPage() {
 
       {/* Featured post */}
       {featured ? (
-        <section aria-label="Featured article" className="container-page py-12">
+        <section aria-label="Featured article" className="container-page pt-10 md:pt-12">
           <Link
             href={`/insights/${featured.slug}`}
-            className="group grid gap-8 rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong md:grid-cols-[minmax(0,1fr)_22rem] md:p-10"
+            className="group grid items-stretch border border-border-strong transition-colors duration-300 hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background md:grid-cols-[minmax(0,1fr)_16rem]"
           >
-            <div>
-              <p className="label text-[0.55rem] text-brand">
+            <div className="p-6 md:p-8">
+              <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase group-hover:text-background/60">
                 Latest · {formatPostDate(featured.date)} · {featured.readingTimeMinutes} min read
               </p>
 
-              <h2 className="mt-4 text-3xl leading-tight transition-colors group-hover:text-brand sm:text-4xl">
+              <h2 className="mt-4 max-w-3xl text-2xl leading-[1.08] font-light tracking-tight text-balance md:text-4xl">
                 {featured.title}
               </h2>
 
-              <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground">
+              <p className="mt-4 max-w-2xl leading-relaxed font-light text-muted-foreground group-hover:text-background/70">
                 {featured.summary}
               </p>
 
-              <p className="mt-6 label text-[0.6rem] text-muted-foreground">By {featured.author}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[10px] tracking-[0.22em] text-muted-foreground uppercase group-hover:text-background/60">
+                <span>By {featured.author}</span>
+                <span aria-hidden="true">/</span>
+                <span>{featured.tags.join(' · ')}</span>
+              </div>
             </div>
 
             {featuredCover ? (
-              <Image
-                src={featuredCover.portraitSrc}
-                alt={featuredCover.alt}
-                width={coverPortraitSize.width}
-                height={coverPortraitSize.height}
-                sizes="(min-width: 768px) 22rem, 100vw"
-                priority
-                className="hidden h-full w-full rounded-2xl object-cover md:block"
-              />
+              <div className="relative hidden border-l border-border md:block">
+                <Image
+                  src={featuredCover.src}
+                  alt={featuredCover.alt}
+                  width={coverSize.width}
+                  height={coverSize.height}
+                  sizes="16rem"
+                  priority
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </div>
             ) : null}
           </Link>
         </section>
       ) : null}
 
       {/* Technical notes */}
-      <section aria-labelledby="notes-heading" className="container-page py-12">
-        <h2 id="notes-heading" className="label text-muted-foreground">
-          Technical notes
-        </h2>
+      <section aria-labelledby="notes-heading" className="container-page pt-14 md:pt-20">
+        <SectionHead id="notes-heading" index="01" title="Technical notes" />
 
-        <ul className="mt-8 divide-y divide-border border-y border-border">
+        <ul className="mt-6 border-t border-border-strong">
           {rest.map((post, index) => {
             const cover = coverFor(post.slug)
 
             return (
-              <Reveal key={post.slug} as="li" delay={index * 50} y={12}>
+              <Reveal
+                key={post.slug}
+                as="li"
+                delay={index * 30}
+                y={8}
+                className="border-b border-border"
+              >
                 <article>
                   <Link
                     href={`/insights/${post.slug}`}
-                    className="group flex flex-col gap-4 py-8 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
+                    className="group grid items-start gap-x-6 gap-y-3 px-4 py-6 transition-colors duration-300 hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background md:grid-cols-12 md:px-6"
                   >
-                    <div className="flex items-start gap-6">
+                    <div className="font-mono text-[10px] tracking-[0.22em] text-muted-foreground uppercase transition-colors group-hover:text-background/60 md:col-span-2 md:pt-1.5">
+                      <span className="mr-3">{String(index + 1).padStart(2, '0')}</span>
+                      <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+                    </div>
+
+                    <div className="md:col-span-6">
+                      <h3 className="text-xl leading-[1.15] font-light tracking-tight text-balance md:text-2xl">
+                        {post.title}
+                      </h3>
+                      <p className="mt-2 max-w-xl text-sm leading-relaxed font-light text-muted-foreground transition-colors group-hover:text-background/70 md:text-base">
+                        {post.summary}
+                      </p>
+                    </div>
+
+                    <div className="font-mono text-[10px] tracking-[0.22em] uppercase md:col-span-3 md:pt-1.5">
+                      <p>{post.author}</p>
+                      <p className="mt-1.5 text-muted-foreground transition-colors group-hover:text-background/60">
+                        {post.readingTimeMinutes} min read
+                      </p>
+                      <p className="mt-1.5 text-muted-foreground transition-colors group-hover:text-background/60">
+                        {post.tags.slice(0, 3).join(' · ')}
+                      </p>
+                    </div>
+
+                    <div className="hidden md:col-span-1 md:block">
                       {cover ? (
                         <Image
                           src={cover.src}
                           alt=""
                           width={coverSize.width}
                           height={coverSize.height}
-                          sizes="(min-width: 640px) 10rem, 100vw"
-                          loading={index < 2 ? 'eager' : 'lazy'}
-                          className="aspect-16/10 w-40 shrink-0 rounded-xl border border-border object-cover transition-transform duration-500 group-hover:scale-[1.02] sm:w-44"
+                          sizes="6rem"
+                          loading={index < 3 ? 'eager' : 'lazy'}
+                          className="aspect-square w-full border border-border object-cover"
                         />
                       ) : null}
-
-                      <div className="max-w-2xl">
-                        <p className="label text-[0.55rem] text-muted-foreground">
-                          {formatPostDate(post.date)} · {post.readingTimeMinutes} min read
-                        </p>
-
-                        <h3 className="mt-3 text-2xl leading-snug transition-colors group-hover:text-brand">
-                          {post.title}
-                        </h3>
-
-                        <p className="mt-3 leading-relaxed text-muted-foreground">{post.summary}</p>
-
-                        <p className="mt-4 label text-[0.55rem] text-muted-foreground">
-                          By {post.author}
-                        </p>
-                      </div>
                     </div>
-
-                    <ul className="flex shrink-0 flex-wrap gap-1.5 sm:max-w-40 sm:justify-end">
-                      {post.tags.map((tag) => (
-                        <li key={tag}>
-                          <Tag>{tag}</Tag>
-                        </li>
-                      ))}
-                    </ul>
                   </Link>
                 </article>
               </Reveal>
@@ -159,22 +169,23 @@ export default function InsightsPage() {
       </section>
 
       {/* AI practice notes — grouped because they answer specific questions. */}
-      <section aria-labelledby="ai-heading" className="container-page py-20">
-        <h2 id="ai-heading" className="label text-muted-foreground">
-          How we build AI systems
-        </h2>
+      <section aria-labelledby="ai-heading" className="container-page pt-20 md:pt-28">
+        <SectionHead id="ai-heading" index="02" title="How we build AI systems" />
 
-        <p className="mt-6 max-w-2xl leading-relaxed text-muted-foreground">
+        <p className="mt-6 max-w-2xl leading-relaxed font-light text-muted-foreground">
           The commitments we make on AI work, stated as practices you can hold us to rather than as
           claims about capability.
         </p>
 
-        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
           {aiPrinciples.map((principle, index) => (
-            <Reveal key={principle.title} as="li" delay={index * 40}>
-              <div className="h-full rounded-3xl border border-border bg-card/40 p-7">
-                <h3 className="text-lg leading-snug">{principle.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            <Reveal key={principle.title} as="li" delay={index * 40} className="bg-background">
+              <div className="h-full p-7 md:p-8">
+                <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground">
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3 className="mt-4 text-xl leading-snug font-light">{principle.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed font-light text-muted-foreground">
                   {principle.body}
                 </p>
               </div>
@@ -183,161 +194,110 @@ export default function InsightsPage() {
         </ul>
 
         {/* Retrieval patterns, condensed for the index. */}
-        <div className="mt-16">
-          <h3 className="label text-muted-foreground">Retrieval architectures</h3>
+        <h3 className="mt-16 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+          Retrieval architectures
+        </h3>
 
-          <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {ragPatterns.map((pattern, index) => (
-              <Reveal key={pattern.slug} as="li" delay={index * 40}>
-                <Link
-                  href="/ai"
-                  className="group flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-border-strong"
-                >
-                  <h4 className="text-lg transition-colors group-hover:text-brand">
-                    {pattern.name}
-                  </h4>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {pattern.summary}
-                  </p>
-                  <p className="mt-4 border-t border-border pt-4 text-[13px] leading-relaxed font-light text-foreground/80">
-                    {pattern.tradeoff}
-                  </p>
-                </Link>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-6 grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+          {ragPatterns.map((pattern, index) => (
+            <Reveal key={pattern.slug} as="li" delay={index * 40} className="bg-background">
+              <Link
+                href="/ai"
+                className="group flex h-full flex-col p-7 transition-colors duration-300 hover:bg-foreground hover:text-background md:p-8"
+              >
+                <h4 className="text-xl font-light">{pattern.name}</h4>
+                <p className="mt-3 flex-1 text-sm leading-relaxed font-light text-muted-foreground transition-colors group-hover:text-background/70">
+                  {pattern.summary}
+                </p>
+                <p className="mt-5 border-t border-border pt-4 text-[13px] leading-relaxed font-light group-hover:border-background/30">
+                  {pattern.tradeoff}
+                </p>
+              </Link>
+            </Reveal>
+          ))}
+        </ul>
       </section>
 
       {/* Model selection reference */}
-      <section aria-labelledby="models-heading" className="bg-muted py-20">
-        <div className="container-page">
-          <h2 id="models-heading" className="label text-muted-foreground">
-            Model selection, in brief
-          </h2>
+      <section aria-labelledby="models-heading" className="container-page pt-20 md:pt-28">
+        <SectionHead id="models-heading" index="03" title="Model selection, in brief" />
 
-          <p className="mt-6 max-w-2xl leading-relaxed text-muted-foreground">
-            Our shortlist, with the honest caveat each time. We are not model-agnostic in the
-            unhelpful sense — these are the ones we have measured against client workloads.
-          </p>
+        <p className="mt-6 max-w-2xl leading-relaxed font-light text-muted-foreground">
+          Our shortlist, with the honest caveat each time. We are not model-agnostic in the
+          unhelpful sense — these are the ones we have measured against client workloads.
+        </p>
 
-          <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {modelProviders.map((provider, index) => (
-              <Reveal key={provider.vendor} as="li" delay={index * 40}>
-                <div className="h-full rounded-3xl border border-border bg-background p-6">
-                  <h3 className="text-lg">{provider.vendor}</h3>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {provider.models.slice(0, 2).map((model) => (
-                      <li key={model}>
-                        <Tag>{model}</Tag>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    {provider.bestFor}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-10 grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+          {modelProviders.map((provider, index) => (
+            <Reveal key={provider.vendor} as="li" delay={index * 40} className="bg-background">
+              <div className="h-full p-7 md:p-8">
+                <h3 className="text-xl font-light">{provider.vendor}</h3>
+                <ul className="mt-3 flex flex-wrap gap-1.5">
+                  {provider.models.slice(0, 2).map((model) => (
+                    <li key={model}>
+                      <Tag>{model}</Tag>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-sm leading-relaxed font-light text-muted-foreground">
+                  {provider.bestFor}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </ul>
       </section>
 
       {/* Everything we have measured */}
-      <section aria-labelledby="evidence-heading" className="container-page py-20">
-        <h2 id="evidence-heading" className="label text-muted-foreground">
-          Measured outcomes
-        </h2>
+      <section aria-labelledby="evidence-heading" className="container-page py-20 md:py-28">
+        <SectionHead id="evidence-heading" index="04" title="Measured outcomes" />
 
-        <p className="mt-6 max-w-2xl leading-relaxed text-muted-foreground">
+        <p className="mt-6 max-w-2xl leading-relaxed font-light text-muted-foreground">
           Every engagement we publish numbers for. If a metric did not move, the case study says so
           and explains why — which is rarer than it should be.
         </p>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          <Reveal>
-            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
-              <h3 className="text-lg">Case studies</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Product and platform work, reported against a baseline we captured in week one.
-              </p>
-              <ul className="mt-5 flex-1 space-y-3">
-                {studies.slice(0, 4).map((study) => (
-                  <li key={study.slug}>
-                    <Link
-                      href={`/work/${study.slug}`}
-                      className="inline-flex min-h-8 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      <span aria-hidden="true">→</span>
-                      {study.client}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/work" className="mt-6 label transition-colors hover:text-brand">
-                All case studies
-              </Link>
-            </div>
-          </Reveal>
-
-          <Reveal delay={60}>
-            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
-              <h3 className="text-lg">AI systems</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Retrieval and extraction work, each gated behind an accuracy number before launch.
-              </p>
-              <ul className="mt-5 flex-1 space-y-3">
-                {aiCaseStudies.map((study) => (
-                  <li key={study.slug}>
-                    <span className="inline-flex min-h-8 items-center gap-2 text-sm text-muted-foreground">
-                      <span aria-hidden="true">→</span>
-                      {study.client}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/ai" className="mt-6 label transition-colors hover:text-brand">
-                AI practice
-              </Link>
-            </div>
-          </Reveal>
-
-          <Reveal delay={120}>
-            <div className="flex h-full flex-col rounded-3xl border border-border bg-card/40 p-7">
-              <h3 className="text-lg">Enterprise systems</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                ERP and automation implementations, reported the same way.
-              </p>
-              <ul className="mt-5 flex-1 space-y-3">
-                {enterpriseCases.map((study) => (
-                  <li key={study.slug}>
-                    <span className="inline-flex min-h-8 items-center gap-2 text-sm text-muted-foreground">
-                      <span aria-hidden="true">→</span>
-                      {study.client}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/enterprise" className="mt-6 label transition-colors hover:text-brand">
-                Enterprise practice
-              </Link>
-            </div>
-          </Reveal>
+        <div className="mt-10 grid gap-px border border-border bg-border lg:grid-cols-3">
+          <OutcomeColumn
+            title="Case studies"
+            body="Product and platform work, reported against a baseline we captured in week one."
+            href="/work"
+            linkLabel="All case studies"
+            items={studies.slice(0, 4).map((study) => ({
+              key: study.slug,
+              label: study.client,
+              href: `/work/${study.slug}`,
+            }))}
+          />
+          <OutcomeColumn
+            title="AI systems"
+            body="Retrieval and extraction work, each gated behind an accuracy number before launch."
+            href="/ai"
+            linkLabel="AI practice"
+            items={aiCaseStudies.map((study) => ({ key: study.slug, label: study.client }))}
+          />
+          <OutcomeColumn
+            title="Enterprise systems"
+            body="ERP and automation implementations, reported the same way."
+            href="/enterprise"
+            linkLabel="Enterprise practice"
+            items={enterpriseCases.map((study) => ({ key: study.slug, label: study.client }))}
+          />
         </div>
 
         {/* Platform reference */}
-        <div className="mt-16">
-          <h3 className="label text-muted-foreground">Platforms we implement</h3>
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {platforms.map((platform) => (
-              <li key={platform.name}>
-                <Link href="/enterprise">
-                  <Tag>{platform.name}</Tag>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <h3 className="mt-16 font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+          Platforms we implement
+        </h3>
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {platforms.map((platform) => (
+            <li key={platform.name}>
+              <Link href="/enterprise">
+                <Tag>{platform.name}</Tag>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <CtaBand
@@ -349,5 +309,68 @@ export default function InsightsPage() {
         secondary={{ href: '/faq', label: 'Talk to us' }}
       />
     </>
+  )
+}
+
+/** Numbered section label with a rule, as used by the other page heroes. */
+function SectionHead({ id, index, title }: { id: string; index: string; title: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      <h2
+        id={id}
+        className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase"
+      >
+        {index} / {title}
+      </h2>
+      <span aria-hidden="true" className="h-px max-w-[280px] flex-1 bg-border-strong" />
+    </div>
+  )
+}
+
+/** One column of the measured-outcomes grid. */
+function OutcomeColumn({
+  title,
+  body,
+  href,
+  linkLabel,
+  items,
+}: {
+  title: string
+  body: string
+  href: string
+  linkLabel: string
+  items: { key: string; label: string; href?: string }[]
+}) {
+  return (
+    <div className="flex flex-col bg-background p-7 md:p-8">
+      <h3 className="text-xl font-light">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed font-light text-muted-foreground">{body}</p>
+      <ul className="mt-5 flex-1 space-y-1">
+        {items.map((item) => (
+          <li key={item.key}>
+            {item.href ? (
+              <Link
+                href={item.href}
+                className="inline-flex min-h-8 items-center gap-2 text-sm font-light text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <span aria-hidden="true">→</span>
+                {item.label}
+              </Link>
+            ) : (
+              <span className="inline-flex min-h-8 items-center gap-2 text-sm font-light text-muted-foreground">
+                <span aria-hidden="true">→</span>
+                {item.label}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <Link
+        href={href}
+        className="mt-6 font-mono text-[10px] tracking-[0.25em] uppercase transition-colors hover:text-muted-foreground"
+      >
+        {linkLabel} →
+      </Link>
+    </div>
   )
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { HairlineGrid } from '@/components/ui/hairline-grid'
 import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { OfficeTime } from '@/components/sections/office-time'
 import { SilkBackground } from '@/components/ui/silk-background'
@@ -30,26 +31,7 @@ export function Hero() {
     >
       <SilkBackground />
 
-      {/* Hairline grid */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-10 mx-auto flex w-full max-w-[1600px] justify-center px-4 md:px-8"
-      >
-        <div className="grid h-full w-full grid-cols-4 gap-0 border-x border-foreground/5 md:grid-cols-12">
-          {Array.from({ length: 12 }, (_, i) => (
-            <div
-              key={i}
-              className={
-                i < 4
-                  ? 'h-full border-r border-foreground/5'
-                  : 'hidden h-full border-r border-foreground/5 md:block'
-              }
-            />
-          ))}
-        </div>
-        <div className="absolute top-[25vh] left-0 hidden h-px w-full bg-foreground/5 md:block" />
-        <div className="absolute top-[75vh] left-0 hidden h-px w-full bg-foreground/5 md:block" />
-      </div>
+      <HairlineGrid />
 
       {/* Content, centred in the space above the footer row */}
       <div className="relative z-20 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-center px-4 pt-24 md:px-8">

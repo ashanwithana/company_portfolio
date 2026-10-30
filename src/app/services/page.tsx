@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 export const metadata = {
   title: 'Services',
   description:
-    'Web engineering, backend systems, product design, AI engineering and ERP implementation — plus design systems and performance audits. The seven things Northlight does well.',
+    'Web engineering, backend systems, product design, AI engineering and ERP implementation — plus design systems and performance audits. The seven things SketchLabs does well.',
 }
 
 export default function ServicesPage() {

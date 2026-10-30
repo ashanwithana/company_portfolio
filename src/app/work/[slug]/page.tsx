@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Breadcrumbs, BreadcrumbSchema } from '@/components/layout/page'
-import { CasePlate } from '@/components/ui/case-plate'
+import { Breadcrumbs, BreadcrumbSchema, splitHeadline } from '@/components/layout/page'
+import { HairlineGrid } from '@/components/ui/hairline-grid'
+import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { Tag } from '@/components/ui/badge'
-import { Prose } from '@/components/ui/prose'
 import { caseStudies, getCaseStudy, publishedCaseStudies } from '@/content/case-studies'
 import { siteConfig } from '@/content/site'
-import { ACCENT_TEXT } from '@/lib/accent'
 
 /**
  * Pre-render every case study at build time.
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   if (!study) return { title: 'Case study not found' }
 
-  const description = `${study.summary} A Northlight case study for ${study.client}.`
+  const description = `${study.summary} A SketchLabs case study for ${study.client}.`
 
   return {
     title: `${study.client} — ${study.title}`,
@@ -79,125 +79,146 @@ export default async function CaseStudyPage({ params }: Params) {
       />
       <BreadcrumbSchema items={crumbs} />
 
-      <header className="container-page pt-32 pb-12 md:pt-40 md:pb-16">
-        <Breadcrumbs items={crumbs} />
+      <header className="relative overflow-hidden border-b border-border pt-32 pb-14 md:pt-40 md:pb-20">
+        <HairlineGrid />
 
-        <p className="mt-8 label text-brand uppercase">
-          {study.categoryLabel} · {study.year}
-        </p>
+        <div className="relative z-20 mx-auto w-full max-w-[1600px] px-4 md:px-8">
+          <Breadcrumbs items={crumbs} />
 
-        <h1 className="mt-6 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-6xl">
-          {study.title}
-        </h1>
+          <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-8">
+              <div className="flex items-center gap-4">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+                  {String(index + 1).padStart(2, '0')} / {study.categoryLabel} · {study.year}
+                </span>
+                <span aria-hidden="true" className="h-px max-w-[160px] flex-1 bg-border-strong" />
+              </div>
 
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          {study.summary}
-        </p>
+              <h1 className="mt-8 max-w-5xl text-[clamp(2.25rem,5vw,5.25rem)] leading-[0.92] font-thin tracking-tighter text-balance uppercase">
+                <HeadlineReveal text={splitHeadline(study.title)} emphasizeLast />
+              </h1>
 
-        <ul className="mt-8 flex flex-wrap gap-2" aria-label="Services delivered">
-          {study.services.map((service) => (
-            <li key={service}>
-              <Tag className={ACCENT_TEXT[study.tint]}>{service}</Tag>
-            </li>
-          ))}
-        </ul>
+              <p
+                className="mt-10 max-w-2xl text-base leading-relaxed font-light text-muted-foreground md:text-lg"
+                style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 620ms both' }}
+              >
+                {study.summary}
+              </p>
+            </div>
+
+            <dl
+              className="lg:col-span-4 lg:self-end"
+              style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 760ms both' }}
+            >
+              {[
+                ['Client', study.client],
+                ['Type', study.categoryLabel],
+                ['Year', String(study.year)],
+                ['Delivered', study.services.join(' · ')],
+              ].map(([term, value]) => (
+                <div
+                  key={term}
+                  className="grid grid-cols-[6rem_1fr] gap-4 border-t border-border py-3.5 first:border-border-strong last:border-b"
+                >
+                  <dt className="pt-0.5 font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+                    {term}
+                  </dt>
+                  <dd className="text-base font-light">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
       </header>
 
-      <div className="container-page">
-        <CasePlate
-          client={study.client}
-          index={caseStudies.findIndex((item) => item.slug === study.slug) + 1}
-          tint={study.tint}
-          ratio="wide"
-          className="w-full"
-        />
-      </div>
-
       {/* Headline results, stated before the narrative. */}
-      <section aria-label="Results" className="container-page py-16 md:py-20">
-        <dl className="grid gap-8 border-y border-border py-10 sm:grid-cols-2 lg:grid-cols-4">
-          {study.metrics.map((metric) => (
-            <div key={metric.label}>
-              <dt className="label text-[0.55rem] text-muted-foreground">{metric.label}</dt>
-              <dd className="mt-2 display-md tabular-nums">{metric.value}</dd>
+      <section aria-label="Results" className="border-b border-border">
+        <dl className="mx-auto grid w-full max-w-[1600px] grid-cols-2 lg:grid-cols-4">
+          {study.metrics.map((metric, i) => (
+            <div
+              key={metric.label}
+              className={`px-4 py-10 md:px-8 md:py-14 ${i > 0 ? 'lg:border-l lg:border-border' : ''} ${i % 2 === 1 ? 'border-l border-border' : ''}`}
+            >
+              <dt className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+                {metric.label}
+              </dt>
+              <dd className="mt-4 text-2xl font-light tracking-tight tabular-nums md:text-4xl">
+                {metric.value}
+              </dd>
             </div>
           ))}
         </dl>
       </section>
 
-      <div className="container-page pb-20 md:pb-28">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-20">
-          <div className="space-y-12">
-            <section aria-labelledby="challenge-heading">
-              <h2 id="challenge-heading" className="mb-4 label text-muted-foreground">
-                The challenge
-              </h2>
-              <Prose>{<p>{study.challenge}</p>}</Prose>
-            </section>
+      {/* Narrative: a label on the left, the account on the right. */}
+      <div className="mx-auto w-full max-w-[1600px] px-4 md:px-8">
+        <CaseSection id="challenge" index="01" title="The challenge">
+          <p className="max-w-3xl text-lg leading-relaxed font-light md:text-xl">
+            {study.challenge}
+          </p>
+        </CaseSection>
 
-            <section aria-labelledby="approach-heading">
-              <h2 id="approach-heading" className="mb-4 label text-muted-foreground">
-                What we did
-              </h2>
-              <Prose>
-                <ol>
-                  {study.approach.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-              </Prose>
-            </section>
+        <CaseSection id="approach" index="02" title="What we did">
+          <ol className="max-w-3xl border-t border-border-strong">
+            {study.approach.map((step, i) => (
+              <li
+                key={step}
+                className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6"
+              >
+                <span className="pt-1 font-mono text-[10px] tracking-[0.25em] text-muted-foreground">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p className="leading-relaxed font-light text-foreground/85 md:text-lg">{step}</p>
+              </li>
+            ))}
+          </ol>
+        </CaseSection>
 
-            <section aria-labelledby="outcome-heading">
-              <h2 id="outcome-heading" className="mb-4 label text-muted-foreground">
-                Outcome
-              </h2>
-              <Prose>{<p>{study.outcome}</p>}</Prose>
-            </section>
-          </div>
+        <CaseSection id="outcome" index="03" title="Outcome">
+          <p className="max-w-3xl text-lg leading-relaxed font-light md:text-xl">{study.outcome}</p>
 
-          {/* Sidebar */}
-          <aside className="lg:sticky lg:top-28 lg:self-start">
-            <h2 className="label text-muted-foreground">Client</h2>
-            <p className="mt-2 text-lg">{study.client}</p>
-
-            <h2 className="mt-8 label text-muted-foreground uppercase">Built with</h2>
-            <ul className="mt-3 flex flex-wrap gap-1.5">
-              {study.tech.map((tech) => (
-                <li key={tech}>
-                  <Tag>{tech}</Tag>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-6">
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase">
+                Built with
+              </p>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {study.tech.map((tech) => (
+                  <li key={tech}>
+                    <Tag>{tech}</Tag>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <Link
               href="/start-a-project"
-              className="mt-10 inline-flex min-h-11 items-center gap-2 label transition-colors hover:text-brand"
+              className="inline-flex min-h-11 items-center gap-3 border border-border-strong px-6 font-mono text-[10px] tracking-[0.25em] uppercase transition-colors hover:bg-foreground hover:text-background"
             >
               Start a similar project
               <span aria-hidden="true">→</span>
             </Link>
-          </aside>
-        </div>
+          </div>
+        </CaseSection>
       </div>
 
       {/* Next case study */}
       {next ? (
-        <nav aria-label="More case studies" className="bg-muted">
+        <nav aria-label="More case studies" className="border-t border-border-strong">
           <Link
             href={`/work/${next.slug}`}
-            className="group container-page flex flex-col gap-4 py-14 sm:flex-row sm:items-center sm:justify-between"
+            className="group mx-auto flex w-full max-w-[1600px] flex-col gap-4 px-4 py-14 transition-colors hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background sm:flex-row sm:items-center sm:justify-between md:px-8 md:py-20"
           >
             <div>
-              <p className="label text-[0.55rem] text-muted-foreground">Next case study</p>
-              <p className="mt-2 text-2xl transition-colors group-hover:text-brand sm:text-3xl">
-                {next.title}
+              <p className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase group-hover:text-background/60">
+                Next case study
               </p>
+              <p className="mt-4 text-2xl font-light tracking-tight sm:text-4xl">{next.title}</p>
             </div>
 
             <span
               aria-hidden="true"
-              className="text-3xl text-muted-foreground transition-transform group-hover:translate-x-2"
+              className="text-4xl font-thin transition-transform group-hover:translate-x-2"
             >
               →
             </span>
@@ -205,5 +226,35 @@ export default async function CaseStudyPage({ params }: Params) {
         </nav>
       ) : null}
     </article>
+  )
+}
+
+/** One narrative block: a numbered label on the left, the account on the right. */
+function CaseSection({
+  id,
+  index,
+  title,
+  children,
+}: {
+  id: string
+  index: string
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <section
+      aria-labelledby={`${id}-heading`}
+      className="grid gap-6 border-b border-border py-14 md:py-20 lg:grid-cols-12 lg:gap-8"
+    >
+      <div className="lg:col-span-3">
+        <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+          {index} /
+        </p>
+        <h2 id={`${id}-heading`} className="mt-3 text-2xl font-light tracking-tight md:text-3xl">
+          {title}
+        </h2>
+      </div>
+      <div className="lg:col-span-9">{children}</div>
+    </section>
   )
 }

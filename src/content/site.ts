@@ -10,7 +10,7 @@ export const siteConfig = {
   /** Short name used in the header and footer lockup. */
   name: 'SketchLabs',
   nameWithSuffix: 'SketchLabs',
-  /** Appended after the name in the logo lockup, e.g. "Northlight." */
+  /** Appended after the name in the logo lockup, e.g. "SketchLabs." */
   logoSuffix: '.',
   title: 'SketchLabs — Product studio & software engineering',
   tagline: 'Sketched with intent. Engineered to endure.',

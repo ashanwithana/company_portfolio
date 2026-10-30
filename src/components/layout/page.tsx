@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
-import { Eyebrow } from '@/components/ui/badge'
+import { HairlineGrid } from '@/components/ui/hairline-grid'
+import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { cn } from '@/lib/utils'
 
 export type Crumb = {
@@ -75,10 +76,22 @@ export function BreadcrumbSchema({ items }: { items: Crumb[] }) {
 }
 
 /**
+ * Splits a headline so its closing words are set bold under a thin lead, the
+ * same pairing the Discipline hero uses. One-word titles are set bold whole.
+ */
+export function splitHeadline(title: string) {
+  const words = title.split(' ')
+  if (words.length < 2) return title
+  const tail = words.length >= 5 ? 2 : 1
+  return `${words.slice(0, -tail).join(' ')}\n${words.slice(-tail).join(' ')}`
+}
+
+/**
  * Page-level hero used at the top of every inner page.
  *
- * Plain on the page ground: no background effects, so inner pages stay quiet and
- * the type does the work.
+ * Left-aligned, on the hairline grid shared with the home and Discipline heroes:
+ * a mono label with a rule, a thin-over-bold headline and a light lede. No
+ * background effect, so the pages stay quiet and the type does the work.
  */
 export function PageHeader({
   eyebrow,
@@ -94,16 +107,35 @@ export function PageHeader({
   className?: string
 }) {
   return (
-    <header className={cn('relative overflow-hidden pt-36 pb-16 md:pt-44 md:pb-24', className)}>
-      <div className="relative container-page">
-        <Eyebrow accent className="relative">
-          {eyebrow}
-        </Eyebrow>
+    <header
+      className={cn(
+        'relative overflow-hidden border-b border-border pt-36 pb-16 md:pt-48 md:pb-24',
+        className,
+      )}
+    >
+      <HairlineGrid />
 
-        <h1 className="mt-7 max-w-5xl display-lg">{title}</h1>
+      <div className="relative z-20 mx-auto w-full max-w-[1600px] px-4 md:px-8">
+        <div className="flex items-center gap-4">
+          <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground uppercase">
+            {eyebrow}
+          </span>
+          <span aria-hidden="true" className="h-px max-w-[160px] flex-1 bg-border-strong" />
+        </div>
+
+        <h1 className="mt-8 max-w-[18ch] text-[clamp(2.5rem,5.6vw,6rem)] leading-[0.9] font-thin tracking-tighter uppercase md:mt-10 md:max-w-6xl">
+          <HeadlineReveal
+            text={splitHeadline(title)}
+            emphasizeLast
+            className={title.includes(' ') ? undefined : 'font-bold'}
+          />
+        </h1>
 
         {lede ? (
-          <p className="mt-7 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p
+            className="mt-10 max-w-2xl text-base leading-relaxed font-light text-muted-foreground md:mt-14 md:text-lg"
+            style={{ animation: 'fade-up .8s cubic-bezier(.16,1,.3,1) 620ms both' }}
+          >
             {lede}
           </p>
         ) : null}

@@ -28,6 +28,8 @@ export type HeadlineRevealProps = {
  *
  *   - The mask carries `padding-bottom` and a matching negative margin. Without
  *     it the descenders on words like "place." are clipped by the mask.
+ *   - The mask also carries right padding. Tight (negative) letter-spacing
+ *     shrinks the box past the last glyph and would clip its right edge.
  *   - Word-separating spaces are rendered outside the masks. Inside one they get
  *     trimmed, which collapses the spacing and breaks line wrapping.
  *   - Nothing is hidden from assistive technology. `overflow: hidden` is purely
@@ -58,7 +60,7 @@ export function HeadlineReveal({
             const at = delay + order++ * stagger
             return (
               <Fragment key={`${word}-${index}`}>
-                <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+                <span className="-mr-[0.06em] -mb-[0.14em] inline-block overflow-hidden pr-[0.06em] pb-[0.14em] align-bottom">
                   <span
                     className="inline-block will-change-transform"
                     style={{

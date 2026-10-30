@@ -4,9 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
 import * as React from 'react'
 
-import { CasePlate } from '@/components/ui/case-plate'
 import { useIsMounted } from '@/hooks/use-media-query'
-import { ACCENT_BORDER, ACCENT_WASH } from '@/lib/accent'
 import type { CaseStudy, CaseStudyCategory } from '@/content/case-studies'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +21,7 @@ const QUERY_KEY = 'category'
  * Fired after this component writes the URL itself. `history.replaceState` does
  * not emit `popstate`, so the store would otherwise never learn about it.
  */
-const URL_CHANGE = 'northlight:url-change'
+const URL_CHANGE = 'sketchlabs:url-change'
 
 /**
  * Filterable case study grid.
@@ -85,33 +83,35 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
     <div>
       {/* Filters */}
       <div
-        className="mb-10 flex flex-wrap items-center gap-2"
+        className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4"
         role="group"
         aria-label="Filter case studies by category"
       >
-        {filters.map((option) => {
-          const isActive = filter === option.value
+        <div className="flex flex-wrap gap-x-7 gap-y-2">
+          {filters.map((option) => {
+            const isActive = filter === option.value
 
-          return (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => selectFilter(option.value)}
-              aria-pressed={isActive}
-              className={cn(
-                'min-h-9 rounded-full border px-5 py-2 label transition-colors',
-                isActive
-                  ? 'border-brand bg-brand text-brand-foreground'
-                  : 'border-border text-muted-foreground hover:border-border-strong hover:text-foreground',
-              )}
-            >
-              {option.label}
-            </button>
-          )
-        })}
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => selectFilter(option.value)}
+                aria-pressed={isActive}
+                className={cn(
+                  'min-h-9 border-b pb-1 font-mono text-[10px] tracking-[0.25em] uppercase transition-colors',
+                  isActive
+                    ? 'border-foreground text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {option.label}
+              </button>
+            )
+          })}
+        </div>
 
         <span
-          className="ml-auto label text-[0.6rem] text-muted-foreground tabular-nums"
+          className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground uppercase tabular-nums"
           // Announce the result count so filter changes are perceivable.
           role="status"
           aria-live="polite"
@@ -121,63 +121,65 @@ export function CaseStudyGrid({ studies, filters }: CaseStudyGridProps) {
       </div>
 
       {/*
-        Grid.
+        Index.
 
         `initial` is disabled until mount. On the server and during hydration
         that makes both sides render the settled `animate` state, so React has no
         attribute mismatch to reconcile. Only afterwards does the entrance
-        transform switch on, which is when it actually matters: items appearing
-        as the filter changes. The first paint has no entrance animation either
-        way — it is already at the target state.
+        transform switch on, which is when it actually matters: rows appearing
+        as the filter changes.
       */}
-      <motion.ul layout={!reducedMotion} className="grid gap-4 sm:grid-cols-3">
+      <motion.ul layout={!reducedMotion} className="border-t border-border-strong">
         <AnimatePresence mode="popLayout" initial={false}>
           {visible.map((study, position) => (
             <motion.li
               key={study.slug}
               layout
-              initial={mounted ? { opacity: 0, y: 20 } : false}
+              initial={mounted ? { opacity: 0, y: 16 } : false}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
+              exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="border-b border-border"
             >
               <Link
                 href={`/work/${study.slug}`}
-                className={cn(
-                  'group flex h-full flex-col gap-4 rounded-3xl border border-border bg-gradient-to-br p-4 transition-[border-color,transform] duration-500 hover:-translate-y-1',
-                  ACCENT_WASH[study.tint],
-                  ACCENT_BORDER[study.tint],
-                )}
+                className="group grid gap-x-8 gap-y-5 px-4 py-8 transition-colors duration-300 hover:bg-foreground hover:text-background focus-visible:bg-foreground focus-visible:text-background md:grid-cols-12 md:px-6 md:py-10"
               >
-                <CasePlate
-                  client={study.client}
-                  index={position + 1}
-                  tint={study.tint}
-                  ratio="wide"
-                  className="w-full shrink-0"
-                />
+                <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-background/60 group-focus-visible:text-background/60 md:col-span-1 md:pt-3">
+                  {String(position + 1).padStart(2, '0')}
+                </span>
 
-                <div className="flex flex-1 flex-col gap-2 px-1.5 pb-1.5">
-                  <p className="label text-[0.55rem] text-muted-foreground">
-                    {study.client} · {study.categoryLabel} · {study.year}
-                  </p>
-
-                  <h2 className="display-sm transition-colors group-hover:text-brand">
+                <div className="md:col-span-6">
+                  <h2 className="text-2xl leading-[1.05] font-light tracking-tight md:text-4xl">
                     {study.title}
                   </h2>
-
-                  <p className="leading-relaxed text-muted-foreground">{study.summary}</p>
-
-                  <span className="mt-auto inline-flex min-h-8 items-center gap-2 pt-4 label text-[0.6rem]">
-                    Read case study
-                    <span
-                      aria-hidden="true"
-                      className="transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </span>
-                  </span>
+                  <p className="mt-4 max-w-xl leading-relaxed font-light text-muted-foreground transition-colors group-hover:text-background/70 group-focus-visible:text-background/70">
+                    {study.summary}
+                  </p>
                 </div>
+
+                <dl className="grid grid-cols-3 content-start gap-4 font-mono text-[10px] tracking-[0.22em] uppercase md:col-span-4 md:col-start-8 md:grid-cols-1 md:gap-2 md:pt-3">
+                  <div>
+                    <dt className="sr-only">Client</dt>
+                    <dd>{study.client}</dd>
+                  </div>
+                  <div className="text-muted-foreground transition-colors group-hover:text-background/60 group-focus-visible:text-background/60">
+                    <dt className="sr-only">Type</dt>
+                    <dd>{study.categoryLabel}</dd>
+                  </div>
+                  <div className="text-muted-foreground transition-colors group-hover:text-background/60 group-focus-visible:text-background/60">
+                    <dt className="sr-only">Year</dt>
+                    <dd>{study.year}</dd>
+                  </div>
+                </dl>
+
+                <span
+                  aria-hidden="true"
+                  className="hidden justify-self-end text-2xl font-thin transition-transform duration-300 group-hover:translate-x-1.5 md:col-span-1 md:block md:pt-1"
+                >
+                  →
+                </span>
+                <span className="sr-only">Read case study</span>
               </Link>
             </motion.li>
           ))}
