@@ -1,10 +1,10 @@
 name = "portfolio"
 account_id = "2a1b16192db14639044e7fbf3cc56c55"
 workers_dev = true
-main = ".opennext/worker.js"
+main = ".open-next/worker.js"
 
 [build]
-command = "npm run build:cf"
+command = "npm run build && npx @opennextjs/cloudflare build"
 
 [[r2_buckets]]
 binding = "R2"

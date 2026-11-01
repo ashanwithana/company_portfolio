@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:cf": "npm run build && npx @opennextjs/cloudflare build",
+    "build:cf": "npm run build && npx @opennextjs/cloudflare build 2>&1",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
