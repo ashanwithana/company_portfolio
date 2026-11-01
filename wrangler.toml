@@ -4,7 +4,8 @@ workers_dev = true
 main = ".opennext/worker.js"
 
 [build]
-command = "npx @opennextjs/cloudflare build"
+command = "npm run build:cf"
+cwd = "./"
 
 [[r2_buckets]]
 binding = "R2"
