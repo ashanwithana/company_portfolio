@@ -1,3 +1,0 @@
-export const production = {"NEXT_PUBLIC_SITE_URL":"https://your-domain.com","EMAILJS_PRIVATE_KEY":"xiDqlwN3Q38n0OImmgvJS","EMAILJS_SERVICE_ID":"service_nsut2z9","EMAILJS_TEMPLATE_ID":"template_345gw64","EMAILJS_PUBLIC_KEY":"uJh58fhA6DIXuU6Wg"};
-export const development = {"NEXT_PUBLIC_SITE_URL":"https://your-domain.com","EMAILJS_PRIVATE_KEY":"xiDqlwN3Q38n0OImmgvJS","EMAILJS_SERVICE_ID":"service_nsut2z9","EMAILJS_TEMPLATE_ID":"template_345gw64","EMAILJS_PUBLIC_KEY":"uJh58fhA6DIXuU6Wg"};
-export const test = {"NEXT_PUBLIC_SITE_URL":"https://your-domain.com","EMAILJS_PRIVATE_KEY":"xiDqlwN3Q38n0OImmgvJS","EMAILJS_SERVICE_ID":"service_nsut2z9","EMAILJS_TEMPLATE_ID":"template_345gw64","EMAILJS_PUBLIC_KEY":"uJh58fhA6DIXuU6Wg"};
