@@ -4,7 +4,6 @@ workers_dev = true
 main = ".open-next/worker.js"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
-site = { bucket = ".open-next/assets" }
 
 [build]
-command = "npm run build && npx @opennextjs/cloudflare build"
+command = "npm run build:cf"
