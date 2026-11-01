@@ -1,0 +1,12 @@
+name = "portfolio"
+account_id = "2a1b16192db14639044e7fbf3cc56c55"
+workers_dev = true
+main = ".opennext/worker.js"
+
+[build]
+command = "npx @opennextjs/cloudflare build"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "portfolio"
+
