@@ -14,6 +14,11 @@ export const contactSchema = z.object({
     .min(2, 'Please enter at least 2 characters.')
     .max(80, 'Please keep this under 80 characters.'),
   email: z.email('Please enter a valid email address.').max(160, 'That email is too long.'),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/, 'Please enter a valid phone number.')
+    .optional(),
   company: z.string().trim().max(120, 'Please keep this under 120 characters.').optional(),
   /** Which service the enquiry relates to. Optional — free-form enquiries exist. */
   service: z.string().trim().max(80).optional(),
@@ -39,7 +44,7 @@ export type ContactResult =
   | { status: 'error'; message: string; fieldErrors: Record<string, string[]> }
 
 export type FieldErrors = Partial<
-  Record<'name' | 'email' | 'company' | 'service' | 'budget' | 'message', string>
+  Record<'name' | 'email' | 'phone' | 'company' | 'service' | 'budget' | 'message', string>
 >
 
 /**
@@ -57,7 +62,7 @@ export function toFieldErrors(error: z.ZodError): {
   for (const issue of error.issues) {
     const key = issue.path[0]
     if (typeof key === 'string') {
-      ;(fieldErrors[key] ??= []).push(issue.message)
+      ; (fieldErrors[key] ??= []).push(issue.message)
     }
   }
 

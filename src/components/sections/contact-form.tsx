@@ -24,6 +24,7 @@ export function ContactForm() {
   const [values, setValues] = React.useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     service: '',
     budget: '',
@@ -47,6 +48,7 @@ export function ContactForm() {
     const parsed = contactSchema.safeParse({
       name: values.name,
       email: values.email,
+      phone: values.phone,
       company: values.company,
       service: values.service,
       budget: values.budget,
@@ -80,6 +82,7 @@ export function ContactForm() {
         {
           from_name: parsed.data.name,
           reply_to: parsed.data.email,
+          phone: parsed.data.phone || '—',
           company: parsed.data.company || '—',
           service: parsed.data.service || 'Not sure yet',
           budget: budgetLabels[parsed.data.budget ?? ''] ?? 'Not sure yet',
@@ -93,7 +96,7 @@ export function ContactForm() {
         message: 'Message sent — we will reply within two working days.',
       })
 
-      setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
+      setValues({ name: '', email: '', phone: '', company: '', service: '', budget: '', message: '' })
       formRef.current?.reset()
       successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     } catch (error) {
@@ -152,7 +155,22 @@ export function ContactForm() {
           />
         </LedgerRow>
 
-        <LedgerRow index="03" label="Company" optional error={errors.company}>
+        <LedgerRow index="03" label="Phone" optional error={errors.phone}>
+          <input
+            id="ledger-phone"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            value={values.phone}
+            onChange={(event) => set({ phone: event.target.value })}
+            placeholder="+1 (555) 123-4567"
+            autoComplete="tel"
+            aria-invalid={errors.phone ? true : undefined}
+            className="w-full bg-transparent py-2 text-lg outline-none placeholder:text-muted-foreground/50"
+          />
+        </LedgerRow>
+
+        <LedgerRow index="04" label="Company" optional error={errors.company}>
           <input
             id="ledger-company"
             name="company"
@@ -165,7 +183,7 @@ export function ContactForm() {
           />
         </LedgerRow>
 
-        <LedgerRow index="04" label="What do you need" optional error={errors.service}>
+        <LedgerRow index="05" label="What do you need" optional error={errors.service}>
           <div className="flex flex-wrap gap-2 py-1" role="group" aria-label="What do you need">
             {[{ title: 'Not sure yet', value: '' }, ...services.map((s) => ({ title: s.title, value: s.title }))].map((option) => (
               <button
@@ -186,7 +204,7 @@ export function ContactForm() {
           </div>
         </LedgerRow>
 
-        <LedgerRow index="05" label="Budget range" optional error={errors.budget}>
+        <LedgerRow index="06" label="Budget range" optional error={errors.budget}>
           <div className="flex flex-wrap gap-2 py-1" role="group" aria-label="Budget range">
             {BUDGET_OPTIONS.map((option) => (
               <button
@@ -207,7 +225,7 @@ export function ContactForm() {
           </div>
         </LedgerRow>
 
-        <LedgerRow index="06" label="The project" required error={errors.message}>
+        <LedgerRow index="07" label="The project" required error={errors.message}>
           <textarea
             id="ledger-message"
             name="message"
