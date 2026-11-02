@@ -1,9 +1,15 @@
 'use client'
 
 import * as React from 'react'
+import emailjs from '@emailjs/browser'
 import { contactSchema, firstErrors, type FieldErrors, type ContactResult } from '@/lib/validation'
 import { services } from '@/content/services'
 import { cn } from '@/lib/utils'
+
+// Initialize EmailJS
+if (typeof window !== 'undefined') {
+  emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '')
+}
 
 const BUDGET_OPTIONS = [
   { value: 'under-1k', label: 'Under $1k' },
@@ -61,24 +67,40 @@ export function ContactForm() {
     setPending(true)
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parsed.data),
+      const budgetLabels: Record<string, string> = {
+        'under-1k': 'Under $1k',
+        '1k-2.5k': '$1k – $2.5k',
+        'over-2.5k': 'More than $2.5k',
+        'lets-talk': "Let's talk about it",
+      }
+
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '',
+        {
+          from_name: parsed.data.name,
+          reply_to: parsed.data.email,
+          company: parsed.data.company || '—',
+          service: parsed.data.service || 'Not sure yet',
+          budget: budgetLabels[parsed.data.budget ?? ''] ?? 'Not sure yet',
+          message: parsed.data.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+      )
+
+      setState({
+        status: 'success',
+        message: 'Message sent — we will reply within two working days.',
       })
 
-      const result = await response.json()
-      setState(result)
-
-      if (result.status === 'success') {
-        setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
-        formRef.current?.reset()
-        successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
+      setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
+      formRef.current?.reset()
+      successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     } catch (error) {
+      console.error('EmailJS error:', error)
       setState({
         status: 'error',
-        message: 'Could not reach the server. Please email us directly.',
+        message: 'Could not send your message. Please email us directly.',
         fieldErrors: {},
       })
     } finally {
