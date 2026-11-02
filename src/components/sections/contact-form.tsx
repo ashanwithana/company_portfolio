@@ -8,7 +8,10 @@ import { cn } from '@/lib/utils'
 
 // Initialize EmailJS
 if (typeof window !== 'undefined') {
-  emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '')
+  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ''
+  console.log('EmailJS Public Key:', publicKey)
+  console.log('EmailJS Public Key Length:', publicKey.length)
+  emailjs.init(publicKey)
 }
 
 const BUDGET_OPTIONS = [
