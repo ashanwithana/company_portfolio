@@ -79,9 +79,22 @@ export function ContactForm() {
         'lets-talk': "Let's talk about it",
       }
 
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || ''
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || ''
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ''
+
+      console.log('Sending email with:', {
+        serviceId,
+        templateId,
+        publicKey,
+        serviceIdLength: serviceId.length,
+        templateIdLength: templateId.length,
+        publicKeyLength: publicKey.length,
+      })
+
       await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '',
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '',
+        serviceId,
+        templateId,
         {
           from_name: parsed.data.name,
           reply_to: parsed.data.email,
@@ -91,7 +104,7 @@ export function ContactForm() {
           budget: budgetLabels[parsed.data.budget ?? ''] ?? 'Not sure yet',
           message: parsed.data.message,
         },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+        publicKey,
       )
 
       setState({
