@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ['motion', 'lucide-react'],
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   /**
@@ -11,9 +14,6 @@ const nextConfig: NextConfig = {
    * an explicit `notFound()`.
    */
   typedRoutes: false,
-  experimental: {
-    optimizePackageImports: ['motion', 'lucide-react'],
-  },
   async redirects() {
     return [
       // Specialist tracks have canonical practice pages with comparison
