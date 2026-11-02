@@ -12,6 +12,8 @@ import { parseTheme, THEME_COOKIE } from '@/lib/theme'
 
 import './globals.css'
 
+export const dynamic = 'force-static'
+
 /*
  * Inter, self-hosted by next/font (no runtime request to a third party). It is
  * loaded as a variable font so the thin and light weights the display type

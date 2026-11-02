@@ -1,21 +1,4 @@
-'use server'
-
-import {
-  contactSchema,
-  toFieldErrors,
-  type ContactInput,
-  type ContactResult,
-} from '@/lib/validation'
-
-/**
- * Form Server Actions.
- *
- * Validation always runs server-side — the client pass is a UX affordance, not
- * a security boundary. Replace each `deliver` body with a real transport; the
- * surrounding contract stays the same.
- */
-
-export type ContactState = ContactResult | null
+import { contactSchema, type ContactInput, type ContactResult } from '@/lib/validation'
 
 const TIMEOUT_MS = 10_000
 
@@ -29,9 +12,6 @@ async function postJson(endpoint: string, payload: unknown, signal: AbortSignal)
   })
 
   if (!response.ok) {
-    // Server log only — the body can mention key fragments, so it must never
-    // reach the visitor. This is what turns "something went wrong" into an
-    // actionable diagnosis.
     const detail = await response.text().catch(() => '<unreadable>')
     console.error(`[contact] EmailJS rejected the send (${response.status}):`, detail)
   }
@@ -100,7 +80,6 @@ async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
           fieldErrors: {},
         }
   } catch (error) {
-    // Never leak a stack trace or internal URL to a visitor.
     console.error('[contact] delivery failed:', error)
 
     return {
@@ -111,23 +90,34 @@ async function deliverEnquiry(input: ContactInput): Promise<ContactResult> {
   }
 }
 
-export async function submitContactAction(
-  _previousState: ContactState,
-  formData: FormData,
-): Promise<ContactState> {
-  const parsed = contactSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    company: formData.get('company') ?? '',
-    service: formData.get('service') ?? '',
-    budget: formData.get('budget') ?? '',
-    message: formData.get('message'),
-    zx9q: formData.get('zx9q') ?? '',
-  })
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
 
-  if (!parsed.success) {
-    return { status: 'error', ...toFieldErrors(parsed.error) }
+    const parsed = contactSchema.safeParse({
+      name: body.name,
+      email: body.email,
+      company: body.company ?? '',
+      service: body.service ?? '',
+      budget: body.budget ?? '',
+      message: body.message,
+      zx9q: body.zx9q ?? '',
+    })
+
+    if (!parsed.success) {
+      return Response.json(
+        { status: 'error', fieldErrors: parsed.error.flatten().fieldErrors },
+        { status: 400 },
+      )
+    }
+
+    const result = await deliverEnquiry(parsed.data)
+    return Response.json(result)
+  } catch (error) {
+    console.error('[contact] API error:', error)
+    return Response.json(
+      { status: 'error', message: 'Internal server error' },
+      { status: 500 },
+    )
   }
-
-  return deliverEnquiry(parsed.data)
 }

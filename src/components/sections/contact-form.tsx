@@ -1,9 +1,7 @@
 'use client'
 
 import * as React from 'react'
-
-import { submitContactAction, type ContactState } from '@/app/actions/forms'
-import { contactSchema, firstErrors, type FieldErrors } from '@/lib/validation'
+import { contactSchema, firstErrors, type FieldErrors, type ContactResult } from '@/lib/validation'
 import { services } from '@/content/services'
 import { cn } from '@/lib/utils'
 
@@ -14,21 +12,9 @@ const BUDGET_OPTIONS = [
   { value: 'lets-talk', label: "Let's talk about it" },
 ] as const
 
-/**
- * Project enquiry form, styled as an open ledger: numbered rows with
- * borderless underline fields rather than boxed cards or stepped screens.
- * One screen, everything visible, nothing hidden behind a Continue button.
- *
- * Uses `useActionState` against a Server Action. The same Zod schema runs on
- * both sides — the client pass gives instant feedback, the server pass is the
- * trust boundary — so the two can never disagree about what is valid.
- */
 export function ContactForm() {
-  const [state, action, pending] = React.useActionState<ContactState, FormData>(
-    submitContactAction,
-    null,
-  )
-
+  const [state, setState] = React.useState<ContactResult | null>(null)
+  const [pending, setPending] = React.useState(false)
   const [values, setValues] = React.useState({
     name: '',
     email: '',
@@ -37,40 +23,10 @@ export function ContactForm() {
     budget: '',
     message: '',
   })
-
   const [clientErrors, setClientErrors] = React.useState<FieldErrors>({})
-  const [handledSuccess, setHandledSuccess] = React.useState<ContactState>(null)
   const [sentSummary, setSentSummary] = React.useState<typeof values | null>(null)
-  // Snapshot of the fields at submit time, so the success panel can echo back
-  // exactly what was sent even after the form clears.
-  const [pendingSummary, setPendingSummary] = React.useState<typeof values | null>(null)
   const formRef = React.useRef<HTMLFormElement>(null)
   const successRef = React.useRef<HTMLDivElement>(null)
-  const fieldRefs = React.useRef<Record<string, HTMLElement | null>>({})
-
-  if (state?.status === 'success' && state !== handledSuccess) {
-    setHandledSuccess(state)
-    setSentSummary(pendingSummary)
-    setPendingSummary(null)
-    setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
-    setClientErrors({})
-  }
-
-  React.useEffect(() => {
-    if (state?.status !== 'success') return
-    formRef.current?.reset()
-  }, [state])
-
-  // Bring the confirmation (and its sent-message recap) into view on success —
-  // otherwise it renders below the fold where the submit button was.
-  React.useEffect(() => {
-    if (state?.status !== 'success') return
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    successRef.current?.scrollIntoView({
-      behavior: reduceMotion ? 'auto' : 'smooth',
-      block: 'start',
-    })
-  }, [state])
 
   const errors: FieldErrors = {
     ...clientErrors,
@@ -79,38 +35,55 @@ export function ContactForm() {
 
   const set = (patch: Partial<typeof values>) => setValues((prev) => ({ ...prev, ...patch }))
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const formData = new FormData(event.currentTarget)
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
 
     const parsed = contactSchema.safeParse({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      company: formData.get('company'),
-      service: formData.get('service'),
-      budget: formData.get('budget'),
-      message: formData.get('message'),
+      name: values.name,
+      email: values.email,
+      company: values.company,
+      service: values.service,
+      budget: values.budget,
+      message: values.message,
+      zx9q: '',
     })
 
     if (!parsed.success) {
-      event.preventDefault()
       const fieldErrors = firstErrors(
         parsed.error.flatten().fieldErrors as Record<string, string[]>,
       )
       setClientErrors(fieldErrors)
-      // Focus the first invalid row so keyboard users land where the work is.
-      const order = ['name', 'email', 'company', 'service', 'budget', 'message'] as const
-      const first = order.find((key) => fieldErrors[key])
-      if (first) {
-        requestAnimationFrame(() => {
-          fieldRefs.current[first]?.focus()
-          fieldRefs.current[first]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        })
-      }
       return
     }
 
     setClientErrors({})
-    setPendingSummary({ ...values })
+    setSentSummary({ ...values })
+    setPending(true)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed.data),
+      })
+
+      const result = await response.json()
+      setState(result)
+
+      if (result.status === 'success') {
+        setValues({ name: '', email: '', company: '', service: '', budget: '', message: '' })
+        formRef.current?.reset()
+        successRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    } catch (error) {
+      setState({
+        status: 'error',
+        message: 'Could not reach the server. Please email us directly.',
+        fieldErrors: {},
+      })
+    } finally {
+      setPending(false)
+    }
   }
 
   if (state?.status === 'success') {
@@ -121,50 +94,15 @@ export function ContactForm() {
         <p className="mt-4 max-w-xl leading-relaxed text-muted-foreground" role="status">
           {state.message}
         </p>
-
-        {sentSummary ? (
-          <div className="mt-8 border-t border-border pt-8">
-            <p className="label text-[0.6rem] text-muted-foreground">What you sent</p>
-            <dl className="mt-4 space-y-3 text-[15px] leading-relaxed">
-              <div className="flex gap-4">
-                <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">From</dt>
-                <dd>
-                  {sentSummary.name} · {sentSummary.email}
-                </dd>
-              </div>
-              {sentSummary.service ? (
-                <div className="flex gap-4">
-                  <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">Needs</dt>
-                  <dd>{sentSummary.service}</dd>
-                </div>
-              ) : null}
-              <div className="flex gap-4">
-                <dt className="w-20 shrink-0 label text-[0.6rem] text-muted-foreground">Message</dt>
-                <dd className="max-w-xl whitespace-pre-wrap text-muted-foreground">
-                  {sentSummary.message}
-                </dd>
-              </div>
-            </dl>
-          </div>
-        ) : null}
       </div>
     )
   }
 
   return (
-    <form ref={formRef} action={action} onSubmit={handleSubmit} noValidate>
-      {/* Honeypot: off-screen, unfocusable, rejected by the schema. */}
-      <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
-        <label htmlFor="ledger-zx9q">Do not fill this in</label>
-        <input id="ledger-zx9q" name="zx9q" type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-
+    <form ref={formRef} onSubmit={handleSubmit} noValidate>
       <div className="divide-y divide-border border-y border-border">
         <LedgerRow index="01" label="Your name" required error={errors.name}>
           <input
-            ref={(el) => {
-              fieldRefs.current.name = el
-            }}
             id="ledger-name"
             name="name"
             type="text"
@@ -179,9 +117,6 @@ export function ContactForm() {
 
         <LedgerRow index="02" label="Email" required error={errors.email}>
           <input
-            ref={(el) => {
-              fieldRefs.current.email = el
-            }}
             id="ledger-email"
             name="email"
             type="email"
@@ -197,9 +132,6 @@ export function ContactForm() {
 
         <LedgerRow index="03" label="Company" optional error={errors.company}>
           <input
-            ref={(el) => {
-              fieldRefs.current.company = el
-            }}
             id="ledger-company"
             name="company"
             type="text"
@@ -207,17 +139,13 @@ export function ContactForm() {
             onChange={(event) => set({ company: event.target.value })}
             placeholder="Company name"
             autoComplete="organization"
-            aria-invalid={errors.company ? true : undefined}
             className="w-full bg-transparent py-2 text-lg outline-none placeholder:text-muted-foreground/50"
           />
         </LedgerRow>
 
         <LedgerRow index="04" label="What do you need" optional error={errors.service}>
           <div className="flex flex-wrap gap-2 py-1" role="group" aria-label="What do you need">
-            {[
-              { title: 'Not sure yet', value: '' },
-              ...services.map((s) => ({ title: s.title, value: s.title })),
-            ].map((option) => (
+            {[{ title: 'Not sure yet', value: '' }, ...services.map((s) => ({ title: s.title, value: s.title }))].map((option) => (
               <button
                 key={option.title}
                 type="button"
@@ -234,7 +162,6 @@ export function ContactForm() {
               </button>
             ))}
           </div>
-          <input type="hidden" name="service" value={values.service} />
         </LedgerRow>
 
         <LedgerRow index="05" label="Budget range" optional error={errors.budget}>
@@ -256,21 +183,16 @@ export function ContactForm() {
               </button>
             ))}
           </div>
-          <input type="hidden" name="budget" value={values.budget} />
         </LedgerRow>
 
         <LedgerRow index="06" label="The project" required error={errors.message}>
           <textarea
-            ref={(el) => {
-              fieldRefs.current.message = el
-            }}
             id="ledger-message"
             name="message"
             value={values.message}
             onChange={(event) => set({ message: event.target.value })}
             placeholder="What are you building, what is in the way, and when do you need it working?"
             rows={5}
-            aria-invalid={errors.message ? true : undefined}
             className="w-full resize-y bg-transparent py-2 text-lg leading-relaxed outline-none placeholder:text-muted-foreground/50"
           />
         </LedgerRow>
@@ -280,21 +202,13 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={pending}
-          aria-disabled={pending}
           className="inline-flex h-[52px] items-center justify-center gap-2.5 bg-foreground px-8 font-mono text-[11px] tracking-[0.25em] text-background uppercase transition-colors hover:bg-foreground/85 disabled:pointer-events-none disabled:opacity-50"
         >
           {pending ? 'Sending…' : 'Send enquiry'}
           <span aria-hidden="true">→</span>
         </button>
 
-        <p
-          role="status"
-          aria-live="polite"
-          className={cn(
-            'min-h-5 text-sm outline-none',
-            state?.status === 'error' && 'text-destructive',
-          )}
-        >
+        <p role="status" aria-live="polite" className="min-h-5 text-sm text-muted-foreground">
           {state?.status === 'error' ? state.message : 'We reply within two working days.'}
         </p>
       </div>
@@ -302,12 +216,6 @@ export function ContactForm() {
   )
 }
 
-/**
- * One ledger row: ordinal, label and an underline field. The field itself
- * carries the bottom hairline, which brightens to the brand lime on
- * focus-within — the
- * whole row reads as a single line item rather than a boxed card.
- */
 function LedgerRow({
   index,
   label,
@@ -337,9 +245,6 @@ function LedgerRow({
               </span>
             ) : null}
             {optional ? <span className="sr-only"> (optional)</span> : null}
-            <span className="sr-only">
-              {required ? ', required' : optional ? ', optional' : ''}
-            </span>
           </span>
         </p>
         {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}

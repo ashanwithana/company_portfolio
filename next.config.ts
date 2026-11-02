@@ -1,6 +1,15 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // Enable static export for Cloudflare Pages
+  output: 'export',
+  trailingSlash: true,
+
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
+  },
+
   experimental: {
     optimizePackageImports: ['motion', 'lucide-react'],
   },
@@ -15,33 +24,10 @@ const nextConfig: NextConfig = {
    */
   typedRoutes: false,
   async redirects() {
-    return [
-      // Specialist tracks have canonical practice pages with comparison
-      // tables, FAQs and case studies. Keep the /services slugs from
-      // existing as thin duplicates.
-      {
-        source: '/services/enterprise-systems',
-        destination: '/enterprise',
-        permanent: true,
-      },
-      {
-        source: '/services/ai-engineering',
-        destination: '/ai',
-        permanent: true,
-      },
-    ]
+    return []
   },
   async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'X-DNS-Prefetch-Control', value: 'on' },
-        ],
-      },
-    ]
+    return []
   },
 }
 
