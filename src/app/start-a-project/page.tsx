@@ -1,7 +1,7 @@
 import { PageHeader, PageSection } from '@/components/layout/page'
 import { ContactForm } from '@/components/sections/contact-form'
 import { Reveal } from '@/components/ui/reveal'
-import { contactContent } from '@/content/site'
+import { contactContent, siteConfig } from '@/content/site'
 
 export const metadata = {
   title: 'Start a project',
@@ -23,14 +23,77 @@ export default function StartAProjectPage() {
           {/* Form */}
           <ContactForm />
 
-          {/* Availability */}
+          {/* Sidebar */}
           <aside className="space-y-8 lg:pt-2">
+            {/* Availability */}
             <Reveal>
               <div className="border border-border bg-card/40 p-7">
                 <p className="label text-brand">{contactContent.availability.badge}</p>
                 <p className="mt-5 leading-relaxed text-muted-foreground">
                   {contactContent.availability.body}
                 </p>
+              </div>
+            </Reveal>
+
+            {/* Direct Contact */}
+            <Reveal>
+              <div className="border border-border bg-card/40 p-7">
+                <p className="label text-brand">Direct contact</p>
+                <div className="mt-5 space-y-3 text-sm">
+                  <a
+                    href={`mailto:${siteConfig.email}`}
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    Email: {siteConfig.email}
+                  </a>
+                  <a
+                    href={`tel:${siteConfig.phone}`}
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    Phone: {siteConfig.phone}
+                  </a>
+                  <a
+                    href={`https://wa.me/${siteConfig.phone.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    WhatsApp
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Social */}
+            <Reveal>
+              <div className="border border-border bg-card/40 p-7">
+                <p className="label text-brand">Elsewhere</p>
+                <div className="mt-5 space-y-2 text-sm">
+                  <a
+                    href={siteConfig.socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    LinkedIn
+                  </a>
+                  <a
+                    href={siteConfig.socials.x}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    X (Twitter)
+                  </a>
+                  <a
+                    href={siteConfig.socials.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-foreground hover:text-brand transition-colors"
+                  >
+                    GitHub
+                  </a>
+                </div>
               </div>
             </Reveal>
           </aside>
