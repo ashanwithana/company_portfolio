@@ -19,7 +19,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',
   locale: 'en_LK',
   email: 'hello@sketchlabs.com',
-  phone: '+94 11 234 5678',
+  phone: '+94 711 722 653',
   /** HQ used in the footer and contact page. */
   location: 'Colombo, Sri Lanka',
   address: {

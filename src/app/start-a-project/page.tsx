@@ -53,45 +53,12 @@ export default function StartAProjectPage() {
                     Phone: {siteConfig.phone}
                   </a>
                   <a
-                    href={`https://wa.me/${siteConfig.phone.replace(/\D/g, '')}`}
+                    href={`https://wa.me/${siteConfig.phone.replace(/\D/g, '')}?text=Hi%2C%20I%27m%20interested%20in%20discussing%20a%20project`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block text-foreground hover:text-brand transition-colors"
                   >
-                    WhatsApp
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Social */}
-            <Reveal>
-              <div className="border border-border bg-card/40 p-7">
-                <p className="label text-brand">Elsewhere</p>
-                <div className="mt-5 space-y-2 text-sm">
-                  <a
-                    href={siteConfig.socials.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-foreground hover:text-brand transition-colors"
-                  >
-                    LinkedIn
-                  </a>
-                  <a
-                    href={siteConfig.socials.x}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-foreground hover:text-brand transition-colors"
-                  >
-                    X (Twitter)
-                  </a>
-                  <a
-                    href={siteConfig.socials.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-foreground hover:text-brand transition-colors"
-                  >
-                    GitHub
+                    WhatsApp: {siteConfig.phone}
                   </a>
                 </div>
               </div>
