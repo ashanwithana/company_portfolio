@@ -12,6 +12,7 @@ import { milestones, team, values } from '@/content/company'
 import { platforms } from '@/content/enterprise'
 
 export const metadata = {
+  alternates: { canonical: '/about' },
   title: 'About',
   description:
     'SketchLabs is a seven-person product studio in Colombo. We design and build software, and we are deliberately small enough to know every project by name.',

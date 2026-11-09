@@ -9,6 +9,7 @@ import { aiCaseStudies, aiPrinciples, modelProviders, ragPatterns } from '@/cont
 import { aiFaqs } from '@/content/faqs'
 
 export const metadata = {
+  alternates: { canonical: '/ai' },
   title: 'AI Engineering',
   description:
     'RAG pipelines, model integrations and evaluation harnesses. We build retrieval systems that are measured before they are shipped — and that can decline when they do not know.',

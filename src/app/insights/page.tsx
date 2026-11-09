@@ -14,6 +14,7 @@ import { getAllPosts } from '@/content/posts-index'
 import { formatPostDate } from '@/content/posts'
 
 export const metadata = {
+  alternates: { canonical: '/insights' },
   title: 'Insights',
   description:
     'Writing on platform migrations, ERP implementations, RAG evaluation, design systems and performance measurement — notes from real client work.',

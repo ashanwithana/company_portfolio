@@ -8,6 +8,7 @@ import { ACCENT_DOT } from '@/lib/accent'
 import { cn } from '@/lib/utils'
 
 export const metadata = {
+  alternates: { canonical: '/services' },
   title: 'Services',
   description:
     'Web engineering, backend systems, product design, AI engineering and ERP implementation — plus design systems and performance audits. The seven things SketchLabs does well.',

@@ -6,6 +6,7 @@ import { FaqSection } from '@/components/ui/faq'
 import { contactFaqs } from '@/content/faqs'
 
 export const metadata = {
+  alternates: { canonical: '/faq' },
   title: 'FAQ',
   description:
     'Reach the studio directly, or read the answers to the questions every engagement starts with.',

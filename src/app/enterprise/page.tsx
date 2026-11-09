@@ -14,6 +14,7 @@ import {
 } from '@/content/enterprise'
 
 export const metadata = {
+  alternates: { canonical: '/enterprise' },
   title: 'Enterprise Systems',
   description:
     'Odoo, Dynamics 365, SAP Business One, Salesforce, HubSpot and commerce implementations. Data-first, phased migration, trained teams — no demo-shaped go-lives.',

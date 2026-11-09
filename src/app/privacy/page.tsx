@@ -2,6 +2,7 @@ import { PageHeader, PageSection } from '@/components/layout/page'
 import { siteConfig } from '@/content/site'
 
 export const metadata = {
+  alternates: { canonical: '/privacy' },
   title: 'Privacy',
   description:
     'What this site collects, why, and what we do not do with it. Written to be read rather than to be legally impenetrable.',

@@ -9,6 +9,7 @@ import { careersFaqs } from '@/content/faqs'
 import { allBenefits, rolesByDepartment } from '@/content/roles'
 
 export const metadata = {
+  alternates: { canonical: '/careers' },
   title: 'Careers',
   description:
     'Open roles at SketchLabs — full-stack engineering and internships. Async-first, four-day week, seven people.',

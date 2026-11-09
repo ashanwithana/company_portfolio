@@ -50,7 +50,6 @@ export const metadata: Metadata = {
     'Sri Lanka',
   ],
   category: 'technology',
-  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     locale: siteConfig.locale,

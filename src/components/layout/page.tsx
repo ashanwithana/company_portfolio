@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { HairlineGrid } from '@/components/ui/hairline-grid'
 import { HeadlineReveal } from '@/components/ui/headline-reveal'
 import { cn } from '@/lib/utils'
+import { siteConfig } from '@/content/site'
 
 export type Crumb = {
   label: string
@@ -59,12 +60,17 @@ export function BreadcrumbSchema({ items }: { items: Crumb[] }) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.label,
-      ...(item.href ? { item: item.href } : {}),
-    })),
+    itemListElement: items.map((item, index) => {
+      const href = item.href
+        ? `${siteConfig.url}${item.href.endsWith('/') ? item.href : `${item.href}/`}`
+        : undefined
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.label,
+        ...(href ? { item: href } : {}),
+      }
+    }),
   }
 
   return (

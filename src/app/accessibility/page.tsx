@@ -1,6 +1,7 @@
 import { PageHeader, PageSection } from '@/components/layout/page'
 
 export const metadata = {
+  alternates: { canonical: '/accessibility' },
   title: 'Accessibility',
   description:
     'Our accessibility statement — the standard we hold this site to, what we have tested, and how to report a barrier.',

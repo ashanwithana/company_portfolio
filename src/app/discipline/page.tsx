@@ -6,6 +6,7 @@ import { methodSteps } from '@/content/method'
 import { siteConfig } from '@/content/site'
 
 export const metadata = {
+  alternates: { canonical: '/discipline' },
   title: 'Discipline',
   description: `Immerse, Architect, Envision, Engineer, Assure, Transfer — the six-phase discipline ${siteConfig.name} applies to take software from first sketch to production.`,
 }

@@ -16,7 +16,7 @@ export const siteConfig = {
   tagline: 'Sketched with intent. Engineered to endure.',
   description:
     'A Colombo studio for product design, software and AI engineering. Considered work, from first sketch to production, for teams that hold their software to a higher standard.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.example.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sketchlabs.com',
   locale: 'en_LK',
   email: 'hello@thesketchlabs.com',
   phone: '+94 711 722 653',
@@ -73,7 +73,13 @@ export const practiceRoutes: readonly NavItem[] = [
 ] as const
 
 /** Every top-level route, used by the sitemap and the 404 page. */
-export const allRoutes: readonly NavItem[] = [...primaryNav, ...practiceRoutes]
+export const allRoutes: readonly NavItem[] = [
+  ...primaryNav,
+  ...practiceRoutes,
+  { href: '/start-a-project', label: 'Start a project' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: '/accessibility', label: 'Accessibility' },
+]
 
 export const footerNav = {
   company: [

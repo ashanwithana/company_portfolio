@@ -4,6 +4,7 @@ import { CtaBand } from '@/components/ui/cta-band'
 import { caseStudyFilters, publishedCaseStudies } from '@/content/case-studies'
 
 export const metadata = {
+  alternates: { canonical: '/work' },
   title: 'Work',
   description:
     'Selected engagements from the studio — websites, platforms, AI and enterprise systems, each named and described.',

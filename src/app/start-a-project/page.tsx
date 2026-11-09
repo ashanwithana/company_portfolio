@@ -4,6 +4,7 @@ import { Reveal } from '@/components/ui/reveal'
 import { contactContent, siteConfig } from '@/content/site'
 
 export const metadata = {
+  alternates: { canonical: '/start-a-project' },
   title: 'Start a project',
   description:
     'Tell us what you are building and what is in the way — budget, timeline and all. We reply within two working days.',

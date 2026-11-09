@@ -5,6 +5,10 @@ import { ServicesSnapshot } from '@/components/sections/services-snapshot'
 import { CureBand } from '@/components/sections/talk-to-us'
 import { methodSteps } from '@/content/method'
 
+export const metadata = {
+  alternates: { canonical: '/' },
+}
+
 /**
  * Home page composition, mirroring the reference section for section:
  * globe hero, the six-phase discipline,
